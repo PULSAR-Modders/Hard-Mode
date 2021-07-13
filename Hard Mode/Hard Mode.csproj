@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Better Biscuit Race.cs" />
     <Compile Include="Better Mines.cs" />
     <Compile Include="Crimes.cs" />
     <Compile Include="Enemy Warp.cs" />
