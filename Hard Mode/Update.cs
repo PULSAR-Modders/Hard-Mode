@@ -30,6 +30,7 @@ namespace Hard_Mode
                         if (drone != null)
                         {
                             Warpdisableinspection.inInspection = true;
+                            PLEncounterManager.Instance.PlayerShip.WarpChargeStage = EWarpChargeStage.E_WCS_PAUSED;
                             return;
                         }
                     }

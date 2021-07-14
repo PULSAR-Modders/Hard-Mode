@@ -8,7 +8,7 @@ namespace Hard_Mode
     {
         static void Postfix(PLRadiationPoint ___RadPoint, PLReactorInstance __instance) //Increases radiation from reactor deppending on max temp and current stability
         {
-            if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000)) // Check to not cause a lot of exceptions with the reactor ejecting
+            if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000) && PhotonNetwork.isMasterClient) // Check to not cause a lot of exceptions with the reactor ejecting
             {
                 PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
                 ___RadPoint.RaditationRange = reactor.TempMax / 75f;
@@ -21,7 +21,7 @@ namespace Hard_Mode
     {
         static void Prefix(PLEnergySphere __instance, bool ___HasExploded, PLShipInfoBase ___MyOwner, float ___MaxRange) // This should make the damage from the reactor more powerfull deppending on the price
         {
-            if (!PhotonNetwork.isMasterClient )
+            if (!PhotonNetwork.isMasterClient)
             {
                 return;
             }
