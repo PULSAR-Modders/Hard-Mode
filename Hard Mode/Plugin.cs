@@ -6,7 +6,7 @@ namespace Hard_Mode
 
         public override string Version => "0.0";
 
-        public override string Author => "EngBot, Pokegustavo, Mest";
+        public override string Author => "EngBot, Pokegustavo, Mest, Craziness924";
 
         public override string ShortDescription => "Makes your game a nightmare";
 

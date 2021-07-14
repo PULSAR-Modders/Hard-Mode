@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using static UnityEngine.Object;
+using System.Collections.Generic;
 
 namespace Hard_Mode
 {
@@ -47,13 +48,23 @@ namespace Hard_Mode
                         if (!ship.IsDrone && !ship.IsInfected)
                         {
                             PLShipInfo realship = ship as PLShipInfo;
+                            PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
                             if (ship != null && !realship.StartupSwitchBoard.GetStatus(2))
-                            {
-                                PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
+                            {                       
                                 if (shield.Current > 0)
                                 {
-                                    shield.Current -= shield.Max / 10;
+                                    shield.Current -= shield.CurrentMax / 10;
                                 }
+                            }
+                            List<PLPoweredShipComponent> allPoweredComponents = PLReactor.GetAllPoweredComponents(ship.MyStats);
+                            if(shield.Current >= shield.CurrentMax * (0.99f - shield.ChargeRateMax/500)) //This is just a place holder, this for now should ensure shield is always using power
+                            {
+                                shield.Current = shield.CurrentMax * (0.99f - shield.ChargeRateMax/500);
+                            }
+                            if(shield.GetPowerPercentInput() < 0.5f && shield.GetPowerPercentInput() > 0) //This makes if shield is not reciving at least 50% it will lose 
+                            {
+                                float chargelost = (shield.CurrentMax * shield.ChargeRateMax) / 1000 / (shield.GetPowerPercentInput());
+                                shield.Current -= chargelost > shield.CurrentMax/ 10? 10 : chargelost;
                             }
                         }
                     }
