@@ -13,4 +13,18 @@ namespace Hard_Mode
             }
         }
     }
+    /*
+    [HarmonyPatch(typeof(PLShieldGenerator), "ShipUpdate")]
+    class ShieldUsingPower 
+    { 
+        static void Postfix(PLShieldGenerator __instance) 
+        {
+            if (__instance != null)
+            {
+                __instance.RequestPowerUsage_Percent = 1f;
+                __instance.InputPower_Watts = __instance.CalculatedMaxPowerUsage_Watts * 0.25f;
+            }
+        }
+    }
+    */
 }

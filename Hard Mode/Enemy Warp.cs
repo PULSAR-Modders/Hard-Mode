@@ -35,24 +35,6 @@ namespace Hard_Mode
 
         }
     }
-    [HarmonyPatch(typeof(PLServer), "Update")]
-    class Feckthisshitiamout
-    {
-        static void Postfix() // Enemy will try to Escape if you are 1.5 times stronger than him (combat level)
-        {
-            foreach (PLShipInfoBase ship in UnityEngine.Object.FindObjectsOfType(typeof(PLShipInfoBase)))
-            {
-                if (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5 && ship.WarpChargeStage == EWarpChargeStage.E_WCS_COLD_START && ship.FactionID != 6 && !ship.IsInfected && !ship.IsSectorCommander && ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && ship.ShipTypeID != EShipType.E_BEACON)
-                {
-                    ship.WarpChargeStage = EWarpChargeStage.E_WCS_PREPPING;
-                }
-                else if (ship.WarpChargeStage == EWarpChargeStage.E_WCS_READY && ship.FactionID != 6 && !ship.GetIsPlayerShip() && ship.GetRelevantCrewMember(0) != null)
-                {
-                    ship.Ship_WarpOutNow();
-                }
-            }
-        }
-    }
     [HarmonyPatch(typeof(PLShipInfoBase), "Update")]
     class Warpmoretimes
     {

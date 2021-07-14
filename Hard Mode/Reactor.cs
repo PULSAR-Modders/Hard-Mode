@@ -11,11 +11,26 @@ namespace Hard_Mode
             if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000) && PhotonNetwork.isMasterClient) // Check to not cause a lot of exceptions with the reactor ejecting
             {
                 PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
-                ___RadPoint.RaditationRange = reactor.TempMax / 75f;
-                ___RadPoint.RaditationRange *= 1f + (__instance.MyShipInfo.CoreInstability * 5f);
+                ___RadPoint.RaditationRange = reactor.TempMax / 150f;
+                ___RadPoint.RaditationRange *= 1f + (__instance.MyShipInfo.CoreInstability * 4f);
             }
         }
     }
+    /*
+    [HarmonyPatch(typeof(PLReactor), "ShipUpdate")]
+    class ShieldUsage
+    {
+        static void Postfix(PLShipInfoBase inShipInfo)
+        {
+            PLShieldGenerator shield = inShipInfo.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
+
+            shield.RequestPowerUsage_Limit = shield.CalculatedMaxPowerUsage_Watts * 0.25f;
+            shield.InputPower_Watts = shield.CalculatedMaxPowerUsage_Watts * 0.25f;
+            shield.RequestPowerUsage_Percent = 1f;
+
+        }
+    }
+    */
     [HarmonyPatch(typeof(PLEnergySphere), "Detonate")]
     class Explosion
     {
