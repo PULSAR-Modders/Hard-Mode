@@ -65,7 +65,8 @@
     <Compile Include="Enemy Warp.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reactor Radiation.cs" />
+    <Compile Include="Reactor.cs" />
+    <Compile Include="Shields.cs" />
     <Compile Include="Update.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
