@@ -21,8 +21,10 @@ namespace Hard_Mode
         {
             if (__instance != null)
             {
-                __instance.RequestPowerUsage_Percent = 1f;
+                __instance.IsPowerActive = true;
+                __instance.RequestPowerUsage_Limit = __instance.CalculatedMaxPowerUsage_Watts * 0.25f;
                 __instance.InputPower_Watts = __instance.CalculatedMaxPowerUsage_Watts * 0.25f;
+                __instance.RequestPowerUsage_Percent = 1f;
             }
         }
     }

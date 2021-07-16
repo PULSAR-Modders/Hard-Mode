@@ -63,6 +63,7 @@
     <Compile Include="Better Mines.cs" />
     <Compile Include="Crimes.cs" />
     <Compile Include="Enemy Warp.cs" />
+    <Compile Include="Fog of War.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reactor.cs" />

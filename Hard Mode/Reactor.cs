@@ -23,7 +23,7 @@ namespace Hard_Mode
         static void Postfix(PLShipInfoBase inShipInfo)
         {
             PLShieldGenerator shield = inShipInfo.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
-
+            shield.IsPowerActive = true;
             shield.RequestPowerUsage_Limit = shield.CalculatedMaxPowerUsage_Watts * 0.25f;
             shield.InputPower_Watts = shield.CalculatedMaxPowerUsage_Watts * 0.25f;
             shield.RequestPowerUsage_Percent = 1f;
