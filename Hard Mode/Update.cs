@@ -11,7 +11,7 @@ namespace Hard_Mode
         public static float timer = 1;
         static void Postfix()
         {
-            if (PhotonNetwork.isMasterClient && PLServer.Instance != null)
+            if (PhotonNetwork.isMasterClient && !PLNetworkManager.Instance.MyEncounterManager.IsInPreGame && PLGlobal.Instance != null && PLGlobal.Instance.Galaxy != null)
             {
                 if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 1) // Checks if is flagged and has a faction, in that case it will lose alligment
                 {

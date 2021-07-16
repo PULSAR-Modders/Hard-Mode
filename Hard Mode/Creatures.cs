@@ -1,15 +1,22 @@
-﻿using HarmonyLib;
-
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
+using System.Reflection.Emit;
+using PulsarPluginLoader.Patches;
 namespace Hard_Mode
 {
     class Creatures //All creatures will be here to help with ballancing and changing stats
     {
         [HarmonyPatch(typeof(PLAirElemental), "Start")]
-        class Tornados 
-        { 
-        static void Postfix() 
-            { 
-            
+        class Tornados
+        {
+            static void Postfix()
+            {
+                if (PhotonNetwork.isMasterClient)
+                {
+
+                }
             }
         }
         [HarmonyPatch(typeof(PLAnt), "Start")]
@@ -17,7 +24,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLAntArmored), "Start")]
@@ -25,7 +35,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLAntHeavy), "Start")]
@@ -33,7 +46,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLAntRavager), "Start")]
@@ -41,7 +57,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLBanditLandDrone), "Start")]
@@ -49,7 +68,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLBrainCreature), "Start")]
@@ -57,7 +79,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLInfectedSpider), "Start")]
@@ -65,7 +90,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLInfectedSpider_Medium), "Start")]
@@ -73,23 +101,44 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLInfectedSpider_WG), "Start")]
         class GuardianInfectedSpider
         {
-            static void Postfix()
+            static void Postfix(PLInfectedSpider_WG __instance)
             {
-
+                if (PhotonNetwork.isMasterClient)
+                {
+                    __instance.Health = __instance.MaxHealth;
+                }
             }
         }
+        [HarmonyPatch(typeof(PLInfectedSpider_WG), "Update")]
+        class GuadianInfectedUpdate
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[6].operand = 0x7530;       
+                return instructionsList.AsEnumerable();
+            }
+            
+        }
+
         [HarmonyPatch(typeof(PLInfectedSwarm), "Start")]
         class Dontknowwhatthisis
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -98,7 +147,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLLCLabEnemy), "Start")]
@@ -106,7 +158,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLRaptor), "Start")]
@@ -114,7 +169,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLRobotWalker), "Start")]
@@ -122,7 +180,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLRobotWalkerLarge), "Start")]
@@ -130,7 +191,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLSpider), "Start")]
@@ -138,7 +202,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLRat), "Start")]
@@ -146,7 +213,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLSlime), "Start")]
@@ -154,7 +224,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLWasteWasp), "Start")]
@@ -162,7 +235,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLSlimeBoss), "Start")]
@@ -170,7 +246,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLStalkerPawn), "Start")]
@@ -178,7 +257,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLInfectedScientist), "Start")]
@@ -186,7 +268,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLCrystalBoss), "Start")]
@@ -194,7 +279,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
         [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
@@ -202,7 +290,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -211,7 +302,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -220,7 +314,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -229,7 +326,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -238,7 +338,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -247,7 +350,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -256,7 +362,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
 
@@ -265,6 +374,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
+
+                }
 
             }
         }
@@ -274,7 +387,10 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
+                if (PhotonNetwork.isMasterClient)
+                {
 
+                }
             }
         }
     }
