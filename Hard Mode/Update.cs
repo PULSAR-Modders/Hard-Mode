@@ -24,6 +24,7 @@ namespace Hard_Mode
                     });
                     PLServer.Instance.CrewFactionID = -1;
                 }
+                /*
                 if (PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.CONTRABAND_STATION) // Ensures Warp is disabled during inspection
                 {
                     foreach (PLCUInvestigatorDrone drone in FindObjectsOfType(typeof(PLCUInvestigatorDrone)))
@@ -37,12 +38,14 @@ namespace Hard_Mode
                     }
                     Warpdisableinspection.inInspection = false;
                 }
+                */
                 if (timer > 0)
                 {
                     timer -= Time.deltaTime;
                 }
                 else
                 {
+                    
                     foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase))) //This makes all ships with the shields offline lose 10% of integrity per second
                     {
                         if (!ship.IsDrone && !ship.IsInfected)
@@ -69,7 +72,9 @@ namespace Hard_Mode
                             }
                             */
                         }
+                    
                     }
+                    
                     timer = 1;
                     foreach (PLShipInfoBase ship in UnityEngine.Object.FindObjectsOfType(typeof(PLShipInfoBase))) // Enemy will try to Escape if you are 1.5 times stronger than him (combat level)
                     {

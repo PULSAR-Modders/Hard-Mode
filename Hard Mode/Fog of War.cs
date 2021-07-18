@@ -95,12 +95,13 @@ namespace Hard_Mode
             static void Prefix()
             {
                 foreach (PLSectorInfo sector in PLGlobal.Instance.Galaxy.AllSectorInfos.Values)
-                {/*
+                {
+                    /*
                     if (sector.Discovered)
                     {
                         sector.Name += "­";
                     }
-                 */
+                    */
                     if (sector.Discovered) 
                     {
                         switch (sector.MySPI.Faction)
