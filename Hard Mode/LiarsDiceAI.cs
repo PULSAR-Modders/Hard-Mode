@@ -41,18 +41,14 @@ namespace Hard_Mode
                     {
                         ChanceOfTruth = 100;
                     }
-                    else if (CurrentBid <= Players) //There is a big chance of 2 players having 2 5 for example
+                    else
                     {
-                        ChanceOfTruth = 90;
-                    }
-                    else 
-                    {
-                        ChanceOfTruth = 90;
-                        for(int i = CurrentBid, j = 1; i > Players; i--,j++) 
+                        for (int i = CurrentBid; i <= Players * 5; i++) //This calculates the chance of bid being true
                         {
-                            ChanceOfTruth -= 0.2 * (Math.Pow(10,j*2)/j*10);
+                            ChanceOfTruth += (Factorial(Players * 5) / (Factorial(i) * Factorial(Players * 5 - i))) * Math.Pow(1f / 6f, i) * Math.Pow(5f / 6f, Players * 5 - i);
                         }
                     }
+                    ChanceOfTruth *= 100;
                     foreach(Byte Face in MyDices.Keys) //Gets the highest value Dice in My Hand
                     { 
                         if(MyDices.GetValueSafe(Face) > BetValue) 
@@ -71,7 +67,7 @@ namespace Hard_Mode
                     {
                         BetValue = (int)(Players * 5 * 0.5);
                     }
-                    if (UnityEngine.Random.Range(0, 100) > ChanceOfTruth) // Bets if my random number is bigger than the chance of failure
+                    if (UnityEngine.Random.Range(0, 100) > ChanceOfTruth) // Challanges if my random number is bigger than the chance of failure
                     {
                         __instance.CallBluff();
                         
@@ -82,14 +78,19 @@ namespace Hard_Mode
                     }
                 }
             }
-            
             return false;
         }
-
-    }
-    [HarmonyPatch(typeof(PLLiarsDiceGame), "CallBluff")]
-    class BuffFix 
-    { 
-    
+        public static double Factorial(double num) 
+        { 
+            if(num == 0) 
+            {
+                return 1;
+            }
+            for(int i = (int)num - 1; i > 0; i--) 
+            {
+                num *= i;
+            }
+            return num;
+        }
     }
 }
