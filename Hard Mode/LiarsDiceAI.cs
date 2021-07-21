@@ -30,7 +30,14 @@ namespace Hard_Mode
                             MyDices[num]++;
                         }
                     }
-                    int Players = ___CurrentlyPlaying_PlayerIDs.Count;
+                    int Players = 0;
+                    foreach(int playerID in ___CurrentlyPlaying_PlayerIDs) 
+                    { 
+                        if(PLServer.Instance.GetPlayerFromPlayerID(playerID).LocalGame_MyDice.Count > 0) //Should help count only players currently playing, not the ones waiting for next turn
+                        {
+                            Players++;
+                        }
+                    }
                     Byte CurrentFace = ___CurrentTurn_LastDieFace;
                     Byte CurrentBid = ___CurrentTurn_LastDieCount;
                     int BetFace = 0;
@@ -48,29 +55,23 @@ namespace Hard_Mode
                         }
                     }
                     ChanceOfTruth *= 100;
-                    foreach(Byte Face in MyDices.Keys) //Gets the highest value Dice in My Hand
-                    { 
-                        if(MyDices.GetValueSafe(Face) > BetValue) 
+                    foreach (Byte Face in MyDices.Keys) //Gets the highest value Dice in My Hand
+                    {
+                        if (MyDices.GetValueSafe(Face) > BetValue)
                         {
                             BetFace = Face;
-                            BetValue = MyDices.GetValueSafe(Face);
                         }
                     }
-                    if (BetFace == CurrentFace)
+                    if(UnityEngine.Random.Range(0, 3) == 3) //Should Help AI get not readeable (because it would always bet dice with biggest number) 
                     {
-                        BetValue += CurrentBid + UnityEngine.Random.Range(-2, 1);
+                        BetFace = UnityEngine.Random.Range(0, 5);
                     }
-                    BetValue += (int)(BetValue + UnityEngine.Random.Range(-2,2)); //Increases the bet a little
-                    if (BetValue >= Players * 5 * 0.4 || BetValue > 20) //Should help avoiding stupid bets
-                    {
-                        BetValue = (int)(Players * 5 * 0.4);
-                    }
-                    if (BetValue <= CurrentBid) BetValue = ++CurrentBid;//Just to be sure AI WILL incriase the bet, so it follows the rules of the game
-                    if (UnityEngine.Random.Range(0, 100) > ChanceOfTruth) // Challanges if my random number is bigger than the chance of failure
+                    BetValue = (int)UnityEngine.Random.Range(CurrentBid + 1, CurrentBid + (float)Math.Ceiling(Players*5*0.1)); //Gets a random number for the next challenge value between 1 and 10% of the dices
+                    if (UnityEngine.Random.Range(0f, 100f) > ChanceOfTruth + 3) // Challanges if my random number is bigger than the chance of failure (Plus a little ballance to encorage a little rasing)
                     {
                         __instance.CallBluff();
                     }
-                    else 
+                    else
                     {
                         __instance.Raise((Byte)BetFace, (Byte)BetValue);
                     }
@@ -78,13 +79,13 @@ namespace Hard_Mode
             }
             return false;
         }
-        public static double Factorial(double num) 
-        { 
-            if(num == 0) 
+        public static double Factorial(double num)
+        {
+            if (num == 0)
             {
                 return 1;
             }
-            for(int i = (int)num - 1; i > 0; i--) 
+            for (int i = (int)num - 1; i > 0; i--)
             {
                 num *= i;
             }
