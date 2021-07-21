@@ -48,7 +48,7 @@ namespace Hard_Mode
                     
                     foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase))) //This makes all ships with the shields offline lose 10% of integrity per second
                     {
-                        if (!ship.IsDrone && !ship.IsInfected)
+                        if (!(ship is PLHighRollersShipInfo) && !ship.IsDrone && !ship.IsInfected && ship.ShipTypeID != EShipType.E_ACADEMY)
                         {
                             PLShipInfo realship = ship as PLShipInfo;
                             PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
@@ -74,15 +74,14 @@ namespace Hard_Mode
                         }
                     
                     }
-                    
                     timer = 1;
                     foreach (PLShipInfoBase ship in UnityEngine.Object.FindObjectsOfType(typeof(PLShipInfoBase))) // Enemy will try to Escape if you are 1.5 times stronger than him (combat level)
                     {
-                        if (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5 && ship.WarpChargeStage != EWarpChargeStage.E_WCS_PREPPING && ship.FactionID != 6 && !ship.IsInfected && !ship.IsSectorCommander && ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && ship.ShipTypeID != EShipType.E_BEACON)
+                        if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5 && ship.WarpChargeStage != EWarpChargeStage.E_WCS_PREPPING && ship.FactionID != 6 && !ship.IsInfected && !ship.IsSectorCommander && ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && ship.ShipTypeID != EShipType.E_BEACON)
                         {
                             ship.WarpChargeStage = EWarpChargeStage.E_WCS_PREPPING;
                         }
-                        else if (ship.WarpChargeStage == EWarpChargeStage.E_WCS_READY && ship.FactionID != 6 && !ship.GetIsPlayerShip() && ship.GetRelevantCrewMember(0) != null && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5)
+                        else if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY && ship.WarpChargeStage == EWarpChargeStage.E_WCS_READY && ship.FactionID != 6 && !ship.GetIsPlayerShip() && ship.GetRelevantCrewMember(0) != null && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5)
                         {
                             ship.Ship_WarpOutNow();
                         }

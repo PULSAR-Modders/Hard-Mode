@@ -15,7 +15,6 @@ namespace Hard_Mode
             {
                 ___LastAIUpdateTime = Time.time;
                 PLPlayer CurrentPlayer = PLServer.Instance.GetPlayerFromPlayerID(___CurrentTurn_PlayerID);
-                PLPlayer PreviousPlayer = PLServer.Instance.GetPlayerFromPlayerID(___PrevTurn_PlayerID);
                 if (CurrentPlayer != null && (CurrentPlayer.IsBot || (___GameIsActive_Time > 20f && PLServer.Instance.GetEstimatedServerMs() - ___LastNewPlayerTimeMs > 60000)))
                 {
                     Dictionary<int, int> MyDices = new Dictionary<int, int>();
@@ -56,21 +55,20 @@ namespace Hard_Mode
                             BetFace = Face;
                             BetValue = MyDices.GetValueSafe(Face);
                         }
-                        if(BetFace == CurrentFace) 
-                        {
-                            BetValue += CurrentBid;
-                        }
                     }
-                    if (BetValue <= CurrentBid) BetValue = CurrentBid;//Just to be sure AI WILL incriase the bet, so it follows the rules of the game
-                    BetValue += (int)(BetValue + UnityEngine.Random.Range(1f,2f)); //Increases the bet a little
-                    if(BetValue >= Players*5*0.6 || BetValue > 20) 
+                    if (BetFace == CurrentFace)
                     {
-                        BetValue = (int)(Players * 5 * 0.5);
+                        BetValue += CurrentBid + UnityEngine.Random.Range(-2, 1);
                     }
+                    BetValue += (int)(BetValue + UnityEngine.Random.Range(-2,2)); //Increases the bet a little
+                    if (BetValue >= Players * 5 * 0.4 || BetValue > 20) //Should help avoiding stupid bets
+                    {
+                        BetValue = (int)(Players * 5 * 0.4);
+                    }
+                    if (BetValue <= CurrentBid) BetValue = ++CurrentBid;//Just to be sure AI WILL incriase the bet, so it follows the rules of the game
                     if (UnityEngine.Random.Range(0, 100) > ChanceOfTruth) // Challanges if my random number is bigger than the chance of failure
                     {
                         __instance.CallBluff();
-                        
                     }
                     else 
                     {
