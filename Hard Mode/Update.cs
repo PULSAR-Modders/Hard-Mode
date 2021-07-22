@@ -2,16 +2,17 @@
 using UnityEngine;
 using static UnityEngine.Object;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Hard_Mode
 {
-    [HarmonyPatch(typeof(PLServer), "Update")]
+    [HarmonyPatch(typeof(PLShipInfoBase), "Update")]
     class Update
     {
         public static float timer = 1;
-        static void Postfix()
+        static void Postfix(PLShipInfoBase __instance)
         {
-            if (PhotonNetwork.isMasterClient && !PLNetworkManager.Instance.MyEncounterManager.IsInPreGame && PLGlobal.Instance != null && PLGlobal.Instance.Galaxy != null)
+            if (PhotonNetwork.isMasterClient && __instance.GetIsPlayerShip())//This uses the player ship to make updates, better than the PLServer that likes to exception while leaving and entering a game
             {
                 if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 1) // Checks if is flagged and has a faction, in that case it will lose alligment
                 {
@@ -45,18 +46,21 @@ namespace Hard_Mode
                 }
                 else
                 {
-                    
-                    foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase))) //This makes all ships with the shields offline lose 10% of integrity per second
+
+                    foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase))) 
                     {
-                        if (!(ship is PLHighRollersShipInfo) && !ship.IsDrone && !ship.IsInfected && ship.ShipTypeID != EShipType.E_ACADEMY)
+                        if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY)
                         {
-                            PLShipInfo realship = ship as PLShipInfo;
-                            PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
-                            if (ship != null && !realship.StartupSwitchBoard.GetStatus(2))
-                            {                       
-                                if (shield.Current > 0)
+                            if (!ship.IsDrone && !ship.IsInfected && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL) //This makes all ships with the shields offline lose 10% of integrity per second
+                            {
+                                PLShipInfo realship = ship as PLShipInfo;
+                                PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
+                                if (ship != null && !realship.StartupSwitchBoard.GetStatus(2))
                                 {
-                                    shield.Current -= shield.CurrentMax / 10;
+                                    if (shield.Current > 0)
+                                    {
+                                        shield.Current -= shield.CurrentMax / 10;
+                                    }
                                 }
                             }
                             /*
@@ -71,23 +75,63 @@ namespace Hard_Mode
                                 shield.Current -= chargelost > shield.CurrentMax/ 10? 10 : chargelost;
                             }
                             */
+
+                            if (!ship.GetIsPlayerShip() && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL) //This should make attacking one ship all it's friends will attack you
+                            {
+                                foreach (PLShipInfoBase Allied in FindObjectsOfType(typeof(PLShipInfoBase)))
+                                {
+                                    if (Allied.FactionID == ship.FactionID && !Allied.HostileShips.Contains(ship.ShipID))
+                                    {
+                                        if (Allied.GetIsPlayerShip())
+                                        {
+                                            foreach (int enemy in Allied.HostileShips)
+                                            {
+                                                if (PLEncounterManager.Instance.GetShipFromID(enemy).FactionID != ship.FactionID || (PLEncounterManager.Instance.GetShipFromID(enemy).IsFlagged && ship.FactionID != 1))
+                                                {
+                                                    ship.HostileShips.Add(enemy);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            foreach (int enemy in Allied.HostileShips)
+                                            {
+                                                if (!ship.HostileShips.Contains(enemy))
+                                                {
+                                                    ship.HostileShips.Add(enemy);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            //Enemy will try to Escape if you are 1.5 times stronger than him (combat level)
+                            if (ship.WarpChargeStage != EWarpChargeStage.E_WCS_PREPPING && ship.WarpChargeStage != EWarpChargeStage.E_WCS_READY && ((ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5 && ship.FactionID != 6 && !ship.IsDrone &&  !ship.IsInfected && !ship.IsSectorCommander &&  ship.ShipTypeID != EShipType.E_BEACON) || (ship.ShipTypeID == EShipType.E_CIVILIAN_FUEL && ship.AlertLevel > 1)))
+                            {
+                                ship.WarpChargeStage = EWarpChargeStage.E_WCS_PREPPING;
+                            }
+                            else if (ship.WarpChargeStage == EWarpChargeStage.E_WCS_READY && PLBeaconInfo.GetBeaconStatAdditive(EBeaconType.E_WARP_DISABLE, false) < 0.5f && ((ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && ship.FactionID != 6 && !ship.GetIsPlayerShip() && (ship.GetRelevantCrewMember(0) != null || ship.IsDrone) && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5) || (ship.ShipTypeID == EShipType.E_CIVILIAN_FUEL && ship.AlertLevel > 1)))
+                            {
+                                ship.Ship_WarpOutNow();
+                            }
                         }
-                    
                     }
                     timer = 1;
-                    foreach (PLShipInfoBase ship in UnityEngine.Object.FindObjectsOfType(typeof(PLShipInfoBase))) // Enemy will try to Escape if you are 1.5 times stronger than him (combat level)
-                    {
-                        if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5 && ship.WarpChargeStage != EWarpChargeStage.E_WCS_PREPPING && ship.FactionID != 6 && !ship.IsInfected && !ship.IsSectorCommander && ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && ship.ShipTypeID != EShipType.E_BEACON)
-                        {
-                            ship.WarpChargeStage = EWarpChargeStage.E_WCS_PREPPING;
-                        }
-                        else if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY && ship.WarpChargeStage == EWarpChargeStage.E_WCS_READY && ship.FactionID != 6 && !ship.GetIsPlayerShip() && ship.GetRelevantCrewMember(0) != null && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5)
-                        {
-                            ship.Ship_WarpOutNow();
-                        }
-                    }
                 }
             }
+            //This will make drone call for help to protect sector if too weak also civilians will call for help if in danger
+            if ((((__instance.ShipTypeID == EShipType.E_WDDRONE1 || __instance.ShipTypeID == EShipType.E_WDDRONE2 || __instance.ShipTypeID == EShipType.E_WDDRONE3 || __instance.ShipTypeID == EShipType.E_REPAIR_DRONE) && __instance.TargetShip != null && __instance.TargetShip.GetCombatLevel() > __instance.GetCombatLevel() * 1.5) || (__instance.ShipTypeID == EShipType.E_CIVILIAN_FUEL && __instance.AlertLevel > 1)) && !PLServer.Instance.LongRangeCommsDisabled && __instance.FactionID != 6)
+            {
+                __instance.DistressSignalActive = true;
+            }
+
+        }
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //This should make the enemy warp faster, not just waiting the basically dead to jump
+        {
+            List<CodeInstruction> instructionsList = Instructions.ToList();
+            instructionsList[579].operand = 0.2f;
+            instructionsList[560].operand = 3f;
+            return instructionsList.AsEnumerable();
         }
     }
 }

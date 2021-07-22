@@ -41,9 +41,11 @@ namespace Hard_Mode
                     Byte CurrentFace = ___CurrentTurn_LastDieFace;
                     Byte CurrentBid = ___CurrentTurn_LastDieCount;
                     int BetFace = 0;
-                    int BetValue = 0;
+                    int BetFace2 = 0;
+                    int BetValue = 1;
+                    int BetValue2 = 1;
                     double ChanceOfTruth = 0;
-                    if (CurrentPlayer.LiarsDice_DieCountOfFace(CurrentFace) >= CurrentBid) //If I have more dices of that type than the bid I know its true
+                    if (CurrentPlayer.LiarsDice_DieCountOfFace(CurrentFace) >= CurrentBid || CurrentBid == 0) //If I have more dices of that type than the bid I know its true, also if there is no bid
                     {
                         ChanceOfTruth = 100;
                     }
@@ -53,21 +55,29 @@ namespace Hard_Mode
                         {
                             ChanceOfTruth += (Factorial(Players * 5) / (Factorial(i) * Factorial(Players * 5 - i))) * Math.Pow(1f / 6f, i) * Math.Pow(5f / 6f, Players * 5 - i);
                         }
+                        ChanceOfTruth *= 100; //Transforms the decimal 0,22 in to 22% for example
                     }
-                    ChanceOfTruth *= 100;
                     foreach (Byte Face in MyDices.Keys) //Gets the highest value Dice in My Hand
                     {
                         if (MyDices.GetValueSafe(Face) > BetValue)
                         {
+                            BetFace2 = BetFace;
+                            BetValue2 = BetValue;
                             BetFace = Face;
+                            BetValue = MyDices.GetValueSafe(Face);
+                        }
+                        else if(MyDices.GetValueSafe(Face) > BetValue2)//Gets sencond highest value Dice in My Hand 
+                        {
+                            BetFace2 = Face;
+                            BetValue2 = MyDices.GetValueSafe(Face);
                         }
                     }
-                    if(UnityEngine.Random.Range(0, 3) == 3) //Should Help AI get not readeable (because it would always bet dice with biggest number) 
+                    if(UnityEngine.Random.Range(0, 2) == 1) //Should Help AI get not as predicable (because it would always bet dice with biggest number, so now it has a chance of playing the second biggest dice) 
                     {
-                        BetFace = UnityEngine.Random.Range(0, 5);
+                        BetFace = BetFace2;
                     }
                     BetValue = (int)UnityEngine.Random.Range(CurrentBid + 1, CurrentBid + (float)Math.Ceiling(Players*5*0.1)); //Gets a random number for the next challenge value between 1 and 10% of the dices
-                    if (UnityEngine.Random.Range(0f, 100f) > ChanceOfTruth + 3) // Challanges if my random number is bigger than the chance of failure (Plus a little ballance to encorage a little rasing)
+                    if (UnityEngine.Random.Range(0f, 100f) > ChanceOfTruth + 3) //Challanges if my random number is bigger than the chance of failure (Plus a little ballance to encorage a little rasing)
                     {
                         __instance.CallBluff();
                     }
@@ -84,6 +94,10 @@ namespace Hard_Mode
             if (num == 0)
             {
                 return 1;
+            }
+            else if(num < 0) 
+            {
+                throw new Exception("Can't Factorial negative numbers!");
             }
             for (int i = (int)num - 1; i > 0; i--)
             {
