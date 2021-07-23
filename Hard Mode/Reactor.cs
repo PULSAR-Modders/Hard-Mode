@@ -6,13 +6,31 @@ namespace Hard_Mode
     [HarmonyPatch(typeof(PLReactorInstance), "Update")]
     class Reactor_Radiation
     {
+
         static void Postfix(PLRadiationPoint ___RadPoint, PLReactorInstance __instance) //Increases radiation from reactor deppending on max temp and current stability
         {
-            if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000) && PhotonNetwork.isMasterClient) // Check to not cause a lot of exceptions with the reactor ejecting
+            PLTempRadius tempRadius = null;
+            if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000)) // Check to not cause a lot of exceptions with the reactor ejecting
             {
                 PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
                 ___RadPoint.RaditationRange = reactor.TempMax / 150f;
                 ___RadPoint.RaditationRange *= 1f + (__instance.MyShipInfo.CoreInstability * 4f);
+                if (___RadPoint.RaditationRange < 25f) ___RadPoint.RaditationRange = 25; // This is so sylvassi reactor doesn't become radiation proof
+
+                if (__instance.gameObject.GetComponent<PLTempRadius>() != null) //This part adds temperature range to reactor, so it changes the ship interior temperature
+                {
+                    tempRadius = __instance.gameObject.GetComponent<PLTempRadius>();
+                }
+                else
+                {
+                    tempRadius = __instance.gameObject.AddComponent<PLTempRadius>();
+                }
+                tempRadius.IsOnShip = true;
+                tempRadius.MinRange = 0f;
+                tempRadius.MaxRange = 20f;
+                tempRadius.MaxRange += __instance.MyShipInfo.MyStats.ReactorTempCurrent/1800;
+                tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / 900;
+                if (tempRadius.Temperature < 1)tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
             }
         }
     }
@@ -69,7 +87,23 @@ namespace Hard_Mode
                     __instance.VisibleMesh.SetActive(false);
                 }
             }
+            foreach (PLTempRadius temp in PLGameStatic.Instance.m_TempRadius) //This makes the reactor exploding without ejecting also cool down the ship
+            {
+                if (temp.IsOnShip == true) temp.Temperature = 1;
+            }
         }
 
+    }
+
+    [HarmonyPatch(typeof(PLServer), "ServerEjectReactorCore")]
+    class ResetTemperature //This makes that when reactor is ejected the temperature go back to normal levels
+    { 
+        static void Postfix() 
+        { 
+            foreach(PLTempRadius temp in PLGameStatic.Instance.m_TempRadius) 
+            {
+                if (temp.IsOnShip == true) temp.Temperature = 1;
+            }
+        }
     }
 }
