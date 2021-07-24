@@ -4,6 +4,7 @@ using System.Linq;
 using HarmonyLib;
 using System.Reflection.Emit;
 using PulsarPluginLoader.Patches;
+using CodeStage.AntiCheat.ObscuredTypes;
 namespace Hard_Mode
 {
     class Creatures //All creatures will be here to help with ballancing and changing stats
@@ -131,7 +132,7 @@ namespace Hard_Mode
                 }
             }
         }
-        
+
 
         [HarmonyPatch(typeof(PLInfectedSwarm), "Start")]
         class Dontknowwhatthisis
@@ -395,6 +396,64 @@ namespace Hard_Mode
 
                 }
             }
+        }
+
+        [HarmonyPatch(typeof(PLVaultDoorMadmansMansion), "Update")]
+        class MadmansMansionFinalSpawner
+        {
+            static public string Spawn = "Bandit";
+            static void Postfix(PLVaultDoorMadmansMansion __instance, ref PLSpawner ___MySpawner)
+            {
+                if (___MySpawner != null)
+                {
+                    ___MySpawner.Spawn = "Bandit";
+                }
+            }
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetCPEI")),
+                new CodeInstruction(OpCodes.Ldstr, "Bandit"),
+                new CodeInstruction(OpCodes.Ldarg_0)
+            };
+                List<CodeInstruction> patchSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetCPEI")),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MadmansMansionFinalSpawner), "Spawn")),
+                new CodeInstruction(OpCodes.Ldarg_0)
+            };
+                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
+            }
+
+        }
+        [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")]
+        class TestOverpower 
+        {
+            /*
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldloc_S, 29),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLPlayer),"Talents")),
+                new CodeInstruction(OpCodes.Ldc_I4_S, 56),
+                new CodeInstruction(OpCodes.Ldc_I4_5),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ObscuredInt),"op_Implicit",new Type[]{typeof(int)})),
+                new CodeInstruction(OpCodes.Stelem)
+            };
+                List<CodeInstruction> patchSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldloc_S, 29),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLPlayer),"Talents")),
+                new CodeInstruction(OpCodes.Ldc_I4_S, 49),
+                new CodeInstruction(OpCodes.Ldc_I4_S, 12),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ObscuredInt),"op_Implicit",new Type[]{typeof(int)})),
+                new CodeInstruction(OpCodes.Stelem)
+            };
+                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, true);
+            }
+            */
         }
     }
 }

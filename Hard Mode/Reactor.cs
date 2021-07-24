@@ -31,6 +31,17 @@ namespace Hard_Mode
                 tempRadius.MaxRange += __instance.MyShipInfo.MyStats.ReactorTempCurrent/1800;
                 tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / 900;
                 if (tempRadius.Temperature < 1)tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
+                if(__instance.MyShipInfo.MyStats.ReactorTempCurrent >= reactor.TempMax * 0.90 && Random.Range(0,200) == 10) //this spawns fire when too hot
+                {
+                    PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 3));
+                    int looplimit = 0;
+                    while((system == null || system.IsOnFire()) && looplimit < 20) 
+                    {
+                        system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 3));
+                        looplimit++;
+                    }
+                    PLServer.Instance.CreateFireAtSystem(system, false);
+                }
             }
         }
     }
