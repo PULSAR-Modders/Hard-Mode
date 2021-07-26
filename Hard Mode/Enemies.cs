@@ -5,9 +5,10 @@ using HarmonyLib;
 using System.Reflection.Emit;
 using PulsarPluginLoader.Patches;
 using CodeStage.AntiCheat.ObscuredTypes;
+using UnityEngine;
 namespace Hard_Mode
 {
-    class Creatures //All creatures will be here to help with ballancing and changing stats
+    class Enemies //All creatures will be here to help with ballancing and changing stats
     {
         [HarmonyPatch(typeof(PLAirElemental), "Start")]
         class Tornados
@@ -114,11 +115,13 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLInfectedSpider_Medium), "Start")]
         class MediumInfectedSpider
         {
-            static void Postfix()
+            static void Postfix(PLInfectedSpider_Medium __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
                 }
             }
         }
@@ -129,6 +132,7 @@ namespace Hard_Mode
             {
                 if (PhotonNetwork.isMasterClient)
                 {
+
                 }
             }
         }
@@ -256,47 +260,85 @@ namespace Hard_Mode
                 }
             }
         }
+        [HarmonyPatch(typeof(PLSlimeBoss), "Update")]
+        class WastedWingSlimeUpdate
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[406].operand = 2;
+                instructionsList[423].operand = 4;
+                return instructionsList.AsEnumerable();
+            }
+        }
         [HarmonyPatch(typeof(PLStalkerPawn), "Start")]
         class Stalker
         {
-            static void Postfix()
+            static void Postfix(PLStalkerPawn __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
                 }
+            }
+        }
+        [HarmonyPatch(typeof(PLStalkerPawn), "Update")]
+        class StalkerUpdate
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[208].operand = 1.5;
+                return instructionsList.AsEnumerable();
             }
         }
         [HarmonyPatch(typeof(PLInfectedScientist), "Start")]
         class WastedWingScientists
         {
-            static void Postfix()
+            static void Postfix(PLInfectedScientist __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.MeleeDamage *= PLServer.Instance.ChaosLevel / 2;
+                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
                 }
             }
         }
         [HarmonyPatch(typeof(PLCrystalBoss), "Start")]
         class TheSource
         {
-            static void Postfix()
+            static void Postfix(PLCrystalBoss __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
                 }
+            }
+        }
+        [HarmonyPatch(typeof(PLCrystalBoss), "Update")]
+        class TheSourceUpdate
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[332].operand = 3;
+                instructionsList[340].operand = 2;
+                instructionsList[346].operand = 1;
+                return instructionsList.AsEnumerable();
             }
         }
         [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
         class MindSlaver
         {
-            static void Postfix()
+            static void Postfix(PLInfectedBoss_WDFlagship __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 10;
                 }
             }
         }
@@ -316,11 +358,14 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLInfectedCrewmember), "Start")]
         class InfectedScientits
         {
-            static void Postfix()
+            static void Postfix(PLInfectedCrewmember __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.MeleeDamage *= PLServer.Instance.ChaosLevel / 2;
+                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 2;
                 }
             }
         }
@@ -328,12 +373,22 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAssassinBot), "Start")]
         class AssassinBot
         {
-            static void Postfix()
+            static void Postfix(PLAssassinBot __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.Armor += (int)(PLServer.Instance.ChaosLevel * 1.2);
                 }
+            }
+        }
+        [HarmonyPatch(typeof(PLAssassinBot), "Update")]
+        class AssassinBotUpdate
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the bot respawn faster
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[259].operand = 5;
+                return instructionsList.AsEnumerable();
             }
         }
 
@@ -398,37 +453,106 @@ namespace Hard_Mode
             }
         }
 
-        [HarmonyPatch(typeof(PLVaultDoorMadmansMansion), "Update")]
-        class MadmansMansionFinalSpawner
+        [HarmonyPatch(typeof(PLPlayer), "Start")]
+        class BanditsECrew
         {
-            static public string Spawn = "Bandit";
-            static void Postfix(PLVaultDoorMadmansMansion __instance, ref PLSpawner ___MySpawner)
+            static void Postfix(PLPlayer __instance)
             {
-                if (___MySpawner != null)
+                if (PhotonNetwork.isMasterClient)
                 {
-                    ___MySpawner.Spawn = "Bandit";
+                    if (__instance.GetPlayerName() == "Bandit" && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.AOG_MISSIONCHAIN_MADMANS_MANSION) //Guards from the Madman's Mansion
+                    {
+                        __instance.Talents[0] = 3 + (int)(PLServer.Instance.ChaosLevel * 1.5);
+                        __instance.Talents[2] = 2 + (int)(PLServer.Instance.ChaosLevel * 1.2);
+                        __instance.Talents[25] = 3;
+                        __instance.Talents[49] = 12;
+                        __instance.Talents[56] = 5 + (int)(PLServer.Instance.ChaosLevel * 1.5);
+                        __instance.MyInventory.Clear();
+                        int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.value));
+                        if (random < 10)
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                        else if (random < 20)
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 25, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                        else if (random < 30)
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 12, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                        else if (random < 40)
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 8, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                        else if (random < 50)
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                        else if (random < 60)
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                        else if (random < 70)
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                        else
+                        {
+                            int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                            PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                            __instance.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(PLVaultDoorMadmansMansion), "Update")]
+        class MadmansMansionFinalTimer //This makes the last minute from the laser enemies spawn 2x faster
+        {
+            static public float SpawnTimer = 5f;
+            static void Postfix(ref float ___SecondsLeft_Countdown)
+            {
+                if (___SecondsLeft_Countdown < 60f)
+                {
+                    SpawnTimer = 2f;
                 }
             }
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
                 List<CodeInstruction> targetSequence = new List<CodeInstruction>
             {
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetCPEI")),
-                new CodeInstruction(OpCodes.Ldstr, "Bandit"),
-                new CodeInstruction(OpCodes.Ldarg_0)
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLVaultDoorMadmansMansion),"LastGuardSpawnedTime")),
+                new CodeInstruction(OpCodes.Sub),
+                new CodeInstruction(OpCodes.Ldc_R4, 5f)
             };
                 List<CodeInstruction> patchSequence = new List<CodeInstruction>
             {
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetCPEI")),
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MadmansMansionFinalSpawner), "Spawn")),
-                new CodeInstruction(OpCodes.Ldarg_0)
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLVaultDoorMadmansMansion),"LastGuardSpawnedTime")),
+                new CodeInstruction(OpCodes.Sub),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MadmansMansionFinalTimer), "SpawnTimer"))
             };
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
             }
 
         }
         [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")]
-        class TestOverpower 
+        class TestOverpower
         {
             /*
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
