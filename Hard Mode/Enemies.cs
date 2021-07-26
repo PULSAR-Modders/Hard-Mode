@@ -331,6 +331,16 @@ namespace Hard_Mode
                 return instructionsList.AsEnumerable();
             }
         }
+        [HarmonyPatch(typeof(PLWastedWingInfoBox), "Update")]
+        class TheSourceTimer
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Wasted Wing final boss starts with 8 minutes
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[32].operand = 480f;
+                return instructionsList.AsEnumerable();
+            }
+        }
         [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
         class MindSlaver
         {
