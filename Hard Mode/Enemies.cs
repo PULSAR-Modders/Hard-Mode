@@ -266,8 +266,8 @@ namespace Hard_Mode
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[406].operand = 2;
-                instructionsList[423].operand = 4;
+                instructionsList[406].operand = 2f;
+                instructionsList[423].operand = 4f;
                 return instructionsList.AsEnumerable();
             }
         }
@@ -290,7 +290,7 @@ namespace Hard_Mode
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[208].operand = 1.5;
+                instructionsList[208].operand = 1.5f;
                 return instructionsList.AsEnumerable();
             }
         }
@@ -319,15 +319,15 @@ namespace Hard_Mode
                 }
             }
         }
-        [HarmonyPatch(typeof(PLCrystalBoss), "Update")]
+        [HarmonyPatch(typeof(PLCrystalBoss), "UpdateAttacks")]
         class TheSourceUpdate
         {
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[332].operand = 3;
-                instructionsList[340].operand = 2;
-                instructionsList[346].operand = 1;
+                instructionsList[332].operand = 3f;
+                instructionsList[340].operand = 2f;
+                instructionsList[346].operand = 1f;
                 return instructionsList.AsEnumerable();
             }
         }
@@ -387,7 +387,7 @@ namespace Hard_Mode
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the bot respawn faster
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[259].operand = 5;
+                instructionsList[259].operand = 5f;
                 return instructionsList.AsEnumerable();
             }
         }
