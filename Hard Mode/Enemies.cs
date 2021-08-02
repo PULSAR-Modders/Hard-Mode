@@ -24,7 +24,7 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAnt), "Start")]
         class Ant
         {
-            static void Postfix()
+            static void Postfix(PLAnt __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
@@ -35,11 +35,10 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAntArmored), "Start")]
         class ArmoredAnt
         {
-            static void Postfix()
+            static void Postfix(PLAntArmored __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
                 }
             }
         }
@@ -527,6 +526,20 @@ namespace Hard_Mode
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                             __instance.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel, 1);
                         }
+                    }
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLTeleporterUnlocker_RangeBased), "Update")]
+        class ForsakenFlagshipReactorTeleport //This should disable the teleporter near the reactor room
+        {
+            static void Postfix(ref PLTeleportationTargetInstance ___MyTTI)
+            {
+                if (PhotonNetwork.isMasterClient)
+                {
+                    if (___MyTTI.TeleporterTargetName.Contains("Reactor")) 
+                    {
+                        ___MyTTI.Unlocked = false;
                     }
                 }
             }

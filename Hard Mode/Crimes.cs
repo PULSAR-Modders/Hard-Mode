@@ -25,6 +25,15 @@ namespace Hard_Mode
             target = inSectorID;
         }
     }
+    [HarmonyPatch(typeof(PLBGShip), "TakeDamage")]
+    class KillingCivilShip // This is for attacking the inoffencive ships in the outpost 448
+    {
+        static void Postfix() //They only die if the player attack, since they seem to not be affected by ramming
+        {
+            PulsarPluginLoader.Utilities.Messaging.Echo(PhotonTargets.All, "Ship Flagged!" + " (due to killing unarmed civilian ship in a public station)");
+            PLEncounterManager.Instance.PlayerShip.IsFlagged = true;
+        }
+    }
     [HarmonyPatch(typeof(PLServer), "NetworkBeginWarp")]
     class IllegalWarp
     {

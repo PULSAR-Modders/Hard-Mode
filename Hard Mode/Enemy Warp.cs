@@ -20,6 +20,8 @@ namespace Hard_Mode
                 {
                     PLServer.Instance.RepLevels[0] -= 3;
                     PulsarPluginLoader.Utilities.Messaging.Echo(PhotonTargets.All, "-3 Rep for " + PLGlobal.GetFactionTextForFactionID(0) + " (due to reports of attacking unarmed civilian)");
+                    PulsarPluginLoader.Utilities.Messaging.Echo(PhotonTargets.All, "Ship Flagged!" + " (due to reports of attacking unarmed civilian)");
+                    PLEncounterManager.Instance.PlayerShip.IsFlagged = true;
                 }
                 else
                 {
