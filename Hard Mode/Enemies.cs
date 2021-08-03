@@ -574,17 +574,17 @@ namespace Hard_Mode
             }
 
         }
-        [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")]
-        class TestOverpower
-        {
-            /*
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")] 
+        class SpawnerModder // Could be used to directly change values in the spawner
+        {/*
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) 
             {
+                
                 List<CodeInstruction> targetSequence = new List<CodeInstruction>
             {
-                new CodeInstruction(OpCodes.Ldloc_S, 29),
+                new CodeInstruction(OpCodes.Ldloc_S),
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLPlayer),"Talents")),
-                new CodeInstruction(OpCodes.Ldc_I4_S, 56),
+                new CodeInstruction(OpCodes.Ldc_I4_S),
                 new CodeInstruction(OpCodes.Ldc_I4_5),
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ObscuredInt),"op_Implicit",new Type[]{typeof(int)})),
                 new CodeInstruction(OpCodes.Stelem)
@@ -596,11 +596,93 @@ namespace Hard_Mode
                 new CodeInstruction(OpCodes.Ldc_I4_S, 49),
                 new CodeInstruction(OpCodes.Ldc_I4_S, 12),
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ObscuredInt),"op_Implicit",new Type[]{typeof(int)})),
-                new CodeInstruction(OpCodes.Stelem)
+                new CodeInstruction(OpCodes.Stelem, typeof(ObscuredInt))
             };
-                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, true);
+                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
             }
-            */
+           */
+        }
+
+        [HarmonyPatch(typeof(PLPersistantEncounterInstance),"PlayerEnter")]
+        class InfectedCarriersOnWars //Enables Infected Carriers to spawn in combat zones with the infected team
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PLServer),"Instance")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLServer),"get_AllPSIs")),
+                new CodeInstruction(OpCodes.Ldc_I4_S),
+                new CodeInstruction(OpCodes.Ldloc_S),
+                new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldloc_S),
+                new CodeInstruction(OpCodes.Ldc_I4_M1),
+                new CodeInstruction(OpCodes.Newobj, AccessTools.Constructor(typeof(PLPersistantShipInfo), new Type[]{typeof(EShipType),typeof(int),typeof(PLSectorInfo),typeof(int),typeof(bool),typeof(bool),typeof(bool),typeof(int),typeof(int) })),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<PLPersistantShipInfo>),"Add")),
+            };
+                List<CodeInstruction> patchSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PLServer),"Instance")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLServer),"get_AllPSIs")),
+                new CodeInstruction(OpCodes.Ldc_I4_S, 0xC),
+                new CodeInstruction(OpCodes.Ldloc_S, 7),
+                new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldloc_S, 6),
+                new CodeInstruction(OpCodes.Ldc_I4_M1),
+                new CodeInstruction(OpCodes.Newobj, AccessTools.Constructor(typeof(PLPersistantShipInfo), new Type[]{typeof(EShipType),typeof(int),typeof(PLSectorInfo),typeof(int),typeof(bool),typeof(bool),typeof(bool),typeof(int),typeof(int) })),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<PLPersistantShipInfo>),"Add")),
+            };
+                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
+            }
+        }
+        [HarmonyPatch(typeof(PLPersistantEncounterInstance), "PlayerEnter")]
+        class InfectedCarriersOnWars2 //Enables Infected Carriers to spawn in combat zones with the infected team, there are 2 separated parts that can spawn it, so just to be sure
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ble_Un),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PLServer),"Instance")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLServer),"get_AllPSIs")),
+                new CodeInstruction(OpCodes.Ldc_I4_S),
+                new CodeInstruction(OpCodes.Ldloc_S),
+                new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldloc_S),
+                new CodeInstruction(OpCodes.Ldc_I4_M1),
+                new CodeInstruction(OpCodes.Newobj, AccessTools.Constructor(typeof(PLPersistantShipInfo), new Type[]{typeof(EShipType),typeof(int),typeof(PLSectorInfo),typeof(int),typeof(bool),typeof(bool),typeof(bool),typeof(int),typeof(int) })),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<PLPersistantShipInfo>),"Add")),
+            };
+                List<CodeInstruction> patchSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PLServer),"Instance")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLServer),"get_AllPSIs")),
+                new CodeInstruction(OpCodes.Ldc_I4_S, 0xC),
+                new CodeInstruction(OpCodes.Ldloc_S, 7),
+                new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Ldloc_S, 6),
+                new CodeInstruction(OpCodes.Ldc_I4_M1),
+                new CodeInstruction(OpCodes.Newobj, AccessTools.Constructor(typeof(PLPersistantShipInfo), new Type[]{typeof(EShipType),typeof(int),typeof(PLSectorInfo),typeof(int),typeof(bool),typeof(bool),typeof(bool),typeof(int),typeof(int) })),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(List<PLPersistantShipInfo>),"Add")),
+            };
+                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
+            }
         }
     }
 }
