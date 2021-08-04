@@ -28,10 +28,11 @@ namespace Hard_Mode
                 tempRadius.IsOnShip = true;
                 tempRadius.MinRange = 0f;
                 tempRadius.MaxRange = 20f;
-                tempRadius.MaxRange += __instance.MyShipInfo.MyStats.ReactorTempCurrent/1800;
-                tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / 900;
-                if (tempRadius.Temperature < 1)tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
-                if(__instance.MyShipInfo.MyStats.ReactorTempCurrent >= reactor.TempMax * 0.90 && Random.Range(0,200) == 10) //this spawns fire when too hot
+                tempRadius.MaxRange += __instance.MyShipInfo.MyStats.ReactorTempCurrent/ (__instance.MyShipInfo.MyStats.ReactorTempMax*0.5f);
+                tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax*0.3f);
+                if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
+                else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp
+                if(__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && Random.Range(0,200) == 10) //this spawns fire when too hot
                 {
                     PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 3));
                     int looplimit = 0;
