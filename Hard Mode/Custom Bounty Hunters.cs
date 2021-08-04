@@ -12,18 +12,18 @@ namespace Hard_Mode
     class Custom_Bounty_Hunters
     {
         [HarmonyPatch(typeof(PLEncounterManager), "Start")]
-        class HunterAdder //Adds the extra hunters from the ShipExport.txt for the random list when the game starts 
+        class HunterAdder //Adds the extra hunters from the HunterCodes.txt for the random list when the game starts 
         {
             static void Postfix(ref List<PLEncounterManager.ShipLayout> ___PossibleHunters_LayoutData) 
             {
-                using (StreamReader streamReader = new StreamReader(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ShipExport.txt")))
+                using (StreamReader streamReader = new StreamReader(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "HunterCodes.txt")))
                 {
                     while (!streamReader.EndOfStream) 
                     {
-                        if(streamReader.ReadLine() == "- - - Finish Components - - -") 
+                        string bountyhunter = streamReader.ReadLine();
+                        if(bountyhunter.Length > 50) 
                         {
-                            string bountyHunter = streamReader.ReadLine();
-                            ___PossibleHunters_LayoutData.Add(new PLEncounterManager.ShipLayout(bountyHunter));
+                            ___PossibleHunters_LayoutData.Add(new PLEncounterManager.ShipLayout(bountyhunter));
                         }
                     }
                 }
