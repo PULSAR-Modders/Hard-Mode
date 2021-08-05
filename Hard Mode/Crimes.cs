@@ -1,5 +1,11 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using System.Reflection.Emit;
+using PulsarPluginLoader.Patches;
+using System.Collections.Generic;
+using static PulsarPluginLoader.Patches.HarmonyHelpers;
+using CodeStage.AntiCheat.ObscuredTypes;
+using System.Linq;
 
 namespace Hard_Mode
 {
@@ -28,10 +34,13 @@ namespace Hard_Mode
     [HarmonyPatch(typeof(PLBGShip), "TakeDamage")]
     class KillingCivilShip // This is for attacking the inoffencive ships in the outpost 448
     {
-        static void Postfix() //They only die if the player attack, since they seem to not be affected by ramming
+        static void Postfix(PLBGShip __instance, float damage) //They only die if the player attack, since they seem to not be affected by ramming (and the 200 damage is for the auto turrets)
         {
-            PulsarPluginLoader.Utilities.Messaging.Echo(PhotonTargets.All, "Ship Flagged!" + " (due to killing unarmed civilian ship in a public station)");
-            PLEncounterManager.Instance.PlayerShip.IsFlagged = true;
+            if (PhotonNetwork.isMasterClient && damage != 200)
+            {
+                PulsarPluginLoader.Utilities.Messaging.Echo(PhotonTargets.All, "Ship Flagged!" + " (due to killing unarmed civilian ship in a public station)");
+                PLEncounterManager.Instance.PlayerShip.IsFlagged = true;
+            }
         }
     }
     [HarmonyPatch(typeof(PLServer), "NetworkBeginWarp")]
@@ -71,6 +80,26 @@ namespace Hard_Mode
                             });
                 PLEncounterManager.Instance.PlayerShip.IsFlagged = true;
             }
+        }
+    }
+    [HarmonyPatch(typeof(PLSpaceTurretTargeting_FactionGuardian), "UpdateTurretTargeting")]
+    class StationTurrets //This is responsible to make the space turrets attack any ship with rep too low to that faction
+    {
+        static public bool truth = true;
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> targetSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PLServer),"Instance")),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLServer),"IsCrewRepRevealed")),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ObscuredBool),"op_Implicit",new System.Type[]{typeof(ObscuredBool)})),
+            };
+            List<CodeInstruction> patchSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(StationTurrets),"truth")),
+            };
+            patchSequence[0].labels = instructions.ToList()[FindSequence(instructions, targetSequence, CheckMode.NONNULL) - 3].labels;
+            return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
         }
     }
 }
