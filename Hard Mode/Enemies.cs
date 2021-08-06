@@ -28,7 +28,7 @@ namespace Hard_Mode
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.Armor += PLServer.Instance.ChaosLevel*3;
                 }
             }
         }
@@ -39,28 +39,29 @@ namespace Hard_Mode
             {
                 if (PhotonNetwork.isMasterClient)
                 {
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
                 }
             }
         }
         [HarmonyPatch(typeof(PLAntHeavy), "Start")]
         class HeavyAnt
         {
-            static void Postfix()
+            static void Postfix(PLAntHeavy __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 3;
                 }
             }
         }
         [HarmonyPatch(typeof(PLAntRavager), "Start")]
         class RavangerAnt
         {
-            static void Postfix()
+            static void Postfix(PLAntRavager __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -399,6 +400,7 @@ namespace Hard_Mode
                 instructionsList[259].operand = 5f;
                 return instructionsList.AsEnumerable();
             }
+
         }
 
         [HarmonyPatch(typeof(PLBoardingBot), "Start")]
@@ -440,11 +442,12 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLRoamingSecurityGuardRobot), "Start")]
         class MadmansMansionDrone
         {
-            static void Postfix()
+            static void Postfix(PLRoamingSecurityGuardRobot __instance)
             {
                 if (PhotonNetwork.isMasterClient)
                 {
-
+                    __instance.MaxHealth *= PLServer.Instance.ChaosLevel;
+                    __instance.Health = __instance.MaxHealth;
                 }
 
             }
@@ -572,7 +575,6 @@ namespace Hard_Mode
             };
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
             }
-
         }
         [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")] 
         class SpawnerModder // Could be used to directly change values in the spawner
