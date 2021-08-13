@@ -8,6 +8,41 @@ using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
 namespace Hard_Mode
 {
+    [HarmonyPatch(typeof(PLShipInfoBase),"GetCombatLevel")]
+    class CombatLevel 
+    {
+        static float Postfix(float __result,PLShipInfoBase __instance) 
+        {
+            __result = 0f;
+            foreach (PLShipComponent plshipComponent in __instance.MyStats.AllComponents)
+            {
+                if (plshipComponent != null && plshipComponent.IsEquipped)
+                {
+                    __result += Mathf.Pow((float)plshipComponent.GetScaledMarketPrice(true), 0.8f) * 0.001f;
+                    if(plshipComponent.ActualSlotType == ESlotType.E_COMP_MAINTURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_TURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_AUTO_TURRET) 
+                    {
+                        PLTurret turret = plshipComponent as PLTurret;
+                        __result += turret.GetDPS() * 0.1f * (1f - Mathf.Clamp01(turret.HeatGeneratedOnFire * 2.2f / turret.FireDelay));
+                        __result += turret.TurretRange * 0.0005f;
+                    }
+                }
+            }
+            __result += __instance.MyStats.HullMax * 0.005f;
+            __result += __instance.MyStats.HullArmor * 10f;
+            __result += __instance.MyStats.ShieldsMax * 0.01f;
+            if (!__instance.InWarp)
+            {
+                __result += __instance.MyStats.ShieldsChargeRateMax * 0.1f;
+            }
+            else
+            {
+                __result += __instance.MyStats.ShieldsChargeRateMax * 0.1f * 0.1f;
+            }
+            __result += __instance.MyStats.ThrustOutputMax * 0.01f;
+            __result += __instance.MyStats.ReactorOutputMax * 0.0005f;
+            return __result;
+        }
+    }
     class Enemies //All creatures will be here to help with ballancing and changing stats
     {
         [HarmonyPatch(typeof(PLAirElemental), "Start")]
@@ -125,19 +160,6 @@ namespace Hard_Mode
                 }
             }
         }
-        [HarmonyPatch(typeof(PLInfectedSpider_WG), "Start")]
-        class GuardianInfectedSpider
-        {
-            static void Postfix()
-            {
-                if (PhotonNetwork.isMasterClient)
-                {
-
-                }
-            }
-        }
-
-
         [HarmonyPatch(typeof(PLInfectedSwarm), "Start")]
         class Dontknowwhatthisis
         {

@@ -1,4 +1,5 @@
 ﻿using PulsarPluginLoader;
+[assembly: System.Runtime.CompilerServices.IgnoresAccessChecksTo("Assembly-CSharp")]
 namespace Hard_Mode
 {
     public class Plugin : PulsarPlugin
