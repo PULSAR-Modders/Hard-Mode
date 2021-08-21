@@ -80,6 +80,7 @@
     <Compile Include="Fire.cs" />
     <Compile Include="Fog of War.cs" />
     <Compile Include="LiarsDiceAI.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reactor.cs" />

@@ -17,6 +17,10 @@ namespace Hard_Mode
         {
             static void Postfix(ref bool __result, PLSectorInfo sectorInfo)
             {
+                if (!Options.FogOfWar) 
+                {
+                    return;
+                }
                 if (PhotonNetwork.isMasterClient)
                 {
                     int crewFactionID = PLServer.Instance.CrewFactionID;
@@ -66,6 +70,10 @@ namespace Hard_Mode
         {
             static void Postfix(ref bool __result, PLSectorInfo sectorInfo)
             {
+                if (!Options.FogOfWar)
+                {
+                    return;
+                }
                 if (PhotonNetwork.isMasterClient)
                 {
                     bool isGWG = (sectorInfo.VisualIndication == ESectorVisualIndication.GWG) && (PLServer.Instance != null);
