@@ -8,8 +8,238 @@ using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
 namespace Hard_Mode
 {
+    [HarmonyPatch(typeof(PLShipInfoBase), "GetChaosBoost",new Type[] {typeof(PLPersistantShipInfo),typeof(int)})]
+    class ChaosBoost //This will make enemy ships spawn with higher level components
+    {
+        static int Postfix(int __result, PLPersistantShipInfo inPersistantShipInfo, int offset) 
+        {
+            if (PLServer.Instance != null && inPersistantShipInfo != null)
+            {
+                PLRand shipDeterministicRand = PLShipInfoBase.GetShipDeterministicRand(inPersistantShipInfo, 30 + offset);
+                __result = Mathf.RoundToInt(PLServer.Instance.ChaosLevel * shipDeterministicRand.Next(0.5f, 0.9f) * shipDeterministicRand.Next(0.5f, 0.9f) * PLGlobal.Instance.Galaxy.GenerationSettings.EnemyShipPowerScalar + PLEncounterManager.Instance.PlayerShip.GetCombatLevel()/20);
+                return __result;
+            }
+            __result = 0;
+            return __result;
+        }
+    }
+    [HarmonyPatch(typeof(PLServer), "ServerAddEnemyCrewBotPlayer")]
+    class EnemyCrewSpawn //This will make all ship crew stronger
+    { 
+        static void Postfix(PLShipInfo inShip) 
+        {
+            foreach(PLPlayer component in PLServer.Instance.AllPlayers) 
+            {
+                if(component != null && component.StartingShip == inShip) 
+                {
+                    int chaos = (int)PLServer.Instance.ChaosLevel;
+                    if (inShip.ShipTypeID == EShipType.E_INTREPID_SC)
+                    {
+                        component.Talents[56] = 5 + chaos;
+                        component.Talents[58] = 5 + chaos;
+                        component.Talents[0] = 5 + chaos;
+                        component.Talents[57] = 5 + chaos;
+                        component.Talents[2] = 5 + chaos;
+                        component.Talents[3] = 8;
+                        switch (component.GetClassID())
+                        {
+                            case 0:
+                                component.Talents[27] = 8 + chaos;
+                                component.Talents[5] = 5 + chaos;
+                                component.Talents[47] = 8 + chaos;
+                                component.Talents[50] = 8 + chaos;
+                                break;
+                            case 1:
+                                component.Talents[36] = 12 + chaos;
+                                component.Talents[35] = 12 + chaos;
+                                component.Talents[8] = 5 + chaos;
+                                component.Talents[9] = 8 + chaos;
+                                break;
+                            case 2:
+                                component.Talents[13] = 5 + chaos;
+                                component.Talents[11] = 5 + chaos;
+                                component.Talents[12] = 5 + chaos;
+                                break;
+                            case 3:
+                                component.Talents[38] = 8 + chaos;
+                                component.Talents[39] = 8 + chaos;
+                                component.Talents[23] = 5 + chaos;
+                                component.Talents[17] = 5 + chaos;
+                                component.Talents[25] = 5 + chaos;
+                                component.Talents[62] = 5 + chaos;
+                                break;
+                            case 4:
+                                component.Talents[20] = 5 + chaos;
+                                component.Talents[19] = 25 + chaos;
+                                component.Talents[21] = 25 + chaos;
+                                component.Talents[45] = 8 + chaos;
+                                component.Talents[61] = 5 + chaos;
+                                break;
+                        }
+                    }
+                    else if (inShip.ShipTypeID == EShipType.E_ALCHEMIST)
+                    {
+                        component.Talents[56] = 5 + chaos;
+                        component.Talents[58] = 5 + chaos;
+                        component.Talents[0] = 5 + chaos;
+                        component.Talents[57] = 5 + chaos;
+                        component.Talents[2] = 5 + chaos;
+                        component.Talents[3] = 8;
+                        switch (component.GetClassID())
+                        {
+                            case 0:
+                                component.Talents[27] = 8 + chaos;
+                                component.Talents[5] = 5 + chaos;
+                                component.Talents[47] = 8 + chaos;
+                                component.Talents[50] = 8 + chaos;
+                                break;
+                            case 1:
+                                component.Talents[36] = 12 + chaos;
+                                component.Talents[35] = 12 + chaos;
+                                component.Talents[8] = 5 + chaos;
+                                component.Talents[9] = 8 + chaos;
+                                break;
+                            case 2:
+                                component.Talents[13] = 5 + chaos;
+                                component.Talents[11] = 5 + chaos;
+                                component.Talents[12] = 5 + chaos;
+                                break;
+                            case 3:
+                                component.Talents[38] = 8 + chaos;
+                                component.Talents[39] = 8 + chaos;
+                                component.Talents[23] = 5 + chaos;
+                                component.Talents[17] = 5 + chaos;
+                                component.Talents[25] = 5 + chaos;
+                                component.Talents[62] = 5 + chaos;
+                                break;
+                            case 4:
+                                component.Talents[20] = 5 + chaos;
+                                component.Talents[19] = 25 + chaos;
+                                component.Talents[21] = 25 + chaos;
+                                component.Talents[45] = 8 + chaos;
+                                component.Talents[61] = 5 + chaos;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        component.Talents[56] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                        component.Talents[58] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                        component.Talents[0] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                        component.Talents[57] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                        component.Talents[48] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                        component.Talents[3] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                        switch (component.GetClassID())
+                        {
+                            case 0:
+                                component.Talents[47] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[27] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[5] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[50] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                break;
+                            case 1:
+                                component.Talents[36] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[35] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[8] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[9] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                break;
+                            case 2:
+                                component.Talents[13] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[11] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[12] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                break;
+                            case 3:
+                                component.Talents[38] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[39] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[23] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[17] = Mathf.RoundToInt(chaos * 0.5f * UnityEngine.Random.value);
+                                component.Talents[25] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[62] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                break;
+                            case 4:
+                                component.Talents[20] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[19] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[21] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[45] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[61] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                break;
+                        }
+                    }
+                    component.MyInventory.Clear();
+                    int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.value));
+                    if (random < 10)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 26, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else if(random < 20)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else if (random < 30)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 25, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else if (random < 40)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 12, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else if (random < 50)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 8, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else if (random < 100)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else if (random < 150)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else if (random < 200)
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                    }
+                    else
+                    {
+                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                        component.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel+1, 1);
+                    }
+                    int ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+                    component.MyInventory.UpdateItem(ItemID2, 3, 0, (int)PLServer.Instance.ChaosLevel, 2);
+                    ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+                    component.MyInventory.UpdateItem(ItemID2, 4, 0, (int)PLServer.Instance.ChaosLevel, 3);
+                    if(component.GetClassID() == 2) 
+                    {
+                        ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+                        PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+                        component.MyInventory.UpdateItem(ItemID2, 26, 0, (int)PLServer.Instance.ChaosLevel, 4);
+                    }
+                }
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(PLShipInfoBase),"GetCombatLevel")]
-    class CombatLevel 
+    class CombatLevel //Modify the combat level calculation
     {
         static float Postfix(float __result,PLShipInfoBase __instance) 
         {

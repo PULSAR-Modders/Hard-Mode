@@ -115,16 +115,31 @@ namespace Hard_Mode
                                 ship.Ship_WarpOutNow();
                             }
                         }
+                        if (!ship.GetIsPlayerShip()) //This part is to prevent too high level thrusters (that normally make enemy miss all shots) and prevent components above level 32 
+                        {
+                            foreach (PLShipComponent component in ship.MyStats.GetComponentsOfType(ESlotType.E_COMP_THRUSTER))
+                            {
+                                if (component.Level > 9) component.Level = 9;
+                            }
+                            foreach (PLShipComponent component in ship.MyStats.GetComponentsOfType(ESlotType.E_COMP_INERTIA_THRUSTER))
+                            {
+                                if (component.Level > 9) component.Level = 9;
+                            }
+                        }
+                        foreach (PLShipComponent component in ship.MyStats.AllComponents)
+                        {
+                            if (component.Level > 31) component.Level = 31;
+                        }
                     }
                     timer = 1;
                 }
+                //This will make drone call for help to protect sector if too weak also civilians will call for help if in danger
+                if ((((__instance.ShipTypeID == EShipType.E_WDDRONE1 || __instance.ShipTypeID == EShipType.E_WDDRONE2 || __instance.ShipTypeID == EShipType.E_WDDRONE3 || __instance.ShipTypeID == EShipType.E_REPAIR_DRONE) && __instance.TargetShip != null && __instance.TargetShip.GetCombatLevel() > __instance.GetCombatLevel() * 1.5) || (__instance.ShipTypeID == EShipType.E_CIVILIAN_FUEL && __instance.AlertLevel > 1)) && !PLServer.Instance.LongRangeCommsDisabled && __instance.FactionID != 6)
+                {
+                    __instance.DistressSignalActive = true;
+                }
+                
             }
-            //This will make drone call for help to protect sector if too weak also civilians will call for help if in danger
-            if ((((__instance.ShipTypeID == EShipType.E_WDDRONE1 || __instance.ShipTypeID == EShipType.E_WDDRONE2 || __instance.ShipTypeID == EShipType.E_WDDRONE3 || __instance.ShipTypeID == EShipType.E_REPAIR_DRONE) && __instance.TargetShip != null && __instance.TargetShip.GetCombatLevel() > __instance.GetCombatLevel() * 1.5) || (__instance.ShipTypeID == EShipType.E_CIVILIAN_FUEL && __instance.AlertLevel > 1)) && !PLServer.Instance.LongRangeCommsDisabled && __instance.FactionID != 6)
-            {
-                __instance.DistressSignalActive = true;
-            }
-
         }
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //This should make the enemy warp faster, not just waiting the basically dead to jump
         {
