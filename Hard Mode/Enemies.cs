@@ -32,6 +32,7 @@ namespace Hard_Mode
             {
                 if (component != null && component.gameObject.name == "Simple Combat Bot Player" && component.StartingShip != null) 
                 {
+                    if (component.StartingShip.IsRelicHunter || component.StartingShip.IsBountyHunter) continue;
                     int chaos = (int)PLServer.Instance.ChaosLevel;
                     if (component.StartingShip.ShipTypeID == EShipType.E_INTREPID_SC)
                     {
@@ -373,6 +374,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLCUInvestigatorDrone __instance)
             {
+                /*
                 if (PhotonNetwork.isMasterClient && PLInGameUI.Instance.BossUI_Target != __instance)
                 {
                     PLServer.Instance.photonView.RPC("SetupNewHunter", PhotonTargets.All, new object[]
@@ -380,6 +382,7 @@ namespace Hard_Mode
                                 __instance.CombatTargetID,
                         });
                 }
+                */
             }
         }
         [HarmonyPatch(typeof(PLInfectedSpider), "Start")]
@@ -559,7 +562,7 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLStalkerPawn), "Update")]
         class StalkerUpdate
         {
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the stalker attack more fequently
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
                 instructionsList[208].operand = 1.5f;
@@ -629,7 +632,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLInfectedBoss_WDFlagship __instance)
             {
-                if (PhotonNetwork.isMasterClient && __instance.GetTargetPawn() == null && __instance.Health < __instance.MaxHealth && !__instance.IsDead)
+                if (PhotonNetwork.isMasterClient && __instance.GetTargetPawn() == null && __instance.Health < __instance.MaxHealth && !__instance.IsDead && __instance.LastDamageTakenTime - Time.time > 5)
                 {
                     __instance.Health += (__instance.MaxHealth/30)*Time.deltaTime;
                     if (__instance.Health > __instance.MaxHealth) __instance.Health = __instance.MaxHealth;

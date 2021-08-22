@@ -5,7 +5,7 @@ namespace Hard_Mode
     public class Plugin : PulsarPlugin
     {
 
-        public override string Version => "Beta1.0";
+        public override string Version => "Alpha1.0";
 
         public override string Author => "EngBot, Pokegustavo, Mest, Craziness924";
 

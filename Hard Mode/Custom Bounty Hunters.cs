@@ -30,7 +30,7 @@ namespace Hard_Mode
             }
         }
         [HarmonyPatch(typeof(PLPersistantEncounterInstance), "PlayerEnter")]
-        class RelicHunterBalance //Allow to change the Min and Max values for the difference between you and the relic hunter
+        public class RelicHunterBalance //Allow to change the Min and Max values for the difference between you and the relic hunter
         {
             static public float MinCombatLevel = 1.2f;
             static public float MaxCombatLevel = 1.5f;
@@ -52,7 +52,7 @@ namespace Hard_Mode
             }
         }
         [HarmonyPatch(typeof(PLServer), "SpawnHunter")]
-        class BountyHunterBalance //Allow to change the Min and Max values for the difference between you and the bounty hunter
+        public class BountyHunterBalance //Allow to change the Min and Max values for the difference between you and the bounty hunter
         {
             static public float MinCombatLevel = 1.2f;
             static public float MaxCombatLevel = 1.5f;

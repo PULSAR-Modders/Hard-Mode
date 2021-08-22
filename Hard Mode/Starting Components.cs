@@ -15,11 +15,13 @@ namespace Hard_Mode
         {
             static void Postfix(PLFluffyShipInfo __instance, bool previewStats) 
             {
+                /*
                 if (__instance.ShouldCreateDefaultComponents && (PhotonNetwork.isMasterClient || previewStats) && PLServer.Instance != null)
                 {
                     __instance.MyStats.RemoveShipComponent(__instance.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR));
                     __instance.MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(3, 4, 1, 0, 12), null), -1, ESlotType.E_COMP_REACTOR);
                 }
+                */
             }
         }
     }
