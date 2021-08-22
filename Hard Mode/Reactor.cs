@@ -10,7 +10,7 @@ namespace Hard_Mode
         static void Postfix(PLRadiationPoint ___RadPoint, PLReactorInstance __instance) //Increases radiation from reactor deppending on max temp and current stability
         {
             PLTempRadius tempRadius = null;
-            if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000)) // Check to not cause a lot of exceptions with the reactor ejecting
+            if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000) && Options.DangerousReactor) // Check to not cause a lot of exceptions with the reactor ejecting
             {
                 PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
                 ___RadPoint.RaditationRange = reactor.TempMax / 150f;
@@ -28,21 +28,26 @@ namespace Hard_Mode
                 tempRadius.IsOnShip = true;
                 tempRadius.MinRange = 0f;
                 tempRadius.MaxRange = 20f;
-                tempRadius.MaxRange += __instance.MyShipInfo.MyStats.ReactorTempCurrent/ (__instance.MyShipInfo.MyStats.ReactorTempMax*0.5f);
-                tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax*0.3f);
+                tempRadius.MaxRange += __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.5f);
+                tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.3f);
                 if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
                 else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp
-                if(__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && Random.Range(0,200) == 10) //this spawns fire when too hot
+                if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && Random.Range(0, 200) == 10) //this spawns fire when too hot
                 {
                     PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 3));
                     int looplimit = 0;
-                    while((system == null || system.IsOnFire()) && looplimit < 20) 
+                    while ((system == null || system.IsOnFire()) && looplimit < 20)
                     {
                         system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 3));
                         looplimit++;
                     }
                     PLServer.Instance.CreateFireAtSystem(system, false);
                 }
+            }
+            else if (!Options.DangerousReactor && __instance.gameObject.GetComponent<PLTempRadius>() != null) //This will bring things to normal when dangerous reactor is disabled
+            {
+                UnityEngine.Object.Destroy(__instance.gameObject.GetComponent<PLTempRadius>());
+                ___RadPoint.RaditationRange = 1f;
             }
         }
     }
@@ -109,10 +114,10 @@ namespace Hard_Mode
 
     [HarmonyPatch(typeof(PLServer), "ServerEjectReactorCore")]
     class ResetTemperature //This makes that when reactor is ejected the temperature go back to normal levels
-    { 
-        static void Postfix() 
-        { 
-            foreach(PLTempRadius temp in PLGameStatic.Instance.m_TempRadius) 
+    {
+        static void Postfix()
+        {
+            foreach (PLTempRadius temp in PLGameStatic.Instance.m_TempRadius)
             {
                 if (temp.IsOnShip == true) temp.Temperature = 1;
             }

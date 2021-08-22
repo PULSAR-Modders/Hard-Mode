@@ -3,6 +3,7 @@ using UnityEngine;
 using static UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;
+using PulsarPluginLoader;
 
 namespace Hard_Mode
 {
@@ -14,6 +15,11 @@ namespace Hard_Mode
         {
             if (PhotonNetwork.isMasterClient && __instance.GetIsPlayerShip())//This uses the player ship to make updates, better than the PLServer that likes to exception while leaving and entering a game
             {
+                ModMessage.SendRPC("modders.hardmode", "Hard_Mode.ReciveOptions", PhotonTargets.All, new object[] //This is responsible to send the options to all clients
+                {
+                    Options.FogOfWar,
+                    Options.DangerousReactor,
+                });
                 if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 1) // Checks if is flagged and has a faction, in that case it will lose alligment
                 {
                     PLServer.Instance.photonView.RPC("AddCrewWarning", PhotonTargets.All, new object[]
