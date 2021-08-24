@@ -13,8 +13,8 @@ namespace Hard_Mode
             if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000) && Options.DangerousReactor) // Check to not cause a lot of exceptions with the reactor ejecting
             {
                 PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
-                ___RadPoint.RaditationRange = reactor.TempMax / 150f;
-                ___RadPoint.RaditationRange *= 1f + (__instance.MyShipInfo.CoreInstability * 4f);
+                ___RadPoint.RaditationRange = reactor.TempMax / 500f * (1f + (__instance.MyShipInfo.CoreInstability * 4f));
+                ___RadPoint.RadScale = __instance.MyShipInfo.CoreInstability/3f;
                 if (___RadPoint.RaditationRange < 25f) ___RadPoint.RaditationRange = 25; // This is so sylvassi reactor doesn't become radiation proof
 
                 if (__instance.gameObject.GetComponent<PLTempRadius>() != null) //This part adds temperature range to reactor, so it changes the ship interior temperature
@@ -24,11 +24,10 @@ namespace Hard_Mode
                 else
                 {
                     tempRadius = __instance.gameObject.AddComponent<PLTempRadius>();
+                    tempRadius.IsOnShip = true;
                 }
-                tempRadius.IsOnShip = true;
-                tempRadius.MinRange = 0f;
-                tempRadius.MaxRange = 20f;
-                tempRadius.MaxRange += __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.5f);
+                tempRadius.MinRange = 10f + __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.5f);
+                tempRadius.MaxRange = 20f + __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.25f);
                 tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.3f);
                 if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
                 else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp

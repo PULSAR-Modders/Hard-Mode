@@ -39,11 +39,13 @@ namespace Hard_Mode
                     PulsarPluginLoader.Utilities.Messaging.Echo(PLNetworkManager.Instance.LocalPlayer,"Avaliable options (type it all with no spaces): FogofWar, DangerousReactor");
                     break;
                 case "fog":
+                case "fow":
                 case "fogofwar":
                     Options.FogOfWar = !Options.FogOfWar;
                     PLServer.Instance.AddNotification("Fog of War " + (Options.FogOfWar ? "Enabled" : "Disabled"), PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 3000, false);
                     break;
                 case "reactor":
+                case "dr":
                 case "dangerousreactor":
                     Options.DangerousReactor = !Options.DangerousReactor;
                     PLServer.Instance.AddNotification("Dangerous Reactor " + (Options.DangerousReactor ? "Enabled" : "Disabled"), PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 3000, false);
