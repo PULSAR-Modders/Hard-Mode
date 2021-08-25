@@ -237,6 +237,18 @@ namespace Hard_Mode
                         component.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
                     }
                     component.gameObject.name = "Simple Combat Bot Player Modded";
+                    for(int i = 0; i < component.Talents.Length; i++) 
+                    {
+                        if(component.Talents[i] > 0) 
+                        {
+                            component.photonView.RPC("ClientGetUpdatedTalent", PhotonTargets.Others, new object[]
+                            {
+                                i,
+                                component.Talents[i],
+                                0
+                            });
+                        }
+                    }
                 }
             }
         }
@@ -247,6 +259,10 @@ namespace Hard_Mode
     {
         static float Postfix(float __result,PLShipInfoBase __instance) 
         {
+            if (!Options.MasterHasMod) 
+            {
+                return __result;
+            }
             __result = 0f;
             foreach (PLShipComponent plshipComponent in __instance.MyStats.AllComponents)
             {
@@ -284,7 +300,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -295,12 +311,11 @@ namespace Hard_Mode
         {
             static void Postfix(PLAnt __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-                    __instance.Armor += PLServer.Instance.ChaosLevel*10;
-                    __instance.MaxHealth *= PLServer.Instance.ChaosLevel + 1;
+                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel*10;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel*4;
                 }
             }
         }
@@ -309,12 +324,11 @@ namespace Hard_Mode
         {
             static void Postfix(PLAntArmored __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 20;
-                    __instance.MaxHealth *= PLServer.Instance.ChaosLevel + 1;
+                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 10;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -323,12 +337,11 @@ namespace Hard_Mode
         {
             static void Postfix(PLAntHeavy __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 12;
-                    __instance.MaxHealth *= PLServer.Instance.ChaosLevel*1.2f + 1;
+                    __instance.MaxHealth += 35 * (PLServer.Instance.ChaosLevel + 1);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 15;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 6;
                 }
             }
         }
@@ -337,13 +350,12 @@ namespace Hard_Mode
         {
             static void Postfix(PLAntRavager __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 12;
-                    __instance.MaxHealth *= PLServer.Instance.ChaosLevel*1.5f + 1;
+                    __instance.MaxHealth += 40 * (PLServer.Instance.ChaosLevel + 1);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 20;
-                    __instance.m_RangedDamage += PLServer.Instance.ChaosLevel * 7;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 10;
+                    __instance.m_RangedDamage += PLServer.Instance.ChaosLevel * 5;
                 }
             }
         }
@@ -352,7 +364,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -363,7 +375,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -390,7 +402,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -401,7 +413,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLInfectedSpider_Medium __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
@@ -415,7 +427,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -427,7 +439,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -438,7 +450,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -449,12 +461,11 @@ namespace Hard_Mode
         {
             static void Postfix(PLRaptor __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 1.2f;
-                    __instance.MaxHealth *= PLServer.Instance.ChaosLevel / 2 + 1;
+                    __instance.MaxHealth += 50 * (PLServer.Instance.ChaosLevel + 1);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 15;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -463,7 +474,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -474,7 +485,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -483,44 +494,55 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLSpider), "Start")]
         class Spider
         {
-            static void Postfix()
+            static void Postfix(PLSpider __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
         [HarmonyPatch(typeof(PLRat), "Start")]
         class Rat
         {
-            static void Postfix()
+            static void Postfix(PLRat __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 3;
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
         [HarmonyPatch(typeof(PLSlime), "Start")]
         class Slime
         {
-            static void Postfix()
+            static void Postfix(PLSlime __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth += 2 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.moveSpeed *= PLServer.Instance.ChaosLevel / 2;
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 2;
+                    __instance.ShouldSpawnOnDamage = true;
                 }
             }
         }
         [HarmonyPatch(typeof(PLWasteWasp), "Start")]
         class Wasp
         {
-            static void Postfix()
+            static void Postfix(PLWasteWasp __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 7;
                 }
             }
         }
@@ -529,7 +551,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -551,7 +573,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLStalkerPawn __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
@@ -574,7 +596,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLInfectedScientist __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.MeleeDamage *= PLServer.Instance.ChaosLevel / 3;
                     __instance.MaxHealth += 75 * PLServer.Instance.ChaosLevel;
@@ -588,7 +610,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLCrystalBoss __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.Armor += PLServer.Instance.ChaosLevel * 10;
                 }
@@ -621,7 +643,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLInfectedBoss_WDFlagship __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.Armor += PLServer.Instance.ChaosLevel * 10;
                 }
@@ -632,7 +654,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLInfectedBoss_WDFlagship __instance)
             {
-                if (PhotonNetwork.isMasterClient && __instance.GetTargetPawn() == null && __instance.Health < __instance.MaxHealth && !__instance.IsDead && __instance.LastDamageTakenTime - Time.time > 5)
+                if (Options.MasterHasMod && __instance.GetTargetPawn() == null && __instance.Health < __instance.MaxHealth && !__instance.IsDead && __instance.LastDamageTakenTime - Time.time > 5)
                 {
                     __instance.Health += (__instance.MaxHealth/30)*Time.deltaTime;
                     if (__instance.Health > __instance.MaxHealth) __instance.Health = __instance.MaxHealth;
@@ -645,7 +667,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -657,7 +679,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLInfectedCrewmember __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.MeleeDamage *= PLServer.Instance.ChaosLevel / 2;
                     __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
@@ -672,7 +694,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLAssassinBot __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.Armor += (int)(PLServer.Instance.ChaosLevel * 1.2);
                 }
@@ -695,7 +717,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -707,7 +729,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -719,7 +741,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -731,7 +753,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLRoamingSecurityGuardRobot __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                     __instance.MaxHealth *= PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
@@ -745,7 +767,7 @@ namespace Hard_Mode
         {
             static void Postfix()
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
 
                 }
@@ -757,7 +779,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLPlayer __instance)
             {
-                if (PhotonNetwork.isMasterClient)
+                if (Options.MasterHasMod)
                 {
                 }
             }

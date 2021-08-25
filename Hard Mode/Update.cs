@@ -24,6 +24,7 @@ namespace Hard_Mode
                 {
                     Options.FogOfWar,
                     Options.DangerousReactor,
+                    Options.MasterHasMod,
                 });
                 if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 1) // Checks if is flagged and has a faction, in that case it will lose alligment
                 {
