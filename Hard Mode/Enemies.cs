@@ -696,7 +696,23 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.Armor += (int)(PLServer.Instance.ChaosLevel * 1.2);
+                    Vector3 spawnpoint = __instance.transform.position;
+                    foreach(PLTeleportationTargetInstance teleporter in UnityEngine.Object.FindObjectsOfType<PLTeleportationTargetInstance>()) 
+                    {
+                        if (teleporter.TeleporterTargetName == "Master Suite" && teleporter.Unlocked)
+                        {
+                            spawnpoint = new Vector3(269.0862f, -58.01f, -113.205f);
+                            break;
+                        }
+                        if (teleporter.TeleporterTargetName == "Museum Entrance" && teleporter.Unlocked) 
+                        {
+                            spawnpoint = new Vector3(239.5412f, -41.6382f, -211.9386f);
+                        }
+                    }
+                    __instance.transform.position = spawnpoint;
+                    __instance.Armor += (int)(PLServer.Instance.ChaosLevel * 5);
+                    __instance.MaxHealth += (__instance.MaxHealth/15)*PLServer.Instance.ChaosLevel;
+                    __instance.Health = __instance.MaxHealth;
                 }
             }
         }
