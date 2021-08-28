@@ -1,6 +1,10 @@
 ﻿using HarmonyLib;
 using UnityEngine;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using PulsarPluginLoader.Patches;
 namespace Hard_Mode
 {
     [HarmonyPatch(typeof(PLReactorInstance), "Update")]
@@ -14,7 +18,7 @@ namespace Hard_Mode
             {
                 PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
                 ___RadPoint.RaditationRange = reactor.TempMax / 500f * (1f + (__instance.MyShipInfo.CoreInstability * 4f));
-                ___RadPoint.RadScale = __instance.MyShipInfo.CoreInstability/3f;
+                ___RadPoint.RadScale = __instance.MyShipInfo.CoreInstability / 3f;
                 if (___RadPoint.RaditationRange < 25f) ___RadPoint.RaditationRange = 25; // This is so sylvassi reactor doesn't become radiation proof
 
                 if (__instance.gameObject.GetComponent<PLTempRadius>() != null) //This part adds temperature range to reactor, so it changes the ship interior temperature
@@ -31,13 +35,13 @@ namespace Hard_Mode
                 tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.3f);
                 if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
                 else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp
-                if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && Random.Range(0, 200) == 10) //this spawns fire when too hot
+                if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && UnityEngine.Random.Range(0, 200) == 10) //this spawns fire when too hot
                 {
-                    PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 3));
+                    PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 3));
                     int looplimit = 0;
                     while ((system == null || system.IsOnFire()) && looplimit < 20)
                     {
-                        system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 3));
+                        system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 3));
                         looplimit++;
                     }
                     PLServer.Instance.CreateFireAtSystem(system, false);
@@ -95,7 +99,7 @@ namespace Hard_Mode
                                 float num = Mathf.Clamp01(magnitude / ___MaxRange);
                                 num += 0.001f;
                                 float dmg = Mathf.Clamp01(1f - num) * 1800f;
-                                plshipInfoBase.TakeDamage(dmg, false, EDamageType.E_ENERGY, Random.Range(0f, 1f), -1, ___MyOwner, -1);
+                                plshipInfoBase.TakeDamage(dmg, false, EDamageType.E_ENERGY, UnityEngine.Random.Range(0f, 1f), -1, ___MyOwner, -1);
                             }
                         }
                     }
@@ -121,5 +125,91 @@ namespace Hard_Mode
                 if (temp.IsOnShip == true) temp.Temperature = 1;
             }
         }
+    }
+
+    [HarmonyPatch(typeof(PLReactor), "Tick")]
+    class ReactorsNerf
+    {
+        static void Postfix(PLReactor __instance)
+        {
+            if (Options.MasterHasMod)
+            {
+                float multiplier = 0.75f;
+                EReactorType type = (EReactorType)__instance.SubType;
+                switch (type) 
+                {
+                    default:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 15000f* multiplier : 15000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_REAC_WD_NULL_POINT_REACTOR_B:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 18000f * multiplier : 18000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_REAC_CU_FUSION_REACTOR:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 14500f * multiplier : 14500f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_REAC_CU_FUSION_REACTOR_MK2:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 17000f * multiplier : 17000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_REAC_CU_FUSION_REACTOR_MK3:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 22000f * multiplier : 22000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_REAC_FB_MINI_REACTOR:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 12600f * multiplier : 12600f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_REAC_GTC_QUIET_CUPCAKE:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 14800f * multiplier : 14800f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_REAC_PF_ANTIMATTER_REACTOR:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 25000f * multiplier : 25000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.ANCIENT_REACTOR:
+                        __instance.EnergyOutputMax = 150000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.ROLAND_REACTOR:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 23000f * multiplier : 23000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.THERMOCORE_REACTOR:
+                        __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 38000f * multiplier : 38000f;
+                        break;
+                    case EReactorType.E_REAC_STRONGPOINT:
+                        __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 24000f * multiplier : 24000f;
+                        break;
+                    case EReactorType.E_LEAKING_REACTOR:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 21000f * multiplier : 21000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_SYLVASSI_REACTOR:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 20000f * multiplier : 20000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                    case EReactorType.E_POLYTECH_ORIGINAL:
+                        __instance.EnergyOutputMax = Options.WeakReactor ? 30000f * multiplier : 30000f;
+                        __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                        break;
+                }
+            }
+        }
+        /*
+        public static float NullPoint = 15000f;
+        public static float ReinforcedNullPoint = 18000f;
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
+        {
+            List<CodeInstruction> instructionsList = Instructions.ToList();
+            instructionsList[15].operand = 0xC350;
+            instructionsList[19].operand = 10000f;
+            instructionsList[25].operand = 26f;
+            return instructionsList.AsEnumerable();
+        }
+        */
     }
 }

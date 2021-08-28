@@ -15,16 +15,18 @@ namespace Hard_Mode
         {
             if (PhotonNetwork.isMasterClient && __instance.GetIsPlayerShip())//This uses the player ship to make updates, better than the PLServer that likes to exception while leaving and entering a game
             {
+                
                 //This will make the relic and bounty hunters harder depending on the chaos
                 Custom_Bounty_Hunters.BountyHunterBalance.MaxCombatLevel = 1.5f + PLServer.Instance.ChaosLevel / 10;
                 Custom_Bounty_Hunters.BountyHunterBalance.MinCombatLevel = 1.2f + PLServer.Instance.ChaosLevel / 15;
                 Custom_Bounty_Hunters.RelicHunterBalance.MaxCombatLevel = 1.5f + PLServer.Instance.ChaosLevel / 5;
                 Custom_Bounty_Hunters.RelicHunterBalance.MinCombatLevel = 1.2f + PLServer.Instance.ChaosLevel / 10;
-                ModMessage.SendRPC("modders.hardmode", "Hard_Mode.ReciveOptions", PhotonTargets.All, new object[] //This is responsible to send the options to all clients
+                ModMessage.SendRPC("modders.hardmode", "Hard_Mode.ReciveOptions", PhotonTargets.Others, new object[] //This is responsible to send the options to all clients
                 {
                     Options.FogOfWar,
                     Options.DangerousReactor,
                     Options.MasterHasMod,
+                    Options.WeakReactor,
                 });
                 if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 1) // Checks if is flagged and has a faction, in that case it will lose alligment
                 {
@@ -57,7 +59,7 @@ namespace Hard_Mode
                 else
                 {
 
-                    foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase))) 
+                    foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase)))
                     {
                         if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY)
                         {
@@ -116,7 +118,7 @@ namespace Hard_Mode
                                 }
                             }
                             //Enemy will try to Escape if you are 1.5 times stronger than him (combat level)
-                            if (ship.WarpChargeStage != EWarpChargeStage.E_WCS_PREPPING && ship.WarpChargeStage != EWarpChargeStage.E_WCS_READY && ((ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5 && ship.FactionID != 6 && !ship.IsDrone &&  !ship.IsInfected && !ship.IsSectorCommander &&  ship.ShipTypeID != EShipType.E_BEACON) || (ship.ShipTypeID == EShipType.E_CIVILIAN_FUEL && ship.AlertLevel > 1)))
+                            if (ship.WarpChargeStage != EWarpChargeStage.E_WCS_PREPPING && ship.WarpChargeStage != EWarpChargeStage.E_WCS_READY && ((ship.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && PLEncounterManager.Instance.PlayerShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5 && ship.FactionID != 6 && !ship.IsDrone && !ship.IsInfected && !ship.IsSectorCommander && ship.ShipTypeID != EShipType.E_BEACON) || (ship.ShipTypeID == EShipType.E_CIVILIAN_FUEL && ship.AlertLevel > 1)))
                             {
                                 ship.WarpChargeStage = EWarpChargeStage.E_WCS_PREPPING;
                             }
@@ -148,7 +150,7 @@ namespace Hard_Mode
                 {
                     __instance.DistressSignalActive = true;
                 }
-                
+
             }
         }
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //This should make the enemy warp faster, not just waiting the basically dead to jump
