@@ -1114,6 +1114,19 @@ namespace Hard_Mode
             }
            
         }
+        [HarmonyPatch(typeof(PLStopAsteroidEncounter),"Update")]
+
+        class MeteorMission 
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[282].operand = 300f;
+                instructionsList[576].opcode = OpCodes.Ldc_I4_S;
+                instructionsList[576].operand = 0;
+                return instructionsList.AsEnumerable();
+            }
+        }
 
         [HarmonyPatch(typeof(PLPersistantEncounterInstance),"PlayerEnter")]
         class InfectedCarriersOnWars //Enables Infected Carriers to spawn in combat zones with the infected team
