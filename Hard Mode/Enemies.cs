@@ -23,7 +23,7 @@ namespace Hard_Mode
             return __result;
         }
     }
-    [HarmonyPatch(typeof(PLShipInfoBase), "set_AlertLevel")]
+    [HarmonyPatch(typeof(PLServer), "ServerAddEnemyCrewBotPlayer")]
     class EnemyCrewSpawn //This will make all ship crew stronger
     { 
         static void Postfix() 
@@ -237,18 +237,6 @@ namespace Hard_Mode
                         component.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
                     }
                     component.gameObject.name = "Simple Combat Bot Player Modded";
-                    for(int i = 0; i < component.Talents.Length; i++) 
-                    {
-                        if(component.Talents[i] > 0) 
-                        {
-                            component.photonView.RPC("ClientGetUpdatedTalent", PhotonTargets.Others, new object[]
-                            {
-                                i,
-                                component.Talents[i],
-                                0
-                            });
-                        }
-                    }
                 }
             }
         }
