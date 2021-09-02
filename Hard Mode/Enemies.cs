@@ -514,7 +514,7 @@ namespace Hard_Mode
                 if (Options.MasterHasMod)
                 {
                     __instance.MaxHealth += 2 * (PLServer.Instance.ChaosLevel + 1);
-                    __instance.moveSpeed *= PLServer.Instance.ChaosLevel / 2;
+                    __instance.moveSpeed += __instance.moveSpeed*PLServer.Instance.ChaosLevel / 2;
                     __instance.Health = __instance.MaxHealth;
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 2;
                     __instance.ShouldSpawnOnDamage = true;
@@ -586,7 +586,7 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MeleeDamage *= PLServer.Instance.ChaosLevel / 3;
+                    __instance.MeleeDamage += __instance.MeleeDamage*(PLServer.Instance.ChaosLevel / 3);
                     __instance.MaxHealth += 75 * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
                     __instance.Armor += PLServer.Instance.ChaosLevel * 5;
@@ -669,7 +669,7 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MeleeDamage *= PLServer.Instance.ChaosLevel / 2;
+                    __instance.MeleeDamage += __instance.MeleeDamage*(PLServer.Instance.ChaosLevel / 2);
                     __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
                     __instance.Armor += PLServer.Instance.ChaosLevel * 2;
@@ -759,7 +759,7 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth *= PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth += __instance.MaxHealth*(PLServer.Instance.ChaosLevel/1.5f);
                     __instance.Health = __instance.MaxHealth;
                     __instance.Armor = PLServer.Instance.ChaosLevel * 5;
                 }
