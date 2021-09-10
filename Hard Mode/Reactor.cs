@@ -134,7 +134,7 @@ namespace Hard_Mode
         {
             if (Options.MasterHasMod)
             {
-                float multiplier = 0.75f;
+                float multiplier = 0.5f;
                 EReactorType type = (EReactorType)__instance.SubType;
                 switch (type) 
                 {

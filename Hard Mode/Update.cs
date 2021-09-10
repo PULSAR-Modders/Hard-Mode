@@ -13,6 +13,16 @@ namespace Hard_Mode
         public static float timer = 1;
         static void Postfix(PLShipInfoBase __instance)
         {
+            if (Options.MasterHasMod) //This is to help with desyncs due to client having the mod, but the host doesn't have it
+            {
+                Enemies.TheSourceTimer.timer = 360f;
+                Enemies.MeteorMission.timer = 300f;
+            }
+            else
+            {
+                Enemies.TheSourceTimer.timer = 600f;
+                Enemies.MeteorMission.timer = 600f;
+            }
             if (PhotonNetwork.isMasterClient && __instance.GetIsPlayerShip())//This uses the player ship to make updates, better than the PLServer that likes to exception while leaving and entering a game
             {
                 

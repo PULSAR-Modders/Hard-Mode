@@ -617,12 +617,13 @@ namespace Hard_Mode
             }
         }
         [HarmonyPatch(typeof(PLWastedWingInfoBox), "Update")]
-        class TheSourceTimer
+        public class TheSourceTimer
         {
+            public static float timer = 600f;
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Wasted Wing final boss starts with 6 minutes
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[32].operand = 360f;
+                instructionsList[32].operand = timer;
                 return instructionsList.AsEnumerable();
             }
         }
@@ -1104,12 +1105,13 @@ namespace Hard_Mode
         }
         [HarmonyPatch(typeof(PLStopAsteroidEncounter),"Update")]
 
-        class MeteorMission 
+        public class MeteorMission 
         {
+            public static float timer = 600f;
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[282].operand = 300f;
+                instructionsList[282].operand = timer;
                 instructionsList[576].opcode = OpCodes.Ldc_I4_S;
                 instructionsList[576].operand = 0;
                 return instructionsList.AsEnumerable();

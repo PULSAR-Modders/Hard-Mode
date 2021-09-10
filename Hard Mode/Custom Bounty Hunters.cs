@@ -14,14 +14,14 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLEncounterManager), "Start")]
         class HunterAdder //Adds the extra hunters from the HunterCodes.txt for the random list when the game starts 
         {
-            static void Postfix(ref List<PLEncounterManager.ShipLayout> ___PossibleHunters_LayoutData) 
+            static void Postfix(ref List<PLEncounterManager.ShipLayout> ___PossibleHunters_LayoutData)
             {
                 using (StreamReader streamReader = new StreamReader(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "HunterCodes.txt")))
                 {
-                    while (!streamReader.EndOfStream) 
+                    while (!streamReader.EndOfStream)
                     {
                         string bountyhunter = streamReader.ReadLine();
-                        if(bountyhunter.Length > 50) 
+                        if (bountyhunter.Length > 50)
                         {
                             ___PossibleHunters_LayoutData.Add(new PLEncounterManager.ShipLayout(bountyhunter));
                         }
@@ -72,8 +72,58 @@ namespace Hard_Mode
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(BountyHunterBalance), "MaxCombatLevel")),
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetRandomPossibleHunterLayout")),
                 };
-                patchSequence[0].labels = instructions.ToList()[FindSequence(instructions, targetSequence, CheckMode.NONNULL)-4].labels;
+                patchSequence[0].labels = instructions.ToList()[FindSequence(instructions, targetSequence, CheckMode.NONNULL) - 4].labels;
                 return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
+            }
+        }
+        [HarmonyPatch(typeof(PLPersistantEncounterInstance), "SpawnEnemyShip")]
+        class BountyHunterName //This is so bounty hunters in ships from fluffy company or from no faction to have a name instead of N/A
+        {
+            static void Posftix(ref PLShipInfoBase __result)
+            {
+                PLShipInfo ship = __result as PLShipInfo;
+                if (ship != null)
+                {
+                    switch (ship.FactionID)
+                    {
+                        case -1:
+                            ship.ShipNameValue = PLServer.Instance.AOGShipNameGenerator.GetName(PLServer.Instance.GalaxySeed + ship.ShipID);
+                            break;
+                        case 3:
+                            string[] biscuitnames = new string[]
+                            {
+                            "Muffin Mashers",
+                            "Crispy Cruiser",
+                            "Tasty Toasters",
+                            "Delivery Dogs",
+                            "Hunger Hinderers",
+                            "Bombastic Bites",
+                            "Goodstuff Foodstuff",
+                            "Merry Meals",
+                            "Fasting Foodies",
+                            "Sugar Speeders",
+                            "Generic Grillers",
+                            "Ham Hoarders",
+                            "Ration Replacers",
+                            "Rapid Responders",
+                            "Mad Merchants",
+                            "Voracious Vendors",
+                            "Palatable Peddlers",
+                            "Wandering Wafer",
+                            "Biscuit Boys",
+                            "Necessary Nutritions",
+                            "Hungry Hucksters",
+                            "Flavor’s Fury",
+                            "Tea Timers",
+                            };
+                            ship.ShipNameValue = biscuitnames[UnityEngine.Random.Range(0, biscuitnames.Length - 1)];
+                            break;
+                    }
+                    if((ship.IsRelicHunter || ship.IsBountyHunter) && UnityEngine.Random.value < 0.1 ) 
+                    {
+                        ship.ShipNameValue = "The Glass Revenant Mk" + UnityEngine.Random.Range(1, 999);
+                    }
+                }
             }
         }
     }
