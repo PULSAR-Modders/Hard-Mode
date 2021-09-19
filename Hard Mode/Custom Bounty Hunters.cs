@@ -3,8 +3,8 @@ using System.IO;
 using System.Reflection;
 using HarmonyLib;
 using System.Reflection.Emit;
-using PulsarPluginLoader.Patches;
-using static PulsarPluginLoader.Patches.HarmonyHelpers;
+using PulsarModLoader.Patches;
+using static PulsarModLoader.Patches.HarmonyHelpers;
 using System.Linq;
 
 namespace Hard_Mode

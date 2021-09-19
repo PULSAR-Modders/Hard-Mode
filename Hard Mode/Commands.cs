@@ -1,10 +1,10 @@
-﻿using PulsarPluginLoader.Chat.Commands;
+﻿using PulsarModLoader.Chat.Commands.CommandRouter;
 
 namespace Hard_Mode
 {
-    class Commands : IChatCommand
+    class Commands : ChatCommand
     {
-        public string[] CommandAliases()
+        public override string[] CommandAliases()
         {
             return new string[]
             {
@@ -13,30 +13,31 @@ namespace Hard_Mode
                 "hardmode"
             };
         }
-        public string Description()
+        public override string Description()
         {
             return $"Configurations for Hard Mode";
+        }
+
+        public override string[][] Arguments()
+        {
+            return new string[][] { new string[] { "fog", "fow", "fogofwar", "dr", "dangerousreactor", "wr", "weakreactor" } };
         }
         public string UsageExample()
         {
             return "/" + this.CommandAliases()[0] + "(subcommand)";
         }
-        public bool PublicCommand()
-        {
-            return false;
-        }
-        public bool Execute(string arguments, int SenderID)
+        public override void Execute(string arguments)
         {
             if (!PhotonNetwork.isMasterClient) 
             {
                 PLServer.Instance.AddNotification("Must be Host to use this command!", PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 2000, false);
-                return false;
+                return;
             }
             string[] argument = arguments.Split(' ');
             switch (argument[0].ToLower()) 
             {
                 default:
-                    PulsarPluginLoader.Utilities.Messaging.Echo(PLNetworkManager.Instance.LocalPlayer,"Avaliable options (type it all with no spaces): FogofWar, DangerousReactor");
+                    PulsarModLoader.Utilities.Messaging.Echo(PLNetworkManager.Instance.LocalPlayer,"Avaliable options (type it all with no spaces): FogofWar, DangerousReactor");
                     break;
                 case "fog":
                 case "fow":
@@ -55,7 +56,6 @@ namespace Hard_Mode
                     PLServer.Instance.AddNotification("Weak Reactors " + (Options.WeakReactor ? "Enabled" : "Disabled"), PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 3000, false);
                     break;
             }
-            return false;
         }
     }
 }

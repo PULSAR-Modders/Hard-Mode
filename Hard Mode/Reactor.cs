@@ -1,10 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using PulsarPluginLoader.Patches;
+
 namespace Hard_Mode
 {
     [HarmonyPatch(typeof(PLReactorInstance), "Update")]

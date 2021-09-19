@@ -1,8 +1,8 @@
-﻿using PulsarPluginLoader;
+﻿using PulsarModLoader;
 [assembly: System.Runtime.CompilerServices.IgnoresAccessChecksTo("Assembly-CSharp")]
 namespace Hard_Mode
 {
-    public class Plugin : PulsarPlugin
+    public class Mod : PulsarMod
     {
 
         public override string Version => "Alpha1.2";
