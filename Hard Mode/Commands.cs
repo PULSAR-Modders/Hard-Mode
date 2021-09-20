@@ -36,7 +36,7 @@ namespace Hard_Mode
             switch (argument[0].ToLower()) 
             {
                 default:
-                    PulsarPluginLoader.Utilities.Messaging.Echo(PLNetworkManager.Instance.LocalPlayer,"Avaliable options (type it all with no spaces): FogofWar, DangerousReactor");
+                    PulsarPluginLoader.Utilities.Messaging.Echo(PLNetworkManager.Instance.LocalPlayer, "Avaliable options (type it all with no spaces): FogofWar, DangerousReactor, Weakreactor");
                     break;
                 case "fog":
                 case "fow":

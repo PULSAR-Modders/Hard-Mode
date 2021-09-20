@@ -25,7 +25,6 @@ namespace Hard_Mode
             }
             if (PhotonNetwork.isMasterClient && __instance.GetIsPlayerShip())//This uses the player ship to make updates, better than the PLServer that likes to exception while leaving and entering a game
             {
-                
                 //This will make the relic and bounty hunters harder depending on the chaos
                 Custom_Bounty_Hunters.BountyHunterBalance.MaxCombatLevel = 1.5f + PLServer.Instance.ChaosLevel / 10;
                 Custom_Bounty_Hunters.BountyHunterBalance.MinCombatLevel = 1.2f + PLServer.Instance.ChaosLevel / 15;
