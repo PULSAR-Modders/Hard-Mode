@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using System.Reflection.Emit;
-using PulsarPluginLoader.Patches;
+using PulsarModLoader.Patches;
 using System.Collections.Generic;
-using static PulsarPluginLoader.Patches.HarmonyHelpers;
+using static PulsarModLoader.Patches.HarmonyHelpers;
 using CodeStage.AntiCheat.ObscuredTypes;
 using System.Linq;
 
@@ -38,7 +38,7 @@ namespace Hard_Mode
         {
             if (PhotonNetwork.isMasterClient && damage != 200)
             {
-                PulsarPluginLoader.Utilities.Messaging.Echo(PhotonTargets.All, "Ship Flagged!" + " (due to killing unarmed civilian ship in a public station)");
+                PulsarModLoader.Utilities.Messaging.Echo(PhotonTargets.All, "Ship Flagged!" + " (due to killing unarmed civilian ship in a public station)");
                 PLEncounterManager.Instance.PlayerShip.IsFlagged = true;
             }
         }

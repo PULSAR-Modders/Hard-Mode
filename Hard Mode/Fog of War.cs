@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Patches;
+using PulsarModLoader.Patches;
 using System;
 using System.Collections.Generic;
 using System.Linq;

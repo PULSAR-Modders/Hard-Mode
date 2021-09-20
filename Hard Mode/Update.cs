@@ -3,7 +3,7 @@ using UnityEngine;
 using static UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;
-using PulsarPluginLoader;
+using PulsarModLoader;
 
 namespace Hard_Mode
 {
