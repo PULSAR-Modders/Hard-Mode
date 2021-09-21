@@ -1,4 +1,5 @@
 ﻿using PulsarModLoader.Chat.Commands.CommandRouter;
+using PulsarModLoader.Utilities;
 
 namespace Hard_Mode
 {
@@ -8,51 +9,47 @@ namespace Hard_Mode
         {
             return new string[]
             {
-                "hm",
+                "hardmode",
                 "hdm",
-                "hardmode"
+                "hm"
             };
         }
         public override string Description()
         {
-            return $"Configurations for Hard Mode";
+            return "Configurations for Hard Mode";
         }
-        public string UsageExample()
+        public override string[][] Arguments()
         {
-            return "/" + this.CommandAliases()[0] + "(subcommand)";
-        }
-        public bool PublicCommand()
-        {
-            return false;
+            return new string[][] { new string[] { "FogofWar", "DangerousReactor", "Weakreactor" } };
         }
         public override void Execute(string arguments)
         {
             if (!PhotonNetwork.isMasterClient) 
             {
-                PLServer.Instance.AddNotification("Must be Host to use this command!", PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 2000, false);
+                Messaging.Notification("Must be Host to use this command!", (PLPlayer)null, 0, 2000);
                 return;
             }
             string[] argument = arguments.Split(' ');
             switch (argument[0].ToLower()) 
             {
                 default:
-                    PulsarModLoader.Utilities.Messaging.Echo(PLNetworkManager.Instance.LocalPlayer, "Avaliable options (type it all with no spaces): FogofWar, DangerousReactor, Weakreactor");
+                    Messaging.Echo(PLNetworkManager.Instance.LocalPlayer, "Avaliable options (type it all with no spaces): FogofWar, DangerousReactor, Weakreactor");
                     break;
                 case "fog":
                 case "fow":
                 case "fogofwar":
                     Options.FogOfWar = !Options.FogOfWar;
-                    PLServer.Instance.AddNotification("Fog of War " + (Options.FogOfWar ? "Enabled" : "Disabled"), PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 3000, false);
+                    Messaging.Notification("Fog of War " + (Options.FogOfWar ? "Enabled" : "Disabled"), (PLPlayer)null, 0, 3000);
                     break;
                 case "dr":
                 case "dangerousreactor":
                     Options.DangerousReactor = !Options.DangerousReactor;
-                    PLServer.Instance.AddNotification("Dangerous Reactor " + (Options.DangerousReactor ? "Enabled" : "Disabled"), PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 3000, false);
+                    Messaging.Notification("Dangerous Reactor " + (Options.DangerousReactor ? "Enabled" : "Disabled"), (PLPlayer)null, 0, 3000);
                     break;
                 case "wr":
                 case "weakreactor":
                     Options.WeakReactor = !Options.WeakReactor;
-                    PLServer.Instance.AddNotification("Weak Reactors " + (Options.WeakReactor ? "Enabled" : "Disabled"), PLNetworkManager.Instance.LocalPlayerID, PLServer.Instance.GetEstimatedServerMs() + 3000, false);
+                    Messaging.Notification("Weak Reactors " + (Options.WeakReactor ? "Enabled" : "Disabled"), (PLPlayer)null, 0, 3000);
                     break;
             }
         }
