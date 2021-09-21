@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using System.Reflection.Emit;
-using PulsarModLoader.Patches;
 using System.Collections.Generic;
 using static PulsarModLoader.Patches.HarmonyHelpers;
 using CodeStage.AntiCheat.ObscuredTypes;
