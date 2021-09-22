@@ -173,7 +173,7 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLPersistantEncounterInstance), "SpawnEnemyShip")]
         class BountyHunterName //This is so bounty hunters in ships from fluffy company or from no faction to have a name instead of N/A
         {
-            static void Posftix(ref PLShipInfoBase __result)
+            static void Postfix(ref PLShipInfoBase __result)
             {
                 PLShipInfo ship = __result as PLShipInfo;
                 if (ship != null)
@@ -210,12 +210,12 @@ namespace Hard_Mode
                             "Flavor’s Fury",
                             "Tea Timers",
                             };
-                            ship.ShipNameValue = biscuitnames[UnityEngine.Random.Range(0, biscuitnames.Length - 1)];
+                            ship.ShipNameValue = biscuitnames[Random.Range(0, biscuitnames.Length - 1)];
                             break;
                     }
-                    if((ship.IsRelicHunter || ship.IsBountyHunter) && UnityEngine.Random.value < 0.1 ) 
+                    if(ship.GetCombatLevel() > 75 && Random.value < 0.1) 
                     {
-                        ship.ShipNameValue = "The Glass Revenant Mk" + UnityEngine.Random.Range(1, 999);
+                        ship.ShipNameValue = "The Glass Revenant Mk" + Random.Range(1, 999);
                     }
                 }
             }
