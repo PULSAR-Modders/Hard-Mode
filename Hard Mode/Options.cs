@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using PulsarModLoader;
-using System.Collections.Generic;
 
 namespace Hard_Mode
 {

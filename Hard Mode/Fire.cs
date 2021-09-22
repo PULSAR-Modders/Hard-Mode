@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using UnityEngine;
-using Pathfinding;
 
 namespace Hard_Mode
 {

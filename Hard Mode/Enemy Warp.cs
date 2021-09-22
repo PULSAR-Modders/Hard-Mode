@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using PulsarModLoader.Utilities;
+﻿using PulsarModLoader.Utilities;
 using HarmonyLib;
 
 namespace Hard_Mode
