@@ -130,9 +130,24 @@ namespace Hard_Mode
         {
             if (Options.MasterHasMod)
             {
+                if (__instance.SubType >= PulsarModLoader.Content.Components.Reactor.ReactorModManager.Instance.VanillaReactorMaxType) return;
                 float multiplier = 0.5f;
                 EReactorType type = (EReactorType)__instance.SubType;
-                switch (type) 
+                if(type != EReactorType.E_REAC_STRONGPOINT && type != EReactorType.THERMOCORE_REACTOR)__instance.EnergyOutputMax = Options.WeakReactor ? __instance.OriginalEnergyOutputMax * multiplier : __instance.OriginalEnergyOutputMax;
+                if(type == EReactorType.ANCIENT_REACTOR) 
+                {
+                    __instance.EnergyOutputMax = 150000f;
+                    __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                }
+                if (type == EReactorType.THERMOCORE_REACTOR)
+                {
+                    __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 38000f * multiplier : 38000f;
+                }
+                if (type == EReactorType.E_REAC_STRONGPOINT)
+                {
+                    __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 24000f * multiplier : 24000f;
+                }
+                /*switch (type) 
                 {
                     default:
                         __instance.EnergyOutputMax = Options.WeakReactor ? 15000f* multiplier : 15000f;
@@ -193,6 +208,7 @@ namespace Hard_Mode
                         __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
                         break;
                 }
+                */
             }
         }
         /*
