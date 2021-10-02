@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 using PulsarModLoader.Patches;
 using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
+using static PulsarModLoader.Patches.HarmonyHelpers;
 namespace Hard_Mode
 {
     [HarmonyPatch(typeof(PLShipInfoBase), "GetChaosBoost",new Type[] {typeof(PLPersistantShipInfo),typeof(int)})]
@@ -619,12 +620,28 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLWastedWingInfoBox), "Update")]
         public class TheSourceTimer
         {
-            public static float timer = 600f;
+            public static float timer = 360f;
+            /*
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Wasted Wing final boss starts with 6 minutes
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[32].operand = timer;
+                instructionsList[32] = new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(TheSourceTimer), "timer"));
                 return instructionsList.AsEnumerable();
+            }
+            */
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldc_R4),
+                };
+                List<CodeInstruction> patchSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(TheSourceTimer),"timer")),
+                };
+                return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, true);
             }
         }
         [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
@@ -1107,14 +1124,31 @@ namespace Hard_Mode
 
         public class MeteorMission 
         {
-            public static float timer = 600f;
+            public static float timer = 300f;
+            /*
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
             {
                 List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[282].operand = timer;
+                instructionsList[282] = new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(MeteorMission), "timer"));
                 instructionsList[576].opcode = OpCodes.Ldc_I4_S;
                 instructionsList[576].operand = 0;
                 return instructionsList.AsEnumerable();
+            }
+            */
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> instructionsList = instructions.ToList();
+                instructionsList[576].opcode = OpCodes.Ldc_I4_S;
+                instructionsList[576].operand = 0;
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldc_R4, 600f),
+                };
+                List<CodeInstruction> patchSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MeteorMission),"timer")),
+                };
+                return PatchBySequence(instructionsList.AsEnumerable(), targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, true);
             }
         }
 

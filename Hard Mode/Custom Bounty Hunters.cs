@@ -215,7 +215,7 @@ namespace Hard_Mode
                     }
                     if(ship.GetCombatLevel() > 75 && Random.value < 0.1) 
                     {
-                        ship.ShipNameValue = "The Glass Revenant Mk" + Random.Range(1, 999);
+                        ship.ShipNameValue = "The Glass Revenant Mk " + Random.Range(1, 999);
                     }
                 }
             }
