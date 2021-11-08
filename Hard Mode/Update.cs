@@ -17,11 +17,13 @@ namespace Hard_Mode
             {
                 Enemies.TheSourceTimer.timer = 360f;
                 Enemies.MeteorMission.timer = 300f;
+                //Enemies.UnseenEyePhysicalAttack.damage = 400f * PLWarpGuardian.GetPlayerBasedDifficultyMultiplier();
             }
             else
             {
                 Enemies.TheSourceTimer.timer = 600f;
                 Enemies.MeteorMission.timer = 600f;
+                //Enemies.UnseenEyePhysicalAttack.damage = 400f;
             }
             if (PhotonNetwork.isMasterClient && __instance.GetIsPlayerShip())//This uses the player ship to make updates, better than the PLServer that likes to exception while leaving and entering a game
             {
@@ -37,7 +39,7 @@ namespace Hard_Mode
                     Options.MasterHasMod,
                     Options.WeakReactor,
                 });
-                if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 1) // Checks if is flagged and has a faction, in that case it will lose alligment
+                if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 5) // Checks if is flagged and has a faction, in that case it will lose alligment (except AOG and PF, since neither care for that)
                 {
                     PLServer.Instance.photonView.RPC("AddCrewWarning", PhotonTargets.All, new object[]
                     {

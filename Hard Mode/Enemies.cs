@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using HarmonyLib;
 using System.Reflection.Emit;
@@ -9,15 +10,15 @@ using UnityEngine;
 using static PulsarModLoader.Patches.HarmonyHelpers;
 namespace Hard_Mode
 {
-    [HarmonyPatch(typeof(PLShipInfoBase), "GetChaosBoost",new Type[] {typeof(PLPersistantShipInfo),typeof(int)})]
+    [HarmonyPatch(typeof(PLShipInfoBase), "GetChaosBoost", new Type[] { typeof(PLPersistantShipInfo), typeof(int) })]
     class ChaosBoost //This will make enemy ships spawn with higher level components
     {
-        static int Postfix(int __result, PLPersistantShipInfo inPersistantShipInfo, int offset) 
+        static int Postfix(int __result, PLPersistantShipInfo inPersistantShipInfo, int offset)
         {
             if (PLServer.Instance != null && inPersistantShipInfo != null)
             {
                 PLRand shipDeterministicRand = PLShipInfoBase.GetShipDeterministicRand(inPersistantShipInfo, 30 + offset);
-                __result = Mathf.RoundToInt(PLServer.Instance.ChaosLevel * shipDeterministicRand.Next(0.5f, 0.9f) * shipDeterministicRand.Next(0.5f, 0.9f) * PLGlobal.Instance.Galaxy.GenerationSettings.EnemyShipPowerScalar + PLEncounterManager.Instance.PlayerShip.GetCombatLevel()/20);
+                __result = Mathf.RoundToInt(PLServer.Instance.ChaosLevel * shipDeterministicRand.Next(0.5f, 0.9f) * shipDeterministicRand.Next(0.5f, 0.9f) * PLGlobal.Instance.Galaxy.GenerationSettings.EnemyShipPowerScalar + PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 20);
                 return __result;
             }
             __result = 0;
@@ -26,15 +27,15 @@ namespace Hard_Mode
     }
     [HarmonyPatch(typeof(PLServer), "ServerAddEnemyCrewBotPlayer")]
     class EnemyCrewSpawn //This will make all ship crew stronger
-    { 
-        static void Postfix() 
+    {
+        static void Postfix()
         {
-            foreach(PLPlayer component in PLServer.Instance.AllPlayers) 
+            foreach (PLPlayer component in PLServer.Instance.AllPlayers)
             {
-                if (component != null && component.gameObject.name == "Simple Combat Bot Player" && component.StartingShip != null) 
+                if (component != null && component.gameObject.name == "Simple Combat Bot Player" && component.StartingShip != null)
                 {
                     if (component.StartingShip.IsRelicHunter || component.StartingShip.IsBountyHunter) continue;
-                    int chaos = (int)PLServer.Instance.ChaosLevel;
+                    int chaos = (int)PLServer.Instance.ChaosLevel + UnityEngine.Random.Range(0, 4);
                     if (component.StartingShip.ShipTypeID == EShipType.E_INTREPID_SC)
                     {
                         component.Talents[56] = 5 + chaos;
@@ -127,18 +128,18 @@ namespace Hard_Mode
                     }
                     else
                     {
-                        component.Talents[56] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
-                        component.Talents[58] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
-                        component.Talents[0] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
-                        component.Talents[57] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
-                        component.Talents[48] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                        component.Talents[56] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                        component.Talents[58] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                        component.Talents[0] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                        component.Talents[57] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                        component.Talents[48] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                         component.Talents[3] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                         switch (component.GetClassID())
                         {
                             case 0:
-                                component.Talents[47] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
-                                component.Talents[27] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
-                                component.Talents[5] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[47] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[27] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[5] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 component.Talents[50] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 break;
                             case 1:
@@ -148,17 +149,17 @@ namespace Hard_Mode
                                 component.Talents[9] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 break;
                             case 2:
-                                component.Talents[13] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[13] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 component.Talents[11] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 component.Talents[12] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 break;
                             case 3:
                                 component.Talents[38] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 component.Talents[39] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[23] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[23] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 component.Talents[17] = Mathf.RoundToInt(chaos * 0.5f * UnityEngine.Random.value);
                                 component.Talents[25] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[62] = Mathf.RoundToInt(chaos * 2f * UnityEngine.Random.value);
+                                component.Talents[62] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
                                 break;
                             case 4:
                                 component.Talents[20] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
@@ -177,7 +178,7 @@ namespace Hard_Mode
                         PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                         component.MyInventory.UpdateItem(ItemID, 26, 0, chaos, 1);
                     }
-                    else if(random < 20)
+                    else if (random < 20)
                     {
                         int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                         PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
@@ -231,7 +232,7 @@ namespace Hard_Mode
                     ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
                     PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
                     component.MyInventory.UpdateItem(ItemID2, 4, 0, chaos, 3);
-                    if(component.GetClassID() == 2) 
+                    if (component.GetClassID() == 2)
                     {
                         ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
                         PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
@@ -243,12 +244,12 @@ namespace Hard_Mode
         }
     }
 
-    [HarmonyPatch(typeof(PLShipInfoBase),"GetCombatLevel")]
+    [HarmonyPatch(typeof(PLShipInfoBase), "GetCombatLevel")]
     class CombatLevel //Modify the combat level calculation
     {
-        static float Postfix(float __result,PLShipInfoBase __instance) 
+        static float Postfix(float __result, PLShipInfoBase __instance)
         {
-            if (!Options.MasterHasMod) 
+            if (!Options.MasterHasMod)
             {
                 return __result;
             }
@@ -258,7 +259,7 @@ namespace Hard_Mode
                 if (plshipComponent != null && plshipComponent.IsEquipped)
                 {
                     __result += Mathf.Pow((float)plshipComponent.GetScaledMarketPrice(true), 0.8f) * 0.001f;
-                    if(plshipComponent.ActualSlotType == ESlotType.E_COMP_MAINTURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_TURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_AUTO_TURRET) 
+                    if (plshipComponent.ActualSlotType == ESlotType.E_COMP_MAINTURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_TURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_AUTO_TURRET)
                     {
                         PLTurret turret = plshipComponent as PLTurret;
                         __result += turret.GetDPS() * 0.1f * (1f - Mathf.Clamp01(turret.HeatGeneratedOnFire * 2.2f / turret.FireDelay));
@@ -304,7 +305,7 @@ namespace Hard_Mode
                 {
                     __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel*4;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -389,10 +390,14 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLInfectedSpider), "Start")]
         class InfectedCrawlers
         {
-            static void Postfix()
+            static void Postfix(PLInfectedSpider __instance)
             {
                 if (Options.MasterHasMod)
                 {
+                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.Health = __instance.MaxHealth;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 15;
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
 
                 }
             }
@@ -404,15 +409,15 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth += 15 * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 15;
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 8;
+                    __instance.Armor += PLServer.Instance.ChaosLevel * 2;
                 }
             }
         }
         [HarmonyPatch(typeof(PLInfectedSwarm), "Start")]
-        class Dontknowwhatthisis
+        class Impossibility
         {
             static void Postfix()
             {
@@ -515,7 +520,7 @@ namespace Hard_Mode
                 if (Options.MasterHasMod)
                 {
                     __instance.MaxHealth += 2 * (PLServer.Instance.ChaosLevel + 1);
-                    __instance.moveSpeed += __instance.moveSpeed*PLServer.Instance.ChaosLevel / 2;
+                    __instance.moveSpeed += __instance.moveSpeed * PLServer.Instance.ChaosLevel / 2;
                     __instance.Health = __instance.MaxHealth;
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 2;
                     __instance.ShouldSpawnOnDamage = true;
@@ -587,7 +592,7 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MeleeDamage += __instance.MeleeDamage*(PLServer.Instance.ChaosLevel / 3);
+                    __instance.MeleeDamage += __instance.MeleeDamage * (PLServer.Instance.ChaosLevel / 3);
                     __instance.MaxHealth += 75 * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
                     __instance.Armor += PLServer.Instance.ChaosLevel * 5;
@@ -641,7 +646,7 @@ namespace Hard_Mode
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(TheSourceTimer),"timer")),
                 };
-                return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, true);
+                return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
             }
         }
         [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
@@ -662,7 +667,7 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod && __instance.GetTargetPawn() == null && __instance.Health < __instance.MaxHealth && !__instance.IsDead && __instance.LastDamageTakenTime - Time.time > 5)
                 {
-                    __instance.Health += (__instance.MaxHealth/30)*Time.deltaTime;
+                    __instance.Health += (__instance.MaxHealth / 30) * Time.deltaTime;
                     if (__instance.Health > __instance.MaxHealth) __instance.Health = __instance.MaxHealth;
                 }
             }
@@ -687,7 +692,7 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MeleeDamage += __instance.MeleeDamage*(PLServer.Instance.ChaosLevel / 2);
+                    __instance.MeleeDamage += __instance.MeleeDamage * (PLServer.Instance.ChaosLevel / 2);
                     __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
                     __instance.Armor += PLServer.Instance.ChaosLevel * 2;
@@ -703,21 +708,21 @@ namespace Hard_Mode
                 if (Options.MasterHasMod)
                 {
                     Vector3 spawnpoint = __instance.transform.position;
-                    foreach(PLTeleportationTargetInstance teleporter in UnityEngine.Object.FindObjectsOfType<PLTeleportationTargetInstance>()) 
+                    foreach (PLTeleportationTargetInstance teleporter in UnityEngine.Object.FindObjectsOfType<PLTeleportationTargetInstance>())
                     {
                         if (teleporter.TeleporterTargetName == "Master Suite" && teleporter.Unlocked)
                         {
                             spawnpoint = new Vector3(269.0862f, -58.01f, -113.205f);
                             break;
                         }
-                        if (teleporter.TeleporterTargetName == "Museum Entrance" && teleporter.Unlocked) 
+                        if (teleporter.TeleporterTargetName == "Museum Entrance" && teleporter.Unlocked)
                         {
                             spawnpoint = new Vector3(239.5412f, -41.6382f, -211.9386f);
                         }
                     }
                     __instance.transform.position = spawnpoint;
                     __instance.Armor += (int)(PLServer.Instance.ChaosLevel * 5);
-                    __instance.MaxHealth += (__instance.MaxHealth/15)*PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth += (__instance.MaxHealth / 15) * PLServer.Instance.ChaosLevel;
                     __instance.Health = __instance.MaxHealth;
                 }
             }
@@ -777,7 +782,7 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += __instance.MaxHealth*(PLServer.Instance.ChaosLevel/1.5f);
+                    __instance.MaxHealth += __instance.MaxHealth * (PLServer.Instance.ChaosLevel / 1.5f);
                     __instance.Health = __instance.MaxHealth;
                     __instance.Armor = PLServer.Instance.ChaosLevel * 5;
                 }
@@ -806,6 +811,114 @@ namespace Hard_Mode
                 }
             }
         }
+        [HarmonyPatch(typeof(PLNullpoint),"Start")] //This are the green things that spread green fire on the unseen mothership 
+        class NullPoint 
+        {
+            static void Postfix(PLNullpoint __instance) 
+            {
+                if (Options.MasterHasMod) 
+                {
+                    __instance.SpeedMultiplier = 125f;
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLUnseenEye), "FireEnergyProj")]
+        public class UnseenEyePhysicalAttack 
+        {
+            /*
+            public static float damage = 400f;
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                return instructionsList.AsEnumerable();
+            }
+            static void Postfix() 
+            {
+                PulsarModLoader.Utilities.Messaging.Notification("test");
+                foreach(PLCurvedProjectile projectile in UnityEngine.Object.FindObjectsOfType(typeof(PLCurvedProjectile))) 
+                {
+                    projectile.Damage = damage;
+                    projectile.ForwardForce *= 5f;
+                }
+            }
+            */
+        }
+
+        [HarmonyPatch(typeof(PLUnseenEye), "ClientPerformBeamAttackOne")]
+        class Replace 
+        {
+            static bool Prefix(PLUnseenEye __instance) 
+            {
+                __instance.StartCoroutine(UnseenEyeAttack.PerformPhysicalAttack(__instance));
+                return false;
+            }
+        }
+        public class UnseenEyeAttack 
+        {
+            public static IEnumerator PerformPhysicalAttack(PLUnseenEye __instance) 
+            {
+                if (__instance.Animator.GetBool("IsDead"))
+                {
+                    yield break;
+                }
+                PLMusic.PostEvent("play_sx_ship_enemy_unseeneye_attackone_windup", __instance.gameObject);
+                __instance.Animator.SetBool("IsCharging", true);
+                __instance.BeamOne_WindUp.Play(true);
+                yield return new WaitForSeconds(3f);
+                __instance.Animator.SetBool("IsCharging", false);
+                __instance.Animator.SetBool("IsUsingBeam", true);
+                __instance.BeamOne_MainPhase.Play(true);
+                PLMusic.PostEvent("play_sx_ship_enemy_unseeneye_attackone_beam", __instance.gameObject);
+
+                
+                Vector3 angVel = UnityEngine.Random.insideUnitSphere * 150f;
+                int num;
+                for (int i = 0; i < 500; i = num + 1)
+                {
+                    if (__instance.TargetShip != null && __instance.TargetShip.Exterior != null)
+                    {
+                        GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(__instance.EnergyProjPrefab, __instance.BeamFireLoc.position, __instance.BeamFireLoc.rotation);
+                        gameObject.SetActive(true);
+                        PLCurvedProjectile component = gameObject.GetComponent<PLCurvedProjectile>();
+                        float d = 520f;
+                        Vector3 b = UnityEngine.Random.insideUnitSphere * (__instance.PlayerShip_IsPilotedByAI() ? 25f : 16f) * 7f;
+                        PLDriftTowardPlayerShip component2 = gameObject.GetComponent<PLDriftTowardPlayerShip>();
+                        if (__instance.PlayerShip_IsPilotedByAI())
+                        {
+                            if (component2 != null)
+                            {
+                                component2.ForceScale *= 0.66f;
+                            }
+                        }
+                        component2.ForceScale *= 5;
+                        Vector3 normalized = (__instance.TargetShip.Exterior.transform.position - __instance.BeamFireLoc.position).normalized;
+                        Vector3 a = Vector3.Lerp(__instance.BeamFireLoc.forward, normalized, 1f - Mathf.Clamp(Vector3.Angle(__instance.BeamFireLoc.forward, normalized) * 0.125f - 5f, 0f, 0.85f));
+                        if (__instance.TargetShip != null)
+                        {
+                            component.GetComponent<Rigidbody>().velocity = a * d + b;
+                        }
+                        component.ProjID = -40000 - __instance.energyProjCounter;
+                        __instance.energyProjCounter++;
+                        component.Damage = 400f * PLWarpGuardian.GetPlayerBasedDifficultyMultiplier();
+                        component.MaxLifetime = 11f;
+                        component.OwnerShipID = __instance.ShipID;
+                        component.TurretID = -1;
+                        component.MyDamageType = EDamageType.E_ENERGY;
+                        component.ForwardForce *= 5f;
+                        component.AngVel = angVel;
+                        PLServer.Instance.m_ActiveProjectiles.Add(component);
+                    }
+                    yield return 0;
+                    num = i;
+                }
+                yield return new WaitForSeconds(20f);
+
+
+
+                __instance.Animator.SetBool("IsUsingBeam", false);
+                yield break;
+            }
+        }
 
         [HarmonyPatch(typeof(PLVaultDoorMadmansMansion), "Update")]
         class MadmansMansionFinalTimer //At the last minute from the laser the enemies spawn 2x faster
@@ -817,6 +930,7 @@ namespace Hard_Mode
                 {
                     SpawnTimer = 2f;
                 }
+                
                 SpawnerModder.Health = 3 + (int)(PLServer.Instance.ChaosLevel * 1.5);
                 SpawnerModder.Pistoleer = 2 + (int)(PLServer.Instance.ChaosLevel * 1.2);
                 SpawnerModder.Armor = 5 + (int)(PLServer.Instance.ChaosLevel * 1.5);
@@ -838,7 +952,7 @@ namespace Hard_Mode
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
             }
         }
-        [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")] 
+        [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")]
         class SpawnerModder // Could be used to directly change values in the spawner
         {
             public static int Health = 0;
@@ -846,11 +960,11 @@ namespace Hard_Mode
             public static int Armored_Skin = 3;
             public static int Reloader = 12;
             public static int Armor = 0;
-            static void Postfix() 
+            static void Postfix()
             {
-                foreach(PLPlayer player in PLServer.Instance.AllPlayers) 
+                foreach (PLPlayer player in PLServer.Instance.AllPlayers)
                 {
-                    if(player != null && player.gameObject.name == "Simple Combat Bot Player" && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.AOG_MISSIONCHAIN_MADMANS_MANSION) 
+                    if (player != null && player.gameObject.name == "Simple Combat Bot Player" && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.AOG_MISSIONCHAIN_MADMANS_MANSION)
                     {
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.value));
@@ -858,7 +972,7 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel+1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
                         }
                         else if (random < 20)
                         {
@@ -904,11 +1018,11 @@ namespace Hard_Mode
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
-                    else if(player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Heavy Metal Bandit") 
+                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Heavy Metal Bandit")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 5);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 2);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 1.2);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 1.8);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 1.4);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
@@ -939,9 +1053,9 @@ namespace Hard_Mode
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Metal Bandit")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel*3.5);
-                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel*1.2);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel*1.5);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 1.5);
+                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 1.2);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 1.1);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 500);
                         if (random < 30)
@@ -972,9 +1086,9 @@ namespace Hard_Mode
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Elite Metal Bandit")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 5);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 3);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 1.2);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 3.5);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 2.3);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
@@ -1005,9 +1119,9 @@ namespace Hard_Mode
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Robot Guard")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 4.2);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 2.1);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 3.2);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 2.3);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
@@ -1036,11 +1150,11 @@ namespace Hard_Mode
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
-                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && (player.GetPlayerName() == "Bandit"||player.GetPlayerName() == "Guard"))
+                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && (player.GetPlayerName() == "Bandit" || player.GetPlayerName() == "Guard"))
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel*4);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 2.6);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 2.6);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 2.1);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
@@ -1071,9 +1185,9 @@ namespace Hard_Mode
                     }
                 }
             }
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) 
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                
+
                 List<CodeInstruction> targetSequence = new List<CodeInstruction>
             {
                 new CodeInstruction(OpCodes.Ldloc_S),
@@ -1118,11 +1232,10 @@ namespace Hard_Mode
             };
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
             }
-           
-        }
-        [HarmonyPatch(typeof(PLStopAsteroidEncounter),"Update")]
 
-        public class MeteorMission 
+        }
+        [HarmonyPatch(typeof(PLStopAsteroidEncounter), "Update")] //Decreases timer to 5 minutes
+        public class MeteorMission
         {
             public static float timer = 300f;
             /*
@@ -1148,11 +1261,10 @@ namespace Hard_Mode
                 {
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MeteorMission),"timer")),
                 };
-                return PatchBySequence(instructionsList.AsEnumerable(), targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, true);
+                return PatchBySequence(instructionsList.AsEnumerable(), targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
             }
         }
-
-        [HarmonyPatch(typeof(PLPersistantEncounterInstance),"PlayerEnter")]
+        [HarmonyPatch(typeof(PLPersistantEncounterInstance), "PlayerEnter")]
         class InfectedCarriersOnWars //Enables Infected Carriers to spawn in combat zones with the infected team
         {
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
