@@ -303,8 +303,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel/6);
                     __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
@@ -316,8 +318,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
@@ -329,9 +333,11 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 35 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 6;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -342,9 +348,11 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 40 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 10;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                     __instance.m_RangedDamage += PLServer.Instance.ChaosLevel * 5;
                 }
             }
@@ -352,22 +360,30 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLBanditLandDrone), "Start")]
         class BanditLandDrone
         {
-            static void Postfix()
+            static void Postfix(PLBanditLandDrone __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
         [HarmonyPatch(typeof(PLBrainCreature), "Start")]
         class Brain
         {
-            static void Postfix()
+            static void Postfix(PLBrainCreature __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -394,10 +410,11 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 15;
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
 
                 }
             }
@@ -409,21 +426,26 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 15 * PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 8;
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 2;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
         [HarmonyPatch(typeof(PLInfectedSwarm), "Start")]
         class Impossibility
         {
-            static void Postfix()
+            static void Postfix(PLInfectedSwarm __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -442,11 +464,15 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLLCLabEnemy), "Start")]
         class ColonyGhost
         {
-            static void Postfix()
+            static void Postfix(PLLCLabEnemy __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -457,8 +483,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 50 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
@@ -466,22 +494,30 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLRobotWalker), "Start")]
         class Paladin
         {
-            static void Postfix()
+            static void Postfix(PLRobotWalker __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
         [HarmonyPatch(typeof(PLRobotWalkerLarge), "Start")]
         class ElitPaladin
         {
-            static void Postfix()
+            static void Postfix(PLRobotWalkerLarge __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -492,8 +528,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
@@ -505,9 +543,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 3;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
@@ -519,11 +558,12 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 2 * (PLServer.Instance.ChaosLevel + 1);
                     __instance.moveSpeed += __instance.moveSpeed * PLServer.Instance.ChaosLevel / 2;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 2;
-                    __instance.ShouldSpawnOnDamage = true;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -534,20 +574,26 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 30 * (PLServer.Instance.ChaosLevel + 1);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 7;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
         [HarmonyPatch(typeof(PLSlimeBoss), "Start")]
         class WastedWingSlime
         {
-            static void Postfix()
+            static void Postfix(PLSlimeBoss __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -569,9 +615,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                 }
             }
         }
@@ -592,10 +639,11 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MeleeDamage += __instance.MeleeDamage * (PLServer.Instance.ChaosLevel / 3);
-                    __instance.MaxHealth += 75 * PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 5;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -656,7 +704,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 10;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                 }
             }
         }
@@ -692,10 +743,11 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MeleeDamage += __instance.MeleeDamage * (PLServer.Instance.ChaosLevel / 2);
-                    __instance.MaxHealth += 50 * PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 2;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -721,9 +773,11 @@ namespace Hard_Mode
                         }
                     }
                     __instance.transform.position = spawnpoint;
-                    __instance.Armor += (int)(PLServer.Instance.ChaosLevel * 5);
-                    __instance.MaxHealth += (__instance.MaxHealth / 15) * PLServer.Instance.ChaosLevel;
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
         }
@@ -742,11 +796,14 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLBoardingBot), "Start")]
         class BoardingBot
         {
-            static void Postfix()
+            static void Postfix(PLBoardingBot __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                 }
             }
         }
@@ -754,11 +811,14 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLGiantRobotHead), "Start")]
         class DownedProtector
         {
-            static void Postfix()
+            static void Postfix(PLGiantRobotHead __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                 }
             }
         }
@@ -766,11 +826,14 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLGroundTurret), "Start")]
         class GroundTurret
         {
-            static void Postfix()
+            static void Postfix(PLGroundTurret __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                 }
             }
         }
@@ -782,9 +845,10 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth += __instance.MaxHealth * (PLServer.Instance.ChaosLevel / 1.5f);
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.Health = __instance.MaxHealth;
-                    __instance.Armor = PLServer.Instance.ChaosLevel * 5;
+                    if (__instance.Armor == 0) __instance.Armor = 0.5f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                 }
             }
         }
