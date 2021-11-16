@@ -1345,5 +1345,27 @@ namespace Hard_Mode
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
             }
         }
+        [HarmonyPatch(typeof(PLBurrowArena), "Update")]
+        class ArenaAntiJetPack //This is so you can't use jetpack on the burrow arena
+        {
+            static void Postfix(PLBurrowArena __instance) 
+            {
+                if (Options.MasterHasMod) 
+                {
+                    if (__instance.gameObject.GetComponent<PLKillJetpackVolume>() == null)
+                    {
+                        __instance.gameObject.AddComponent<PLKillJetpackVolume>();
+                    }
+                    PLKillJetpackVolume jetpackVolume = __instance.gameObject.GetComponent<PLKillJetpackVolume>();
+                    if (__instance.PlayerSpawnLoc != null && jetpackVolume != null) 
+                    {
+                        jetpackVolume.transform.position = __instance.PlayerSpawnLoc.position;
+                        jetpackVolume.transform.position = jetpackVolume.transform.position + new Vector3(5,0,15);
+                        jetpackVolume.Dimensions = new Vector3(126, 60, 74);
+                        jetpackVolume.enabled = __instance.ArenaIsActive && __instance.WaveID != 5;
+                    }
+                }
+            }
+        }
     }
 }
