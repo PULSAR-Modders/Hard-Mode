@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-
+using UnityEngine;
 namespace Hard_Mode
 {
     [HarmonyPatch(typeof(PLWarpDriveProgram), "ExecuteBasedOnType")]
@@ -13,20 +13,32 @@ namespace Hard_Mode
             }
         }
     }
-    /*
-    [HarmonyPatch(typeof(PLShieldGenerator), "ShipUpdate")]
+    [HarmonyPatch(typeof(PLShieldGenerator), "Tick")]
     class ShieldUsingPower 
     { 
         static void Postfix(PLShieldGenerator __instance) 
         {
-            if (__instance != null)
+            if (__instance != null && __instance.IsEquipped)
             {
                 __instance.IsPowerActive = true;
-                __instance.RequestPowerUsage_Limit = __instance.CalculatedMaxPowerUsage_Watts * 0.25f;
-                __instance.InputPower_Watts = __instance.CalculatedMaxPowerUsage_Watts * 0.25f;
-                __instance.RequestPowerUsage_Percent = 1f;
+                /*
+                if (__instance.Current == __instance.CurrentMax && __instance.InputPower_Watts > __instance.CalculatedMaxPowerUsage_Watts * 0.25f)
+                {
+                    __instance.InputPower_Watts = __instance.CalculatedMaxPowerUsage_Watts * 0.25f;
+                }
+                */
+                if (__instance.Current >= __instance.CurrentMax)
+                {
+                    if(__instance.RequestPowerUsage_Percent == 0 || __instance.RequestPowerUsage_Percent == 0.15f) __instance.RequestPowerUsage_Percent = 0.15f;
+                    if (__instance.Current > __instance.CurrentMax) __instance.Current = __instance.CurrentMax;
+                }
+                if(__instance.GetPowerPercentInput() < 0.15f) 
+                {
+                    __instance.ChargeRateCurrent = __instance.ChargeRateMax * __instance.LevelMultiplier(0.5f, 1f) * __instance.GetPowerPercentInput() * -5 ;
+                    if ((__instance.Current - __instance.ShipStats.ShieldsChargeRate * Time.deltaTime <= 0 && __instance.ChargeRateCurrent < 0) || (__instance.Current >= __instance.CurrentMax && __instance.ChargeRateCurrent > 0)) __instance.ShipStats.ShieldsChargeRate = 0f;
+                    if (__instance.Current < 0) __instance.Current = 0f;
+                }
             }
         }
     }
-    */
 }
