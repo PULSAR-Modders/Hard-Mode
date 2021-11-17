@@ -707,7 +707,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLInfectedBoss_WDFlagship __instance)
             {
-                if (Options.MasterHasMod && __instance.GetTargetPawn() == null && __instance.Health < __instance.MaxHealth && !__instance.IsDead && __instance.LastDamageTakenTime - Time.time > 5)
+                if (Options.MasterHasMod &&  __instance.Health < __instance.MaxHealth && !__instance.IsDead && Time.time - __instance.LastDamageTakenTime > 5 && PhotonNetwork.isMasterClient)
                 {
                     __instance.Health += (__instance.MaxHealth / 30) * Time.deltaTime;
                     if (__instance.Health > __instance.MaxHealth) __instance.Health = __instance.MaxHealth;
@@ -718,15 +718,45 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "Start")]
         class ForsakenFlagshipHeart
         {
-            static void Postfix()
+            static void Postfix(PLInfectedHeart_WDFlagship __instance)
             {
                 if (Options.MasterHasMod)
                 {
-
+                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    __instance.Health = __instance.MaxHealth;
+                    if (__instance.Armor == 0) __instance.Armor = 1f;
+                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                 }
             }
         }
-
+        [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "Update")]
+        class ForsakenFlagshipHeartUpdate
+        {
+            static void Postfix(PLInfectedHeart_WDFlagship __instance)
+            {
+                if (Options.MasterHasMod)
+                {
+                    if (__instance.FightActivated && !__instance.IsDead)
+                    {
+                        __instance.Health += 150 * Time.deltaTime;
+                        __instance.Health = Mathf.Clamp(__instance.Health, 0f, __instance.MaxHealth);
+                    }
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "TakeDamage")]
+        class ForsakenFlagshipHeartDamage
+        {
+            static float lastSpawn = Time.time;
+            static void Postfix(PLInfectedHeart_WDFlagship __instance)
+            {
+                if (Options.MasterHasMod && Time.time - lastSpawn > 2f && PhotonNetwork.isMasterClient)
+                {
+                    lastSpawn = Time.time;
+                    PLSpawner.DoSpawnStatic(PLEncounterManager.Instance.GetCPEI(), "InfectedLargeCrawlerSpawnElite", __instance.transform, null, __instance.MyCurrentTLI, __instance.MyInterior, __instance);
+                }
+            }
+        }
         [HarmonyPatch(typeof(PLInfectedCrewmember), "Start")]
         class InfectedScientits
         {
@@ -742,7 +772,17 @@ namespace Hard_Mode
                 }
             }
         }
-
+        [HarmonyPatch(typeof(PLForsakenFlagshipCountdown), "StartCountdown")]
+        class FlagshipCountdown //This is so player have 45 seconds to warp away
+        {
+            static void Postfix(ref float ___SelfDestructTimeLeft)
+            {
+                if (Options.MasterHasMod)
+                {
+                    if (___SelfDestructTimeLeft > 45) ___SelfDestructTimeLeft = 45;
+                }
+            }
+        }
         [HarmonyPatch(typeof(PLAssassinBot), "Start")]
         class AssassinBot
         {
