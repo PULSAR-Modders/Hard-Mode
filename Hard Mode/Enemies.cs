@@ -1362,7 +1362,7 @@ namespace Hard_Mode
                         jetpackVolume.transform.position = __instance.PlayerSpawnLoc.position;
                         jetpackVolume.transform.position = jetpackVolume.transform.position + new Vector3(5,0,15);
                         jetpackVolume.Dimensions = new Vector3(126, 60, 74);
-                        jetpackVolume.enabled = __instance.ArenaIsActive && __instance.WaveID != 5;
+                        jetpackVolume.enabled = __instance.ArenaIsActive && __instance.WaveID != 5 && __instance.WaveID != 6;
                     }
                 }
             }
