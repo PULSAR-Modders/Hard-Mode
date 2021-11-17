@@ -904,8 +904,15 @@ namespace Hard_Mode
         {
             static bool Prefix(PLUnseenEye __instance) 
             {
-                __instance.StartCoroutine(UnseenEyeAttack.PerformPhysicalAttack(__instance));
-                return false;
+                if (Options.MasterHasMod)
+                {
+                    __instance.StartCoroutine(UnseenEyeAttack.PerformPhysicalAttack(__instance));
+                    return false;
+                }
+                else 
+                {
+                    return true;
+                }
             }
         }
         public class UnseenEyeAttack 
@@ -926,7 +933,7 @@ namespace Hard_Mode
                 PLMusic.PostEvent("play_sx_ship_enemy_unseeneye_attackone_beam", __instance.gameObject);
 
                 
-                Vector3 angVel = UnityEngine.Random.insideUnitSphere * 150f;
+                Vector3 angVel = UnityEngine.Random.insideUnitSphere * 110f;
                 int num;
                 for (int i = 0; i < 500; i = num + 1)
                 {
@@ -936,7 +943,7 @@ namespace Hard_Mode
                         gameObject.SetActive(true);
                         PLCurvedProjectile component = gameObject.GetComponent<PLCurvedProjectile>();
                         float d = 520f;
-                        Vector3 b = UnityEngine.Random.insideUnitSphere * (__instance.PlayerShip_IsPilotedByAI() ? 25f : 16f) * 7f;
+                        Vector3 b = UnityEngine.Random.insideUnitSphere * (__instance.PlayerShip_IsPilotedByAI() ? 20f : 10f) * 7f;
                         PLDriftTowardPlayerShip component2 = gameObject.GetComponent<PLDriftTowardPlayerShip>();
                         if (__instance.PlayerShip_IsPilotedByAI())
                         {
@@ -947,7 +954,8 @@ namespace Hard_Mode
                         }
                         component2.ForceScale *= 5;
                         Vector3 normalized = (__instance.TargetShip.Exterior.transform.position - __instance.BeamFireLoc.position).normalized;
-                        Vector3 a = Vector3.Lerp(__instance.BeamFireLoc.forward, normalized, 1f - Mathf.Clamp(Vector3.Angle(__instance.BeamFireLoc.forward, normalized) * 0.125f - 5f, 0f, 0.85f));
+                        Vector3 a = Vector3.Lerp(__instance.BeamFireLoc.forward, normalized, 1f - Mathf.Clamp(Vector3.Angle(__instance.BeamFireLoc.forward, normalized) * 0.125f - 5f, 0f, 0.50f));
+                        a += PLEncounterManager.Instance.PlayerShip.ExteriorRigidbody.velocity * (1f + UnityEngine.Random.value) * 8f;
                         if (__instance.TargetShip != null)
                         {
                             component.GetComponent<Rigidbody>().velocity = a * d + b;
@@ -961,6 +969,7 @@ namespace Hard_Mode
                         component.MyDamageType = EDamageType.E_ENERGY;
                         component.ForwardForce *= 5f;
                         component.AngVel = angVel;
+                        component.Target = __instance.TargetShip;
                         PLServer.Instance.m_ActiveProjectiles.Add(component);
                     }
                     yield return 0;
@@ -974,7 +983,26 @@ namespace Hard_Mode
                 yield break;
             }
         }
-
+        [HarmonyPatch(typeof(PLUnseenEye),"Update")]
+        class EyePhysicalAim 
+        {
+            static void Postfix(PLUnseenEye __instance) 
+            {
+                if (__instance.BeamOne_MainPhase.isPlaying) 
+                {
+                    /*
+                    PLShipInfoBase target = PLEncounterManager.Instance.PlayerShip;
+                    Vector3 a = target.GetSpaceLoc();
+                    PLShipInfoBase plshipInfoBase = target as PLShipInfoBase;
+                    if (plshipInfoBase != null && plshipInfoBase.ExteriorRigidbody != null)
+                    {
+                        a += plshipInfoBase.ExteriorRigidbody.velocity * 2f;
+                    }
+                    __instance.BeamFireLoc.position = (a - __instance.BeamFireLoc.position).normalized;
+                    */
+                }
+            }
+        }
         [HarmonyPatch(typeof(PLVaultDoorMadmansMansion), "Update")]
         class MadmansMansionFinalTimer //At the last minute from the laser the enemies spawn 2x faster
         {
