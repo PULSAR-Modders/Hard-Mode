@@ -387,22 +387,6 @@ namespace Hard_Mode
                 }
             }
         }
-        [HarmonyPatch(typeof(PLCUInvestigatorDrone), "Update")]
-        class InestigationDrone
-        {
-            static void Postfix(PLCUInvestigatorDrone __instance)
-            {
-                /*
-                if (PhotonNetwork.isMasterClient && PLInGameUI.Instance.BossUI_Target != __instance)
-                {
-                    PLServer.Instance.photonView.RPC("SetupNewHunter", PhotonTargets.All, new object[]
-                        {
-                                __instance.CombatTargetID,
-                        });
-                }
-                */
-            }
-        }
         [HarmonyPatch(typeof(PLInfectedSpider), "Start")]
         class InfectedCrawlers
         {
