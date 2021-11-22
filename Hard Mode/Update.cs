@@ -17,12 +17,14 @@ namespace Hard_Mode
             {
                 Enemies.TheSourceTimer.timer = 360f;
                 Enemies.MeteorMission.timer = 300f;
+                Sector_Commanders.Keeper.KeeperUpdate.speed = 2.5f;
                 //Enemies.UnseenEyePhysicalAttack.damage = 400f * PLWarpGuardian.GetPlayerBasedDifficultyMultiplier();
             }
             else
             {
                 Enemies.TheSourceTimer.timer = 600f;
                 Enemies.MeteorMission.timer = 600f;
+                Sector_Commanders.Keeper.KeeperUpdate.speed = 0.5f;
                 //Enemies.UnseenEyePhysicalAttack.damage = 400f;
             }
             if (PhotonNetwork.isMasterClient && __instance.GetIsPlayerShip())//This uses the player ship to make updates, better than the PLServer that likes to exception while leaving and entering a game

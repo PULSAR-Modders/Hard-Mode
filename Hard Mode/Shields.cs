@@ -18,7 +18,7 @@ namespace Hard_Mode
     { 
         static void Postfix(PLShieldGenerator __instance) 
         {
-            if (__instance != null && __instance.IsEquipped && Options.MasterHasMod)
+            if (__instance != null && __instance.IsEquipped && Options.MasterHasMod && !__instance.ShipStats.Ship.IsDrone)
             {
                 __instance.IsPowerActive = true;
                 if (__instance.Current >= __instance.CurrentMax)
