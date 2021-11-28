@@ -105,7 +105,7 @@ namespace Hard_Mode
                             {
                                 foreach (PLShipInfoBase Allied in FindObjectsOfType(typeof(PLShipInfoBase)))
                                 {
-                                    if (Allied.FactionID == ship.FactionID && !Allied.HostileShips.Contains(ship.ShipID))
+                                    if (Allied.FactionID == ship.FactionID && !Allied.HostileShips.Contains(ship.ShipID) && Allied.ShipTypeID != EShipType.E_BEACON)
                                     {
                                         if (Allied.GetIsPlayerShip())
                                         {
