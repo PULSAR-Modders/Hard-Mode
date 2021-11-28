@@ -11,13 +11,9 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    if (inIsSellPrice)
+                    if (!inIsSellPrice)
                     {
-                        __result = Mathf.RoundToInt((float)__result * 0.5f);
-                    }
-                    else
-                    {
-                        __result *= 2;
+                        __result = Mathf.RoundToInt(__result * 1.35f);
                     }
                 }
             }
