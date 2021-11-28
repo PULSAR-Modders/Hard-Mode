@@ -178,7 +178,7 @@ namespace Hard_Mode
                 PLShipInfo ship = __result as PLShipInfo;
                 if (ship != null)
                 {
-                    if (ship.ShipTypeID == EShipType.E_INTREPID_SC || ship.ShipTypeID == EShipType.E_ALCHEMIST || ship.IsDrone) return;
+                    if (ship.ShipTypeID == EShipType.E_INTREPID_SC || ship.ShipTypeID == EShipType.E_ALCHEMIST || ship.IsDrone || __result.PersistantShipInfo.MyCurrentSector.MissionSpecificID != -1) return;
                     switch (ship.FactionID)
                     {
                         case -1:

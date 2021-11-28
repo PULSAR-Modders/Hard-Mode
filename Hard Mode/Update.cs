@@ -76,11 +76,11 @@ namespace Hard_Mode
                     {
                         if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY)
                         {
-                            if (!ship.IsDrone && !ship.IsInfected && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL) //This makes all ships with the shields offline lose 10% of integrity per second
+                            if (!ship.IsDrone && !ship.IsInfected && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL && !__instance.InWarp) //This makes all boardable ships with the shields offline lose 10% of integrity per second
                             {
                                 PLShipInfo realship = ship as PLShipInfo;
                                 PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
-                                if (ship != null && !realship.StartupSwitchBoard.GetStatus(2))
+                                if (ship != null && !realship.StartupSwitchBoard.GetStatus(2) && shield != null)
                                 {
                                     if (shield.Current > 0)
                                     {
@@ -101,7 +101,7 @@ namespace Hard_Mode
                             }
                             */
 
-                            if (!ship.GetIsPlayerShip() && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL) //This should make attacking one ship all it's friends will attack you
+                            if (!ship.GetIsPlayerShip() && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL && ship.ShipTypeID != EShipType.E_BEACON) //This should make attacking one ship all it's friends will attack you (execpt beacon)
                             {
                                 foreach (PLShipInfoBase Allied in FindObjectsOfType(typeof(PLShipInfoBase)))
                                 {
