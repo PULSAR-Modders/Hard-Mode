@@ -24,7 +24,7 @@ namespace Hard_Mode
                 if (__instance.Current >= __instance.CurrentMax)
                 {
                     if(__instance.RequestPowerUsage_Percent == 0 || __instance.RequestPowerUsage_Percent == 0.15f) __instance.RequestPowerUsage_Percent = 0.15f;
-                    if (__instance.Current > __instance.CurrentMax) __instance.Current = __instance.CurrentMax;
+                    if (__instance.Current > __instance.ShipStats.ShieldsMax) __instance.Current = __instance.ShipStats.ShieldsMax;
                 }
                 if(__instance.GetPowerPercentInput() < 0.15f) 
                 {
@@ -39,4 +39,5 @@ namespace Hard_Mode
             }
         }
     }
+
 }
