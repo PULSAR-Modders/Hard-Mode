@@ -55,6 +55,9 @@ namespace Hard_Mode
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(7, 7, 5, 0, 12), null), -1, ESlotType.E_COMP_CPU);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(7, 7, 5, 0, 12), null), -1, ESlotType.E_COMP_CPU);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(3, 9, (int)PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75, 0, 12), null), -1, ESlotType.E_COMP_REACTOR);
+                    }
+                    if (Options.MasterHasMod)
+                    {
                         __instance.EngineeringSystem.MaxHealth = 200f;
                         __instance.EngineeringSystem.Health = 200f;
                         __instance.WeaponsSystem.MaxHealth = 200f;
@@ -66,7 +69,6 @@ namespace Hard_Mode
                         __instance.Missiles_DSO.MaxHealth = 3000f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 25;
                         __instance.Missiles_DSO.Health = 3000f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 25;
                     }
-                    PulsarModLoader.Utilities.Logger.Info("local");
                 }
             }
             [HarmonyPatch(typeof(PLCorruptedLaserTurret), "Tick")]
@@ -205,6 +207,10 @@ namespace Hard_Mode
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(7, 7, 5, 0, 12), null), -1, ESlotType.E_COMP_CPU);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(7, 7, 5, 0, 12), null), -1, ESlotType.E_COMP_CPU);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(3, 8, ((int)PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100) + 2, 0, 12), null), -1, ESlotType.E_COMP_REACTOR);
+                        
+                    }
+                    if (Options.MasterHasMod)
+                    {
                         __instance.EngineeringSystem.MaxHealth = 1000f;
                         __instance.EngineeringSystem.Health = 1000f;
                         __instance.WeaponsSystem.MaxHealth = 200f;
@@ -233,9 +239,24 @@ namespace Hard_Mode
                     };
                     return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
                 }
+
+                static void Postfix(PLSwarmKeeperShipInfo __instance) 
+                {
+                    if (Options.MasterHasMod)
+                    {
+                        if (__instance.MyStats != null && __instance.MyStats.HullCurrent < __instance.MyStats.HullMax * 0.5f)
+                        {
+                            speed = 1f;
+                        }
+                        else
+                        {
+                            speed = 0.5f;
+                        }
+                    }
+                }
             }
         }
-        class Swarm
+        public class Swarm
         {
             [HarmonyPatch(typeof(PLSwarmCommanderInfo), "SetupShipStats")]
             class SwarmPatch
@@ -262,9 +283,9 @@ namespace Hard_Mode
                             }
                         }
                         int thrusterlevel = (int)PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 25;
-                        if (thrusterlevel < 6)
+                        if (thrusterlevel < 3)
                         {
-                            thrusterlevel = 6;
+                            thrusterlevel = 3;
                         }
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(26, 2, thrusterlevel, 0, 12), null), -1, ESlotType.E_COMP_MANEUVER_THRUSTER);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(26, 2, thrusterlevel, 0, 12), null), -1, ESlotType.E_COMP_MANEUVER_THRUSTER);
@@ -275,27 +296,15 @@ namespace Hard_Mode
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(7, 14, 5, 0, 12), null), -1, ESlotType.E_COMP_CPU);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(7, 14, 5, 0, 12), null), -1, ESlotType.E_COMP_CPU);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(3, 8, thrusterlevel + 15, 0, 12), null), -1, ESlotType.E_COMP_REACTOR);
+                    }
+                    if (Options.MasterHasMod) 
+                    {
                         __instance.EngineeringSystem.MaxHealth = 1000f;
                         __instance.EngineeringSystem.Health = 1000f;
                         __instance.WeaponsSystem.MaxHealth = 200f;
                         __instance.WeaponsSystem.Health = 200f;
                         __instance.ComputerSystem.MaxHealth = 200f;
                         __instance.ComputerSystem.Health = 200f;
-                    }
-                }
-            }
-            [HarmonyPatch(typeof(PLSwarmCommanderInfo), "Update")]
-            class SwarmUpdate
-            {
-                static void Postfix(PLSwarmCommanderInfo __instance)
-                {
-                    if (Options.MasterHasMod)
-                    {
-                        if (__instance.MyHull.Current < __instance.MyStats.HullMax * 0.5)
-                        {
-                            __instance.MyStats.ManeuverThrustOutputCurrent *= 50f * ((int)PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100);
-                            __instance.MyStats.ManeuverThrustOutputMax *= 50f * ((int)PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100);
-                        }
                     }
                 }
             }
@@ -368,8 +377,11 @@ namespace Hard_Mode
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(17, 6, 0, 0, 12), null), -1, ESlotType.E_COMP_PROGRAM);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(17, 6, 0, 0, 12), null), -1, ESlotType.E_COMP_PROGRAM);
                         MyStats.AddShipComponent(PLShipComponent.CreateShipComponentFromHash((int)PLShipComponent.createHashFromInfo(17, 0, 0, 0, 12), null), -1, ESlotType.E_COMP_PROGRAM);
-                        __instance.EngineeringSystem.MaxHealth = 200f;
-                        __instance.EngineeringSystem.Health = 200f;
+                    }
+                    if (Options.MasterHasMod)
+                    {
+                        __instance.EngineeringSystem.MaxHealth = 500f;
+                        __instance.EngineeringSystem.Health = 500f;
                         __instance.WeaponsSystem.MaxHealth = 200f;
                         __instance.WeaponsSystem.Health = 200f;
                         __instance.ComputerSystem.MaxHealth = 200f;
@@ -377,7 +389,7 @@ namespace Hard_Mode
                         PLShockSphere shock = __instance.Exterior.GetComponentInChildren<PLShockSphere>();
                         if (shock != null)
                         {
-                            shock.Intensity = 6f;
+                            shock.Intensity = 4f;
                         }
                     }
                 }

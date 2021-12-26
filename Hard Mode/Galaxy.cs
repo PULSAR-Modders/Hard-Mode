@@ -18,5 +18,27 @@ namespace Hard_Mode
                 }
             }
         }
+        [HarmonyPatch(typeof(PLServer), "GetFuelBasePrice")]
+        class FuelPrice 
+        {
+            static void Postfix(ref int __result) 
+            {
+                if (Options.MasterHasMod)
+                {
+
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLServer), "GetCoolantBasePrice")]
+        class CoolantPrice
+        {
+            static void Postfix(ref int __result)
+            {
+                if (Options.MasterHasMod)
+                {
+
+                }
+            }
+        }
     }
 }
