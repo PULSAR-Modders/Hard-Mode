@@ -48,14 +48,37 @@ namespace Hard_Mode
         {
             if (!PhotonNetwork.isMasterClient) 
             {
+                Options.MasterHasMod = false;
                 Options.FogOfWar = false;
                 Options.DangerousReactor = false;
-                Options.MasterHasMod = false;
                 Options.WeakReactor = false;
             }
             else 
             {
                 Options.MasterHasMod = true;
+                string savedoptions = PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("HardModeOptions");
+                if (savedoptions != string.Empty)
+                {
+                    string[] array = savedoptions.Split(new char[]
+                    {
+                    ','
+                    });
+                    for(int i = 0; i < array.Length; i++) 
+                    {
+                        switch (i) 
+                        {
+                            case 0:
+                                Options.FogOfWar = bool.Parse(array[0]);
+                                break;
+                            case 1:
+                                Options.DangerousReactor = bool.Parse(array[1]);
+                                break;
+                            case 2:
+                                Options.WeakReactor = bool.Parse(array[2]);
+                                break;
+                        }
+                    }
+                }
             }
         }
     }

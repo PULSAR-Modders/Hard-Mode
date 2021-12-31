@@ -52,6 +52,12 @@ namespace Hard_Mode
                     Messaging.Notification("Weak Reactors " + (Options.WeakReactor ? "Enabled" : "Disabled"), (PLPlayer)null, 0, 3000);
                     break;
             }
+            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("HardModeOptions", string.Format("{0},{1},{2}", new object[]
+            {
+                Options.FogOfWar,
+                Options.DangerousReactor,
+                Options.WeakReactor
+            }));
         }
     }
 }

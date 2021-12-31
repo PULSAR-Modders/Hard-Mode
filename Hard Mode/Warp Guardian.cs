@@ -18,17 +18,49 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLWarpGuardian), "GetPlayerBasedDifficultyMultiplier")]
         class GuardianDifficultyPatch //This removes the multiplier on the guardian to allow more than 2X difficulty
         {
-            static float Postfix(float __result) 
+            static void Postfix(ref float __result)
             {
                 if (PLEncounterManager.Instance.PlayerShip != null)
                 {
-                    __result = 1f + (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() - 100) * 0.01f;
-                    return __result;
+                    __result = UnityEngine.Mathf.Min(1f + (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() - 100) * 0.01f, 1f);
+                    return;
                 }
                 __result = 1f;
-                return __result;
             }
 
+        }
+
+        [HarmonyPatch(typeof(PLWarpGuardian), "Start")]
+        class StartGuardian
+        {
+            static void Postfix(PLWarpGuardian __instance)
+            {
+                //This makes so the guardian starts with all components
+                if (Options.MasterHasMod)
+                {
+                    __instance.SideCannonModule.Health = __instance.SideCannonModule.MaxHealth * 0.15f;
+                    __instance.BoardingSystem.Health = __instance.BoardingSystem.MaxHealth * 0.20f;
+                    __instance.ModuleRepairModule.Health = __instance.ModuleRepairModule.MaxHealth * 0.25f;
+                    __instance.BoostModule.Health = __instance.BoostModule.MaxHealth * 0.85f;
+
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(PLWarpGuardian), "Update")]
+        class UpdateGuardian
+        {
+            static void Postfix(PLWarpGuardian __instance)
+            {
+                //This makes so the guardian starts with all components
+                if (Options.MasterHasMod)
+                {
+                    foreach (PLDamageableSpaceObject pldamageableSpaceObject2 in __instance.AllModules)
+                    {
+                        pldamageableSpaceObject2.HideVisuals = false;
+                    }
+                }
+            }
         }
     }
 }

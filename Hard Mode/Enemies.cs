@@ -1079,214 +1079,214 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 20)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 25, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 25, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 30)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 12, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 12, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 40)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 8, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 8, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 50)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 60)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 70)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Heavy Metal Bandit")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 2);
-                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 1.2);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 1.4);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 0.7);
+                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 0.5);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 0.5);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel + 4, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Metal Bandit")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 1.5);
-                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 1.2);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 1.1);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 0.3);
+                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 0.5);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 0.3);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 500);
                         if (random < 30)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 60)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 100)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Elite Metal Bandit")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 3);
-                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 1.2);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 2.3);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 0.8);
+                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 0.6);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 0.6);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Robot Guard")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 2.1);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 1.5);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 2.3);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 1);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && (player.GetPlayerName() == "Bandit" || player.GetPlayerName() == "Guard"))
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 2.6);
-                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel);
-                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 2.1);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 0.3);
+                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel*0.2);
+                        player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 0.2);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
                         if (random < 90)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
@@ -1457,7 +1457,7 @@ namespace Hard_Mode
         {
             static void Postfix(PLBurrowArena __instance) 
             {
-                if (Options.MasterHasMod) 
+                if (Options.MasterHasMod && PLServer.GetCurrentSector() != null && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.DESERT_HUB) 
                 {
                     if (__instance.gameObject.GetComponent<PLKillJetpackVolume>() == null)
                     {

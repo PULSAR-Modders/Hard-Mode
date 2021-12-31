@@ -78,7 +78,7 @@ namespace Hard_Mode
                 {
                     if (Options.MasterHasMod)
                     {
-                        __instance.m_Damage = 230f * (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100) * (Update.sickomode ? 3f : 1.5f);
+                        __instance.m_Damage = (230f + 50 * (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75)) * (Update.sickomode ? 2f : 1f);
                     }
                 }
 
@@ -90,12 +90,12 @@ namespace Hard_Mode
                 {
                     if (Options.MasterHasMod)
                     {
-                        __instance.Damage = (3000f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75) * (Update.sickomode ? 3f : 1.5f);
-                        __instance.TurnFactor = (2f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 25) * (Update.sickomode ? 3f : 1.5f);
-                        __instance.AccelerationFactor = (0.3f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100) * (Update.sickomode ? 3f : 1.5f);
-                        __instance.Speed = (200f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100) * (Update.sickomode ? 3f : 1.5f);
-                        __instance.MaxLifetime = (60f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75) * (Update.sickomode ? 3f : 1.5f);
-                        __instance.TrackingPower *= PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75 * (Update.sickomode ? 3f : 1.5f);
+                        __instance.Damage = (3000f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75) * (Update.sickomode ? 2f : 1f);
+                        __instance.TurnFactor = (2f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 25) * (Update.sickomode ? 2f : 1f);
+                        __instance.AccelerationFactor = (0.3f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100) * (Update.sickomode ? 2f : 1f);
+                        __instance.Speed = (200f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 100) * (Update.sickomode ? 2f : 1f);
+                        __instance.MaxLifetime = (60f * PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75) * (Update.sickomode ? 2f : 1f);
+                        __instance.TrackingPower *= PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 75 * (Update.sickomode ? 2f : 1f);
                         ___CanHitOwner = false;
                     }
                 }
@@ -389,7 +389,7 @@ namespace Hard_Mode
                         PLShockSphere shock = __instance.Exterior.GetComponentInChildren<PLShockSphere>();
                         if (shock != null)
                         {
-                            shock.Intensity = 4f;
+                            shock.Intensity = 2f;
                         }
                     }
                 }
