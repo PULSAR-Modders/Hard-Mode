@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
-
+using PulsarModLoader;
+using System.Collections.Generic;
+using System;
 namespace Hard_Mode
 {
     public class Blindfolding

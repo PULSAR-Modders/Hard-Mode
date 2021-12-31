@@ -11,6 +11,7 @@ namespace Hard_Mode
     class Update
     {
         public static float timer = 1;
+        public static float LastGalaxySync = Time.time;
         static void Postfix(PLShipInfoBase __instance)
         {
             if (Options.MasterHasMod) //This is to help with desyncs due to client having the mod, but the host doesn't have it
@@ -41,6 +42,22 @@ namespace Hard_Mode
                     Options.MasterHasMod,
                     Options.WeakReactor,
                 });
+                if (Time.time - LastGalaxySync > 30)//Syncs the discovered sectors with all clients every 30 seconds
+                {
+                    foreach (PLSectorInfo sector in PLGlobal.Instance.Galaxy.AllSectorInfos.Values) 
+                    {
+                        if (sector.Discovered)
+                        {
+                            PLServer.Instance.photonView.RPC("ClientSectorInfo", PhotonTargets.Others, new object[]
+                            {
+                                sector.ID,
+                                true,
+                                sector.Visited
+                            });
+                        }
+                    }
+                    LastGalaxySync = Time.time;
+                }
                 if (PLEncounterManager.Instance.PlayerShip.IsFlagged && PLServer.Instance.CrewFactionID != -1 && PLServer.Instance.CrewFactionID != 5 && PLServer.Instance.CrewFactionID != 1) // Checks if is flagged and has a faction, in that case it will lose alligment (except AOG and PF, since neither care for that)
                 {
                     PLServer.Instance.photonView.RPC("AddCrewWarning", PhotonTargets.All, new object[]
