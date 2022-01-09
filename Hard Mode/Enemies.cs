@@ -1452,6 +1452,16 @@ namespace Hard_Mode
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
             }
         }
+        [HarmonyPatch(typeof(PLAlienTentacleCreatureInfo),"FireBeam")]
+        class VuroogAttack 
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[37].operand = 1500f;
+                return instructionsList.AsEnumerable();
+            }
+        }
         [HarmonyPatch(typeof(PLBurrowArena), "Update")]
         class ArenaAntiJetPack //This is so you can't use jetpack on the burrow arena
         {
