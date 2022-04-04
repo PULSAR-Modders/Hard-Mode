@@ -35,7 +35,7 @@ namespace Hard_Mode
     {
         static void Postfix(PLBGShip __instance, float damage) //They only die if the player attack, since they seem to not be affected by ramming (and the 200 damage is for the auto turrets)
         {
-            if (PhotonNetwork.isMasterClient && damage != 200)
+            if (PhotonNetwork.isMasterClient && damage != 200 && PLEncounterManager.Instance.PlayerShip != null && !PLEncounterManager.Instance.PlayerShip.IsFlagged)
             {
                 PulsarModLoader.Utilities.Messaging.Echo(PhotonTargets.All, "Ship Flagged!" + " (due to killing unarmed civilian ship in a public station)");
                 PLEncounterManager.Instance.PlayerShip.IsFlagged = true;
@@ -47,7 +47,7 @@ namespace Hard_Mode
     {
         static void Postfix(int HubID) // This will make using a free warp gate punish you
         {
-            if (PhotonNetwork.isMasterClient && FlagWarp.warpflag && FlagWarp.target == HubID)
+            if (PhotonNetwork.isMasterClient && FlagWarp.warpflag && FlagWarp.target == HubID && PLEncounterManager.Instance.PlayerShip != null && !PLEncounterManager.Instance.PlayerShip.IsFlagged)
             {
                 PLServer.Instance.photonView.RPC("AddCrewWarning", PhotonTargets.All, new object[]
                         {
@@ -68,7 +68,7 @@ namespace Hard_Mode
     {
         static void Postfix(int cost) // This will make the free repair flag you
         {
-            if (PhotonNetwork.isMasterClient && cost == 0)
+            if (PhotonNetwork.isMasterClient && cost == 0 && PLEncounterManager.Instance.PlayerShip != null && !PLEncounterManager.Instance.PlayerShip.IsFlagged)
             {
                 PLServer.Instance.photonView.RPC("AddCrewWarning", PhotonTargets.All, new object[]
                             {

@@ -44,7 +44,7 @@ namespace Hard_Mode
                 });
                 if (Time.time - LastGalaxySync > 30)//Syncs the discovered sectors with all clients every 30 seconds
                 {
-                    foreach (PLSectorInfo sector in PLGlobal.Instance.Galaxy.AllSectorInfos.Values) 
+                    foreach (PLSectorInfo sector in PLGlobal.Instance.Galaxy.AllSectorInfos.Values)
                     {
                         if (sector.Discovered)
                         {
@@ -88,10 +88,9 @@ namespace Hard_Mode
                 }
                 else
                 {
-
                     foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase)))
                     {
-                        if (!(ship is PLHighRollersShipInfo) && ship.ShipTypeID != EShipType.E_ACADEMY)
+                        if (!(ship is PLHighRollersShipInfo) && ship.MyStats != null && ship.ShipTypeID != EShipType.E_ACADEMY)
                         {
                             if (!ship.IsDrone && !ship.IsInfected && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL && !__instance.InWarp) //This makes all boardable ships with the shields offline lose 10% of integrity per second
                             {
@@ -117,12 +116,11 @@ namespace Hard_Mode
                                 shield.Current -= chargelost > shield.CurrentMax/ 10? 10 : chargelost;
                             }
                             */
-
-                            if (!ship.GetIsPlayerShip() && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL && ship.ShipTypeID != EShipType.E_BEACON) //This should make attacking one ship all it's friends will attack you (execpt beacon)
+                            if (!ship.GetIsPlayerShip() && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL && ship.ShipTypeID != EShipType.E_BEACON && !ship.HasModifier(EShipModifierType.CORRUPTED)) //This should make attacking one ship all it's friends will attack you (execpt beacon)
                             {
                                 foreach (PLShipInfoBase Allied in FindObjectsOfType(typeof(PLShipInfoBase)))
                                 {
-                                    if (Allied.FactionID == ship.FactionID && !Allied.HostileShips.Contains(ship.ShipID) && Allied.ShipTypeID != EShipType.E_BEACON)
+                                    if (!(Allied is PLHighRollersShipInfo) && Allied.ShipTypeID != EShipType.E_ACADEMY && Allied.MyStats != null && Allied.FactionID == ship.FactionID && !Allied.HostileShips.Contains(ship.ShipID) && Allied.ShipTypeID != EShipType.E_BEACON && !Allied.HasModifier(EShipModifierType.CORRUPTED))
                                     {
                                         if (Allied.GetIsPlayerShip())
                                         {
@@ -156,29 +154,31 @@ namespace Hard_Mode
                             {
                                 ship.Ship_WarpOutNow();
                             }
-                        }
-                        if (!ship.GetIsPlayerShip()) //This part is to prevent too high level thrusters (that normally make enemy miss all shots) and prevent components above level 32 
-                        {
-                            foreach (PLShipComponent component in ship.MyStats.GetComponentsOfType(ESlotType.E_COMP_THRUSTER))
+                            if (!ship.GetIsPlayerShip() && ship.MyStats != null) //This part is to prevent too high level thrusters (that normally make enemy miss all shots) and prevent components above level 32 
                             {
-                                if (component.Level > 9) component.Level = 9;
+                                foreach (PLShipComponent component in ship.MyStats.GetComponentsOfType(ESlotType.E_COMP_THRUSTER))
+                                {
+                                    if (component.Level > 9) component.Level = 9;
+                                }
+                                foreach (PLShipComponent component in ship.MyStats.GetComponentsOfType(ESlotType.E_COMP_INERTIA_THRUSTER))
+                                {
+                                    if (component.Level > 9) component.Level = 9;
+                                }
                             }
-                            foreach (PLShipComponent component in ship.MyStats.GetComponentsOfType(ESlotType.E_COMP_INERTIA_THRUSTER))
+                            if (ship.MyStats != null)
                             {
-                                if (component.Level > 9) component.Level = 9;
+                                foreach (PLShipComponent component in ship.MyStats.AllComponents)
+                                {
+                                    if (component.Level > 31) component.Level = 31;
+                                }
                             }
-                        }
-                        foreach (PLShipComponent component in ship.MyStats.AllComponents)
-                        {
-                            if (component.Level > 31) component.Level = 31;
+                            //This will make drone call for help to protect sector if too weak also civilians will call for help if in danger
+                            if ((((ship.ShipTypeID == EShipType.E_WDDRONE1 || ship.ShipTypeID == EShipType.E_WDDRONE2 || ship.ShipTypeID == EShipType.E_WDDRONE3 || ship.ShipTypeID == EShipType.E_REPAIR_DRONE) && ship.TargetShip != null && ship.TargetShip.GetCombatLevel() > ship.GetCombatLevel() * 1.5) || (ship.ShipTypeID == EShipType.E_CIVILIAN_FUEL && ship.AlertLevel > 1)) && !PLServer.Instance.LongRangeCommsDisabled && ship.FactionID != 6)
+                            {
+                                ship.DistressSignalActive = true;
+                            }
                         }
                     }
-                    timer = 1;
-                }
-                //This will make drone call for help to protect sector if too weak also civilians will call for help if in danger
-                if ((((__instance.ShipTypeID == EShipType.E_WDDRONE1 || __instance.ShipTypeID == EShipType.E_WDDRONE2 || __instance.ShipTypeID == EShipType.E_WDDRONE3 || __instance.ShipTypeID == EShipType.E_REPAIR_DRONE) && __instance.TargetShip != null && __instance.TargetShip.GetCombatLevel() > __instance.GetCombatLevel() * 1.5) || (__instance.ShipTypeID == EShipType.E_CIVILIAN_FUEL && __instance.AlertLevel > 1)) && !PLServer.Instance.LongRangeCommsDisabled && __instance.FactionID != 6)
-                {
-                    __instance.DistressSignalActive = true;
                 }
 
             }

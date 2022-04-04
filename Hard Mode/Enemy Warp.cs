@@ -8,7 +8,7 @@ namespace Hard_Mode
     {
         static void Prefix(PLShipInfoBase __instance)
         {
-            if (__instance.FactionID >= 0 && __instance.FactionID <= 3 && __instance.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && PhotonNetwork.isMasterClient) // This will decrease Your rep with the faction of the ship that escaped and your faction
+            if (__instance.FactionID >= 0 && __instance.FactionID <= 3 && __instance.HostileShips.Contains(PLEncounterManager.Instance.PlayerShip.ShipID) && PhotonNetwork.isMasterClient && PLEncounterManager.Instance.PlayerShip != null && PLEncounterManager.Instance.PlayerShip.HostileShips.Contains(__instance.ShipID) && !__instance.HasModifier(EShipModifierType.CORRUPTED)) // This will decrease Your rep with the faction of the ship that escaped and your faction
             {
                 if (__instance.GetModifiers() == (int)EShipModifierType.REPUTABLE)
                 {
