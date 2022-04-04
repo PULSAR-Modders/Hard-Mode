@@ -47,6 +47,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\AstarPathfindingProject.dll</HintPath>
     </Reference>
+    <Reference Include="CrewAILibraryBuild, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\CrewAILibraryBuild.dll</HintPath>
+    </Reference>
+    <Reference Include="Photon3Unity3D, Version=4.1.6.10, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\Photon3Unity3D.dll</HintPath>
+    </Reference>
     <Reference Include="PulsarModLoader">
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\PulsarModLoader.dll</HintPath>
     </Reference>
@@ -83,6 +91,7 @@
     <Compile Include="Better Biscuit Race.cs" />
     <Compile Include="Better Mines.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="Custom AI.cs" />
     <Compile Include="Custom Bounty Hunters.cs" />
     <Compile Include="Enemies.cs" />
     <Compile Include="Crimes.cs" />
