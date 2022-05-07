@@ -2,6 +2,7 @@
 using PulsarModLoader;
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 namespace Hard_Mode
 {
     public class Blindfolding
@@ -153,6 +154,117 @@ namespace Hard_Mode
                     {
                         sector.FactionStrength = 200 * PLGlobal.Instance.Galaxy.GenerationSettings.InfectionInitialStrength;
                     }
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLGalaxy), "GetPathToSector_CustomRangeAndLimits")]
+        class BountyHunterPath 
+        {
+            static void Postfix(PLSectorInfo inStartSector, PLSectorInfo inEndSector, float customWarpRange, bool onlyUseEmptySectors, ref List<PLSectorInfo> __result, PLGalaxy __instance)
+            {
+                if (PLServer.Instance.ActiveBountyHunter_TypeID != -1 && inStartSector.ID == PLServer.Instance.ActiveBountyHunter_SectorID && inEndSector == PLServer.GetCurrentSector())
+                {
+                    bool flag = false;
+                    List<PLSectorInfo> list = new List<PLSectorInfo>();
+                    List<PLSectorInfo> list2 = new List<PLSectorInfo>();
+                    PLSectorInfo plsectorInfo = null;
+                    float num = float.MaxValue;
+                    foreach (PLSectorInfo plsectorInfo2 in __instance.AllSectorInfos.Values)
+                    {
+                        plsectorInfo2.Category = NodeCategory.NODE_DEF;
+                        if (onlyUseEmptySectors && plsectorInfo2.VisualIndication == ESectorVisualIndication.NONE)
+                        {
+                            float num2 = Vector3.SqrMagnitude(inEndSector.Position - plsectorInfo2.Position);
+                            if (num2 < num)
+                            {
+                                num = num2;
+                                plsectorInfo = plsectorInfo2;
+                            }
+                        }
+                    }
+                    if (onlyUseEmptySectors)
+                    {
+                        inEndSector = plsectorInfo;
+                    }
+                    list.Clear();
+                    list.Add(null);
+                    list.Add(inStartSector);
+                    inStartSector.FCost = 0f;
+                    inStartSector.SearchParentNode = null;
+                    PLSectorInfo plsectorInfo3 = null;
+                    while (list.Count > 1 && !flag)
+                    {
+                        plsectorInfo3 = list[1];
+                        plsectorInfo3.Category = NodeCategory.NODE_CLOSED;
+                        list[1] = list[list.Count - 1];
+                        list.RemoveAt(list.Count - 1);
+                        int num3 = 1;
+                        for (; ; )
+                        {
+                            int num4 = num3;
+                            if (2 * num4 + 1 <= list.Count - 1)
+                            {
+                                if (list[num4].FCost >= list[2 * num4].FCost)
+                                {
+                                    num3 = 2 * num4;
+                                }
+                                if (list[num3].FCost >= list[2 * num4 + 1].FCost)
+                                {
+                                    num3 = 2 * num4 + 1;
+                                }
+                            }
+                            else if (2 * num4 <= list.Count - 1 && list[num4].FCost >= list[2 * num4].FCost)
+                            {
+                                num3 = 2 * num4;
+                            }
+                            if (num4 == num3)
+                            {
+                                break;
+                            }
+                            PLSectorInfo value = list[num4];
+                            list[num4] = list[num3];
+                            list[num3] = value;
+                        }
+                        if (plsectorInfo3 == inEndSector)
+                        {
+                            flag = true;
+                            break;
+                        }
+                        foreach (PLSectorInfo plsectorInfo4 in plsectorInfo3.Neighbors)
+                        {
+                            if ((!onlyUseEmptySectors || plsectorInfo4.VisualIndication == ESectorVisualIndication.NONE) && plsectorInfo4.Category != NodeCategory.NODE_CLOSED && (new Vector2(plsectorInfo3.Position.x, plsectorInfo3.Position.y) - new Vector2(plsectorInfo4.Position.x, plsectorInfo4.Position.y)).sqrMagnitude <= customWarpRange * customWarpRange)
+                            {
+                                float num5 = __instance.Heuristic(plsectorInfo4, plsectorInfo3);
+                                if (plsectorInfo4.Category == NodeCategory.NODE_DEF)
+                                {
+                                    if (!list.Contains(plsectorInfo4))
+                                    {
+                                        list.Add(plsectorInfo4);
+                                    }
+                                    plsectorInfo4.Category = NodeCategory.NODE_OPEN;
+                                    plsectorInfo4.SearchParentNode = plsectorInfo3;
+                                    float num6 = __instance.Heuristic(plsectorInfo4, inEndSector);
+                                    plsectorInfo4.GCost = plsectorInfo3.GCost + num6 * __instance.HWeight;
+                                    plsectorInfo4.HCost = num6 * __instance.HWeight;
+                                    plsectorInfo4.FCost = plsectorInfo4.GCost + plsectorInfo4.HCost * __instance.HWeight;
+                                    __instance.SortOpenList(ref list);
+                                }
+                                else if (plsectorInfo4.GCost > plsectorInfo3.GCost + num5)
+                                {
+                                    plsectorInfo4.GCost = plsectorInfo3.GCost + num5 * __instance.HWeight;
+                                    plsectorInfo4.FCost = plsectorInfo4.GCost + plsectorInfo4.HCost * __instance.HWeight;
+                                    plsectorInfo4.SearchParentNode = plsectorInfo3;
+                                    __instance.SortOpenList(ref list);
+                                }
+                            }
+                        }
+                    }
+                    if (flag)
+                    {
+                        __instance.PrepareSolution(ref list2, plsectorInfo3);
+                        list2.Reverse();
+                    }
+                    __result = list2;
                 }
             }
         }

@@ -12,20 +12,16 @@ namespace Hard_Mode
             switch (classID)
             {
                 case 1:
-                    AIPriority aipriority00 = new AIPriority(AIPriorityType.E_TWEAK, 82, 3);
+                    AIPriority aipriority00 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 32, 0);
                     dataInv.Priorities.Add(aipriority00);
-                    AIPriority aipriority01 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 32, 0);
+                    aipriority00.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 22, 0, false, 50));
+                    aipriority00.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
+                    aipriority00.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 2, false, 50));
+                    aipriority00.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 22, 4, true, 50));
+                    AIPriority aipriority01 = new AIPriority(AIPriorityType.E_TWEAK, 82, 3);
                     dataInv.Priorities.Add(aipriority01);
-                    aipriority01.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 22, 0, false, 50));
-                    aipriority01.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
-                    aipriority01.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 2, false, 50));
-                    aipriority01.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 22, 4, true, 50));
                     AIPriority aipriority02 = new AIPriority(AIPriorityType.E_MAIN, 5, 1);
                     dataInv.Priorities.Add(aipriority02);
-                    if (!enemyAI)
-                    {
-                        aipriority02.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 3, 4, false, 50));
-                    }
                     aipriority02.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 84, 3, true, 50));
                     aipriority02.Metadata.Add(new PLPriorityMetadata_Float(3, 1, "Range (m)"));
                     AIPriority aipriority03 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 67, 0);
@@ -89,15 +85,7 @@ namespace Hard_Mode
                     dataInv.Priorities.Add(aipriority014);
                     aipriority014.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 3, false, 50));
                     aipriority014.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 26, 0, true, 50));
-                    aipriority014.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 58, 4, false, 50));
-                    if (!enemyAI)
-                    {
-                        aipriority014.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 5, 5, false, 50));
-                    }
-                    if (!enemyAI)
-                    {
-                        aipriority014.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 6, 3, false, 50));
-                    }
+                    aipriority014.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 58, 5, false, 50));
                     AIPriority aipriority015 = new AIPriority(AIPriorityType.E_MAIN, 4, 0);
                     dataInv.Priorities.Add(aipriority015);
                     aipriority015.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 0));
@@ -128,182 +116,173 @@ namespace Hard_Mode
                     aipriority018.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 24, 2, false, 20));
                     break;
                 case 2:
-                    AIPriority aipriority10 = new AIPriority(AIPriorityType.E_TWEAK, 82, 3);
+                    AIPriority aipriority10 = new AIPriority(AIPriorityType.E_TWEAK, 21, 1);
                     dataInv.Priorities.Add(aipriority10);
-                    AIPriority aipriority11 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 3, 3);
+                    aipriority10.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 5, false, 50));
+                    AIPriority aipriority11 = new AIPriority(AIPriorityType.E_TWEAK, 20, 5);
                     dataInv.Priorities.Add(aipriority11);
-                    aipriority11.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
-                    AIPriority aipriority12 = new AIPriority(AIPriorityType.E_PROGRAM, 32, 2);
+                    AIPriority aipriority12 = new AIPriority(AIPriorityType.E_TWEAK, 82, 3);
                     dataInv.Priorities.Add(aipriority12);
-                    AIPriority aipriority13 = new AIPriority(AIPriorityType.E_PROGRAM, 28, 2);
+                    AIPriority aipriority13 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 3, 3);
                     dataInv.Priorities.Add(aipriority13);
-                    AIPriority aipriority14 = new AIPriority(AIPriorityType.E_PROGRAM, 27, 2);
+                    aipriority13.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
+                    AIPriority aipriority14 = new AIPriority(AIPriorityType.E_PROGRAM, 32, 2);
                     dataInv.Priorities.Add(aipriority14);
-                    AIPriority aipriority15 = new AIPriority(AIPriorityType.E_TWEAK, 20, 2);
+                    AIPriority aipriority15 = new AIPriority(AIPriorityType.E_PROGRAM, 28, 2);
                     dataInv.Priorities.Add(aipriority15);
-                    aipriority15.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 49, 0, false, 50));
-                    AIPriority aipriority16 = new AIPriority(AIPriorityType.E_MAIN, 4, 2);
+                    AIPriority aipriority16 = new AIPriority(AIPriorityType.E_PROGRAM, 27, 2);
                     dataInv.Priorities.Add(aipriority16);
-                    aipriority16.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 0));
-                    AIPriority aipriority17 = new AIPriority(AIPriorityType.E_TWEAK, 52, 1);
+                    AIPriority aipriority17 = new AIPriority(AIPriorityType.E_PROGRAM, 22, 2);
                     dataInv.Priorities.Add(aipriority17);
-                    AIPriority aipriority18 = new AIPriority(AIPriorityType.E_TWEAK, 21, 1);
+                    aipriority17.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, false, 50));
+                    aipriority17.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 0, true, 100));
+                    AIPriority aipriority18 = new AIPriority(AIPriorityType.E_MAIN, 4, 2);
                     dataInv.Priorities.Add(aipriority18);
-                    aipriority18.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 68, 4, false, 0));
-                    if (!enemyAI)
-                    {
-                        aipriority18.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 4, 4, false, 50));
-                    }
-                    aipriority18.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 3, false, 150));
-                    aipriority18.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 1, true, 50));
-                    aipriority18.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 2, false, 50));
-                    AIPriority aipriority19 = new AIPriority(AIPriorityType.E_MAIN, 5, 1);
+                    aipriority18.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 0));
+                    AIPriority aipriority19 = new AIPriority(AIPriorityType.E_TWEAK, 52, 1);
                     dataInv.Priorities.Add(aipriority19);
-                    if (!enemyAI)
-                    {
-                        aipriority19.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 3, 4, false, 50));
-                    }
-                    aipriority19.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 84, 3, true, 50));
-                    aipriority19.Metadata.Add(new PLPriorityMetadata_Float(3, 1, "Range (m)"));
-                    AIPriority aipriority110 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 72, 0);
+                    AIPriority aipriority110 = new AIPriority(AIPriorityType.E_PROGRAM, 16, 1);
                     dataInv.Priorities.Add(aipriority110);
-                    aipriority110.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 32, 0, true, 1));
-                    aipriority110.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 79, 5, false, 1));
-                    AIPriority aipriority111 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 67, 0);
+                    aipriority110.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    AIPriority aipriority111 = new AIPriority(AIPriorityType.E_MAIN, 5, 1);
                     dataInv.Priorities.Add(aipriority111);
-                    aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 50));
-                    aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
-                    aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 72, 0, true, 8));
-                    aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 71, 0, true, 10));
-                    aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 89, 1, false, 45));
-                    AIPriority aipriority112 = new AIPriority(AIPriorityType.E_MAIN, 66, 3);
+                    if (!enemyAI)
+                    {
+                        aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 3, 4, false, 50));
+                    }
+                    aipriority111.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 84, 3, true, 50));
+                    aipriority111.Metadata.Add(new PLPriorityMetadata_Float(3, 1, "Range (m)"));
+                    AIPriority aipriority112 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 72, 0);
                     dataInv.Priorities.Add(aipriority112);
-                    aipriority112.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 69, 0, true, 50));
-                    aipriority112.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 70, 0, true, 50));
-                    AIPriority aipriority113 = new AIPriority(AIPriorityType.E_MAIN, 65, 0);
+                    aipriority112.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 32, 0, true, 1));
+                    aipriority112.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 79, 5, false, 1));
+                    AIPriority aipriority113 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 67, 0);
                     dataInv.Priorities.Add(aipriority113);
-                    aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, true, 50));
-                    if (!enemyAI)
-                    {
-                        aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 0, 3, false, 50));
-                    }
-                    AIPriority aipriority114 = new AIPriority(AIPriorityType.E_MAIN, 64, 0);
+                    aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 50));
+                    aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
+                    aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 72, 0, true, 8));
+                    aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 71, 0, true, 10));
+                    aipriority113.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 89, 1, false, 45));
+                    AIPriority aipriority114 = new AIPriority(AIPriorityType.E_MAIN, 66, 3);
                     dataInv.Priorities.Add(aipriority114);
-                    aipriority114.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 67, 4, false, 50));
-                    AIPriority aipriority115 = new AIPriority(AIPriorityType.E_MAIN, 63, 2);
+                    aipriority114.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 69, 0, true, 50));
+                    aipriority114.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 70, 0, true, 50));
+                    AIPriority aipriority115 = new AIPriority(AIPriorityType.E_MAIN, 65, 0);
                     dataInv.Priorities.Add(aipriority115);
-                    aipriority115.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 65, 0, true, 50));
-                    aipriority115.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 66, 0, true, 50));
-                    AIPriority aipriority116 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 61, 0);
+                    aipriority115.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, true, 50));
+                    if (!enemyAI)
+                    {
+                        aipriority115.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 0, 3, false, 50));
+                    }
+                    AIPriority aipriority116 = new AIPriority(AIPriorityType.E_MAIN, 64, 0);
                     dataInv.Priorities.Add(aipriority116);
-                    aipriority116.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 62, 0, true, 50));
-                    aipriority116.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 0, false, 50));
-                    if (!enemyAI)
-                    {
-                        aipriority116.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 2, 3, false, 50));
-                    }
-                    AIPriority aipriority117 = new AIPriority(AIPriorityType.E_MAIN, 60, 3);
+                    aipriority116.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 67, 4, false, 50));
+                    AIPriority aipriority117 = new AIPriority(AIPriorityType.E_MAIN, 63, 2);
                     dataInv.Priorities.Add(aipriority117);
-                    aipriority117.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 60, 0, true, 0));
-                    aipriority117.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 61, 0, true, 0));
-                    aipriority117.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 68, 0, false, 0));
-                    aipriority117.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, false, 0));
-                    AIPriority aipriority118 = new AIPriority(AIPriorityType.E_MAIN, 58, 0);
+                    aipriority117.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 65, 0, true, 50));
+                    aipriority117.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 66, 0, true, 50));
+                    AIPriority aipriority118 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 61, 0);
                     dataInv.Priorities.Add(aipriority118);
-                    aipriority118.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 57, 0, true, 50));
-                    aipriority118.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 56, 3, false, 50));
-                    AIPriority aipriority119 = new AIPriority(AIPriorityType.E_TWEAK, 51, 2);
+                    aipriority118.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 62, 0, true, 50));
+                    aipriority118.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 0, false, 50));
+                    if (!enemyAI)
+                    {
+                        aipriority118.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 2, 3, false, 50));
+                    }
+                    AIPriority aipriority119 = new AIPriority(AIPriorityType.E_MAIN, 60, 3);
                     dataInv.Priorities.Add(aipriority119);
-                    if (!enemyAI)
-                    {
-                        aipriority119.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 2, 2, false, 50));
-                    }
-                    aipriority119.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 53, 0, true, 50));
-                    AIPriority aipriority120 = new AIPriority(AIPriorityType.E_MAIN, 49, 0);
+                    aipriority119.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 60, 0, true, 0));
+                    aipriority119.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 61, 0, true, 0));
+                    aipriority119.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 68, 0, false, 0));
+                    aipriority119.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, false, 0));
+                    AIPriority aipriority120 = new AIPriority(AIPriorityType.E_MAIN, 58, 0);
                     dataInv.Priorities.Add(aipriority120);
-                    aipriority120.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 52, 0, true, 50));
-                    aipriority120.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 51, 5, false, 50));
-                    aipriority120.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 12, 4, false, 2));
-                    AIPriority aipriority121 = new AIPriority(AIPriorityType.E_PROGRAM, 35, 1);
+                    aipriority120.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 57, 0, true, 50));
+                    aipriority120.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 56, 3, false, 50));
+                    AIPriority aipriority121 = new AIPriority(AIPriorityType.E_TWEAK, 51, 2);
                     dataInv.Priorities.Add(aipriority121);
-                    aipriority121.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 10));
-                    aipriority121.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority121.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
-                    AIPriority aipriority122 = new AIPriority(AIPriorityType.E_PROGRAM, 34, 1);
-                    dataInv.Priorities.Add(aipriority122);
-                    aipriority122.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority122.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    AIPriority aipriority123 = new AIPriority(AIPriorityType.E_PROGRAM, 33, 0);
-                    dataInv.Priorities.Add(aipriority123);
-                    AIPriority aipriority124 = new AIPriority(AIPriorityType.E_PROGRAM, 31, 1);
-                    dataInv.Priorities.Add(aipriority124);
-                    aipriority124.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 72, 0, true, 5));
-                    aipriority124.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    AIPriority aipriority125 = new AIPriority(AIPriorityType.E_PROGRAM, 30, 1);
-                    dataInv.Priorities.Add(aipriority125);
-                    aipriority125.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 32, 0, true, 0));
-                    aipriority125.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
-                    aipriority125.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    AIPriority aipriority126 = new AIPriority(AIPriorityType.E_PROGRAM, 29, 1);
-                    dataInv.Priorities.Add(aipriority126);
-                    aipriority126.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 10));
-                    aipriority126.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority126.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
-                    AIPriority aipriority127 = new AIPriority(AIPriorityType.E_PROGRAM, 26, 1);
-                    dataInv.Priorities.Add(aipriority127);
-                    aipriority127.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 15));
-                    aipriority127.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority127.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 0, false, 75));
-                    AIPriority aipriority128 = new AIPriority(AIPriorityType.E_PROGRAM, 25, 1);
-                    dataInv.Priorities.Add(aipriority128);
-                    aipriority128.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 93, 0, false, 50));
-                    aipriority128.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    AIPriority aipriority129 = new AIPriority(AIPriorityType.E_PROGRAM, 24, 1);
-                    dataInv.Priorities.Add(aipriority129);
-                    aipriority129.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 1, true, 20));
-                    aipriority129.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 0, true, 75));
-                    AIPriority aipriority130 = new AIPriority(AIPriorityType.E_PROGRAM, 23, 1);
-                    dataInv.Priorities.Add(aipriority130);
-                    aipriority130.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 94, 0, true, 95));
-                    AIPriority aipriority131 = new AIPriority(AIPriorityType.E_PROGRAM, 22, 2);
-                    dataInv.Priorities.Add(aipriority131);
-                    aipriority131.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, false, 50));
-                    aipriority131.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 0, true, 100));
-                    AIPriority aipriority132 = new AIPriority(AIPriorityType.E_PROGRAM, 21, 0);
-                    dataInv.Priorities.Add(aipriority132);
-                    aipriority132.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, false, 50));
-                    aipriority132.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 87, 2, false, 100));
-                    AIPriority aipriority133 = new AIPriority(AIPriorityType.E_PROGRAM, 20, 1);
-                    dataInv.Priorities.Add(aipriority133);
-                    aipriority133.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority133.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    AIPriority aipriority134 = new AIPriority(AIPriorityType.E_PROGRAM, 19, 0);
-                    dataInv.Priorities.Add(aipriority134);
-                    aipriority134.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, false, 50));
-                    aipriority134.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 27, 2, false, 1));
-                    aipriority134.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 27, 1, false, 0));
-                    AIPriority aipriority135 = new AIPriority(AIPriorityType.E_TWEAK, 18, 0);
-                    dataInv.Priorities.Add(aipriority135);
                     if (!enemyAI)
                     {
-                        aipriority135.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 2, 0, false, 50));
+                        aipriority121.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 2, 2, false, 50));
                     }
-                    aipriority135.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 92, 2, true, 50));
-                    aipriority135.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 28, 1, false, 0));
+                    aipriority121.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 53, 0, true, 50));
+                    AIPriority aipriority122 = new AIPriority(AIPriorityType.E_MAIN, 49, 0);
+                    dataInv.Priorities.Add(aipriority122);
+                    aipriority122.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 52, 0, true, 50));
+                    aipriority122.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 51, 5, false, 50));
+                    aipriority122.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 12, 4, false, 2));
+                    AIPriority aipriority123 = new AIPriority(AIPriorityType.E_PROGRAM, 35, 1);
+                    dataInv.Priorities.Add(aipriority123);
+                    aipriority123.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 10));
+                    aipriority123.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    aipriority123.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
+                    AIPriority aipriority124 = new AIPriority(AIPriorityType.E_PROGRAM, 34, 1);
+                    dataInv.Priorities.Add(aipriority124);
+                    aipriority124.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    aipriority124.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
+                    AIPriority aipriority125 = new AIPriority(AIPriorityType.E_PROGRAM, 33, 0);
+                    dataInv.Priorities.Add(aipriority125);
+                    AIPriority aipriority126 = new AIPriority(AIPriorityType.E_PROGRAM, 31, 1);
+                    dataInv.Priorities.Add(aipriority126);
+                    aipriority126.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 72, 0, true, 5));
+                    aipriority126.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    AIPriority aipriority127 = new AIPriority(AIPriorityType.E_PROGRAM, 30, 1);
+                    dataInv.Priorities.Add(aipriority127);
+                    aipriority127.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 32, 0, true, 0));
+                    aipriority127.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
+                    aipriority127.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    AIPriority aipriority128 = new AIPriority(AIPriorityType.E_PROGRAM, 29, 1);
+                    dataInv.Priorities.Add(aipriority128);
+                    aipriority128.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 10));
+                    aipriority128.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    aipriority128.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
+                    AIPriority aipriority129 = new AIPriority(AIPriorityType.E_PROGRAM, 26, 1);
+                    dataInv.Priorities.Add(aipriority129);
+                    aipriority129.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 15));
+                    aipriority129.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    aipriority129.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 0, false, 75));
+                    AIPriority aipriority130 = new AIPriority(AIPriorityType.E_PROGRAM, 25, 1);
+                    dataInv.Priorities.Add(aipriority130);
+                    aipriority130.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 93, 0, false, 50));
+                    aipriority130.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    AIPriority aipriority131 = new AIPriority(AIPriorityType.E_PROGRAM, 24, 1);
+                    dataInv.Priorities.Add(aipriority131);
+                    aipriority131.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 1, true, 20));
+                    aipriority131.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 0, true, 75));
+                    AIPriority aipriority132 = new AIPriority(AIPriorityType.E_PROGRAM, 23, 1);
+                    dataInv.Priorities.Add(aipriority132);
+                    aipriority132.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 94, 0, true, 95));
+                    AIPriority aipriority133 = new AIPriority(AIPriorityType.E_PROGRAM, 21, 0);
+                    dataInv.Priorities.Add(aipriority133);
+                    aipriority133.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, false, 50));
+                    aipriority133.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 87, 2, false, 100));
+                    AIPriority aipriority134 = new AIPriority(AIPriorityType.E_PROGRAM, 20, 1);
+                    dataInv.Priorities.Add(aipriority134);
+                    aipriority134.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    aipriority134.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
+                    AIPriority aipriority135 = new AIPriority(AIPriorityType.E_PROGRAM, 19, 0);
+                    dataInv.Priorities.Add(aipriority135);
+                    aipriority135.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 2, 0, false, 50));
+                    aipriority135.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 27, 2, false, 1));
                     aipriority135.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 27, 1, false, 0));
-                    AIPriority aipriority136 = new AIPriority(AIPriorityType.E_PROGRAM, 18, 1);
+                    AIPriority aipriority136 = new AIPriority(AIPriorityType.E_TWEAK, 18, 0);
                     dataInv.Priorities.Add(aipriority136);
-                    aipriority136.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 3, 0, true, 80));
-                    aipriority136.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority136.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    AIPriority aipriority137 = new AIPriority(AIPriorityType.E_PROGRAM, 17, 1);
+                    if (!enemyAI)
+                    {
+                        aipriority136.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 2, 0, false, 50));
+                    }
+                    aipriority136.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 92, 2, true, 50));
+                    aipriority136.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 28, 1, false, 0));
+                    aipriority136.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 27, 1, false, 0));
+                    AIPriority aipriority137 = new AIPriority(AIPriorityType.E_PROGRAM, 18, 1);
                     dataInv.Priorities.Add(aipriority137);
+                    aipriority137.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 3, 0, true, 80));
                     aipriority137.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority137.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    AIPriority aipriority138 = new AIPriority(AIPriorityType.E_PROGRAM, 16, 1);
+                    AIPriority aipriority138 = new AIPriority(AIPriorityType.E_PROGRAM, 17, 1);
                     dataInv.Priorities.Add(aipriority138);
                     aipriority138.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
+                    aipriority138.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
                     AIPriority aipriority139 = new AIPriority(AIPriorityType.E_PROGRAM, 15, 1);
                     dataInv.Priorities.Add(aipriority139);
                     aipriority139.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
@@ -313,8 +292,6 @@ namespace Hard_Mode
                     dataInv.Priorities.Add(aipriority140);
                     aipriority140.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
                     aipriority140.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 0, true, 50));
-                    aipriority140.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
-                    aipriority140.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
                     AIPriority aipriority141 = new AIPriority(AIPriorityType.E_PROGRAM, 13, 1);
                     dataInv.Priorities.Add(aipriority141);
                     aipriority141.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 72, 0, true, 5));
@@ -322,16 +299,16 @@ namespace Hard_Mode
                     AIPriority aipriority142 = new AIPriority(AIPriorityType.E_PROGRAM, 12, 1);
                     dataInv.Priorities.Add(aipriority142);
                     aipriority142.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    AIPriority aipriority143 = new AIPriority(AIPriorityType.E_MAIN, 11, 0);
+                    AIPriority aipriority143 = new AIPriority(AIPriorityType.E_PROGRAM, 11, 1);
                     dataInv.Priorities.Add(aipriority143);
-                    aipriority143.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
-                    aipriority143.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 52, 0, false, 50));
-                    aipriority143.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 13, 3, true, 30));
-                    aipriority143.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 13, 2, true, 55));
-                    aipriority143.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 13, 1, true, 80));
-                    AIPriority aipriority144 = new AIPriority(AIPriorityType.E_PROGRAM, 11, 1);
+                    aipriority143.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
+                    AIPriority aipriority144 = new AIPriority(AIPriorityType.E_MAIN, 11, 0);
                     dataInv.Priorities.Add(aipriority144);
-                    aipriority144.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
+                    aipriority144.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
+                    aipriority144.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 52, 0, false, 50));
+                    aipriority144.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 13, 3, true, 30));
+                    aipriority144.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 13, 2, true, 55));
+                    aipriority144.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 13, 1, true, 80));
                     AIPriority aipriority145 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 10, 0);
                     dataInv.Priorities.Add(aipriority145);
                     aipriority145.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
@@ -352,7 +329,7 @@ namespace Hard_Mode
                     dataInv.Priorities.Add(aipriority148);
                     AIPriority aipriority149 = new AIPriority(AIPriorityType.E_PROGRAM, 7, 1);
                     dataInv.Priorities.Add(aipriority149);
-                    aipriority149.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 32, 1, false, 5));
+                    aipriority149.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 32, 1, false, 1));
                     aipriority149.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 32, 0, true, 0));
                     aipriority149.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 7, 0, true, 20));
                     aipriority149.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
@@ -461,15 +438,7 @@ namespace Hard_Mode
                     AIPriority aipriority28 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 68, 0);
                     dataInv.Priorities.Add(aipriority28);
                     aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 50, 0, false, 3));
-                    aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
-                    aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 73, 0, true, 50));
-                    if (!enemyAI)
-                    {
-                        aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CAPTAINS_ORDER, 4, 4, false, 50));
-                    }
-                    aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 4, false, 200));
+                    aipriority28.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 73, 5, false, 50));
                     AIPriority aipriority29 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 67, 0);
                     dataInv.Priorities.Add(aipriority29);
                     aipriority29.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
@@ -584,70 +553,41 @@ namespace Hard_Mode
                     aipriority228.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 24, 2, false, 20));
                     break;
                 case 4:
-                    AIPriority aipriority30 = new AIPriority(AIPriorityType.E_TWEAK, 48, 5);
+                    AIPriority aipriority30 = new AIPriority(AIPriorityType.E_TWEAK, 71, 5);
                     dataInv.Priorities.Add(aipriority30);
-                    aipriority30.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 1, true, 50));
-                    aipriority30.Metadata.Add(new PLPriorityMetadata_Float(15, 1, "Player Override Time"));
-                    AIPriority aipriority31 = new AIPriority(AIPriorityType.E_TWEAK, 14, 3);
+                    aipriority30.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 0, false, 90));
+                    AIPriority aipriority31 = new AIPriority(AIPriorityType.E_TWEAK, 48, 5);
                     dataInv.Priorities.Add(aipriority31);
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 5, true, 60));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 68, 0, false, 0));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 90, 0, false, 50));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 10));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 1, true, 20));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 2, true, 40));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 3, true, 60));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 91, 4, true, 50));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 2, false, 80));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 0, false, 90));
-                    aipriority31.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 1, false, 50));
-                    AIPriority aipriority32 = new AIPriority(AIPriorityType.E_TWEAK, 82, 3);
+                    aipriority31.Metadata.Add(new PLPriorityMetadata_Float(15, 1, "Player Override Time"));
+                    AIPriority aipriority32 = new AIPriority(AIPriorityType.E_TWEAK, 47, 5);
                     dataInv.Priorities.Add(aipriority32);
-                    AIPriority aipriority33 = new AIPriority(AIPriorityType.E_TWEAK, 46, 3);
+                    aipriority32.Metadata.Add(new PLPriorityMetadata_Float(15, 1, "Player Override Time"));
+                    AIPriority aipriority33 = new AIPriority(AIPriorityType.E_TWEAK, 46, 5);
                     dataInv.Priorities.Add(aipriority33);
-                    aipriority33.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 1, false, 50));
-                    aipriority33.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 68, 5, false, 0));
-                    aipriority33.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 30, 5, false, 50));
                     aipriority33.Metadata.Add(new PLPriorityMetadata_Float(15, 1, "Player Override Time"));
-                    AIPriority aipriority34 = new AIPriority(AIPriorityType.E_TWEAK, 45, 3);
+                    AIPriority aipriority34 = new AIPriority(AIPriorityType.E_TWEAK, 45, 5);
                     dataInv.Priorities.Add(aipriority34);
-                    aipriority34.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 1, false, 50));
-                    aipriority34.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 1, true, 50));
                     aipriority34.Metadata.Add(new PLPriorityMetadata_Float(15, 1, "Player Override Time"));
-                    AIPriority aipriority35 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 3, 3);
+                    AIPriority aipriority35 = new AIPriority(AIPriorityType.E_TWEAK, 82, 3);
                     dataInv.Priorities.Add(aipriority35);
-                    aipriority35.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
-                    aipriority35.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 58, 4, false, 50));
-                    AIPriority aipriority36 = new AIPriority(AIPriorityType.E_TWEAK, 47, 2);
+                    AIPriority aipriority36 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 3, 3);
                     dataInv.Priorities.Add(aipriority36);
-                    aipriority36.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 0, false, 50));
-                    aipriority36.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority36.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 3, false, 75));
-                    aipriority36.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 4, false, 50));
-                    aipriority36.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 1, 5, false, 25));
-                    aipriority36.Metadata.Add(new PLPriorityMetadata_Float(15, 1, "Player Override Time"));
-                    AIPriority aipriority37 = new AIPriority(AIPriorityType.E_TWEAK, 78, 1);
+                    aipriority36.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 20, 0, false, 50));
+                    aipriority36.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 58, 4, false, 50));
+                    AIPriority aipriority37 = new AIPriority(AIPriorityType.E_TWEAK, 17, 0);
                     dataInv.Priorities.Add(aipriority37);
-                    aipriority37.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority37.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
-                    AIPriority aipriority38 = new AIPriority(AIPriorityType.E_TWEAK, 76, 1);
+                    aipriority37.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 68, 0, false, 0));
+                    aipriority37.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 1, false, 50));
+                    aipriority37.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 5, false, 90));
+                    aipriority37.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 2, false, 60));
+                    AIPriority aipriority38 = new AIPriority(AIPriorityType.E_TWEAK, 80, 1);
                     dataInv.Priorities.Add(aipriority38);
-                    aipriority38.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority38.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
-                    AIPriority aipriority39 = new AIPriority(AIPriorityType.E_TWEAK, 75, 1);
+                    AIPriority aipriority39 = new AIPriority(AIPriorityType.E_TWEAK, 78, 1);
                     dataInv.Priorities.Add(aipriority39);
-                    aipriority39.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 99, 0, false, 50));
-                    aipriority39.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 0, false, 50));
-                    aipriority39.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority39.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
                     AIPriority aipriority310 = new AIPriority(AIPriorityType.E_TWEAK, 74, 1);
                     dataInv.Priorities.Add(aipriority310);
-                    aipriority310.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 99, 0, false, 50));
-                    aipriority310.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
                     AIPriority aipriority311 = new AIPriority(AIPriorityType.E_TWEAK, 73, 1);
                     dataInv.Priorities.Add(aipriority311);
-                    aipriority311.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority311.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
                     AIPriority aipriority312 = new AIPriority(AIPriorityType.E_MAIN, 5, 1);
                     dataInv.Priorities.Add(aipriority312);
                     if (!enemyAI)
@@ -663,33 +603,14 @@ namespace Hard_Mode
                     dataInv.Priorities.Add(aipriority314);
                     aipriority314.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 97, 0, false, 50));
                     aipriority314.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 95, 5, false, 50));
-                    AIPriority aipriority315 = new AIPriority(AIPriorityType.E_TWEAK, 80, 1);
+                    AIPriority aipriority315 = new AIPriority(AIPriorityType.E_TWEAK, 79, 0);
                     dataInv.Priorities.Add(aipriority315);
-                    aipriority315.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 0, false, 50));
-                    aipriority315.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority315.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    aipriority315.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
-                    AIPriority aipriority316 = new AIPriority(AIPriorityType.E_TWEAK, 79, 1);
+                    AIPriority aipriority316 = new AIPriority(AIPriorityType.E_TWEAK, 77, 0);
                     dataInv.Priorities.Add(aipriority316);
-                    aipriority316.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 0, false, 50));
-                    aipriority316.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority316.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 27, 0, true, 0));
-                    aipriority316.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
-                    AIPriority aipriority317 = new AIPriority(AIPriorityType.E_TWEAK, 77, 1);
+                    AIPriority aipriority317 = new AIPriority(AIPriorityType.E_TWEAK, 76, 0);
                     dataInv.Priorities.Add(aipriority317);
-                    aipriority317.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 0, false, 50));
-                    aipriority317.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 96, 0, true, 50));
-                    aipriority317.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 6, 0, false, 50));
-                    aipriority317.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 0, true, 5));
-                    AIPriority aipriority318 = new AIPriority(AIPriorityType.E_TWEAK, 71, 0);
+                    AIPriority aipriority318 = new AIPriority(AIPriorityType.E_TWEAK, 75, 0);
                     dataInv.Priorities.Add(aipriority318);
-                    aipriority318.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
-                    aipriority318.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 0, false, 80));
-                    aipriority318.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 3, 0, true, 70));
-                    aipriority318.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 16, 0, false, 25));
-                    aipriority318.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 90, 5, false, 50));
-                    aipriority318.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 3, false, 125));
-                    aipriority318.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 91, 2, true, 50));
                     AIPriority aipriority319 = new AIPriority(AIPriorityType.E_CLASS_MAIN, 67, 0);
                     dataInv.Priorities.Add(aipriority319);
                     aipriority319.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 0, true, 50));
@@ -735,26 +656,11 @@ namespace Hard_Mode
                     dataInv.Priorities.Add(aipriority327);
                     aipriority327.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 19, 0, true, 50));
                     aipriority327.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 83, 3, false, 50));
-                    AIPriority aipriority328 = new AIPriority(AIPriorityType.E_TWEAK, 17, 0);
+                    AIPriority aipriority328 = new AIPriority(AIPriorityType.E_TWEAK, 14, 0);
                     dataInv.Priorities.Add(aipriority328);
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 5, true, 10));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 4, true, 30));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 68, 0, false, 0));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 0, false, 125));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 0, true, 25));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 91, 0, true, 50));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 64, 1, false, 50));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 5, false, 90));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 2, false, 60));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 1, true, 75));
-                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 27, 3, true, 0));
-                    AIPriority aipriority329 = new AIPriority(AIPriorityType.E_TWEAK, 13, 3);
+                    aipriority328.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 5, true, 60));
+                    AIPriority aipriority329 = new AIPriority(AIPriorityType.E_TWEAK, 13, 0);
                     dataInv.Priorities.Add(aipriority329);
-                    aipriority329.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 75, 1, true, 80));
-                    aipriority329.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 77, 5, true, 10));
-                    aipriority329.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 91, 0, true, 50));
-                    aipriority329.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_CUSTOM, 2, 5, false, 90));
-                    aipriority329.Overrides.Add(new PLAIPriorityOverride(EPriorityOverrideType.E_ALERT_LEVEL, 0, 2, false, 50));
                     aipriority329.Metadata.Add(new PLPriorityMetadata_Float(15, 1, "Player Override Time"));
                     AIPriority aipriority330 = new AIPriority(AIPriorityType.E_MAIN, 11, 0);
                     dataInv.Priorities.Add(aipriority330);
