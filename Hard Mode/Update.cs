@@ -42,7 +42,7 @@ namespace Hard_Mode
                     Options.MasterHasMod,
                     Options.WeakReactor,
                 });
-                if (Time.time - LastGalaxySync > 30)//Syncs the discovered sectors with all clients every 30 seconds
+                if (Time.time - LastGalaxySync > 30 && PLServer.GetCurrentSector().VisualIndication != ESectorVisualIndication.ABYSS)//Syncs the discovered sectors with all clients every 30 seconds
                 {
                     foreach (PLSectorInfo sector in PLGlobal.Instance.Galaxy.AllSectorInfos.Values)
                     {
@@ -86,7 +86,7 @@ namespace Hard_Mode
                 {
                     timer -= Time.deltaTime;
                 }
-                else
+                else if(PLServer.GetCurrentSector().VisualIndication != ESectorVisualIndication.ABYSS)
                 {
                     foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase)))
                     {
@@ -186,8 +186,8 @@ namespace Hard_Mode
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //This should make the enemy warp faster, not just waiting the basically dead to jump
         {
             List<CodeInstruction> instructionsList = Instructions.ToList();
-            instructionsList[579].operand = 0.2f;
-            instructionsList[560].operand = 3f;
+            instructionsList[583].operand = 0.2f;
+            instructionsList[592].operand = 3f;
             return instructionsList.AsEnumerable();
         }
     }

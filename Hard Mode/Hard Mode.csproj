@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbyssCampaing.cs" />
     <Compile Include="Better Biscuit Race.cs" />
     <Compile Include="Better Mines.cs" />
     <Compile Include="Commands.cs" />

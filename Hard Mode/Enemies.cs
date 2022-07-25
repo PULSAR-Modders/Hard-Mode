@@ -261,6 +261,13 @@ namespace Hard_Mode
                     __result += Mathf.Pow((float)plshipComponent.GetScaledMarketPrice(true), 0.8f) * 0.001f;
                     if (plshipComponent.ActualSlotType == ESlotType.E_COMP_MAINTURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_TURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_AUTO_TURRET)
                     {
+                        if (plshipComponent is PLAbyssTurret)
+                        {
+                            PLAbyssTurret abyssturret = plshipComponent as PLAbyssTurret;
+                            __result += (abyssturret.damage_Normal * abyssturret.LevelMultiplier(0.15f,1f) * (abyssturret.ShipStats != null ? abyssturret.ShipStats.TurretDamageFactor : 1))/(abyssturret.FireDelay/ ((abyssturret.ShipStats != null) ? abyssturret.ShipStats.TurretChargeFactor : 1f)) * 0.1f * (1f - Mathf.Clamp01(abyssturret.HeatGeneratedOnFire * 2.2f / abyssturret.FireDelay));
+                            __result += abyssturret.TurretRange * 0.0005f;
+                            continue;
+                        }
                         PLTurret turret = plshipComponent as PLTurret;
                         __result += turret.GetDPS() * 0.1f * (1f - Mathf.Clamp01(turret.HeatGeneratedOnFire * 2.2f / turret.FireDelay));
                         __result += turret.TurretRange * 0.0005f;
