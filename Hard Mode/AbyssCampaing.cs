@@ -9,6 +9,31 @@ namespace Hard_Mode
 {
     internal class AbyssCampaing
     {
+        [HarmonyPatch(typeof(PLAbyssShipInfo),"Update")]
+        class AbyssPlayerShip 
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Increases the water damage range
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[437].operand = 0.7f;
+                return instructionsList.AsEnumerable();
+            }
+            static void Postfix(PLAbyssShipInfo __instance) 
+            {
+                __instance.Flood_EndingPos = __instance.Flood_StartingPos + new Vector3(0, 1.06f);
+            }
+        }
+        [HarmonyPatch(typeof(PLAbyssShipInfo), "AddHullBreach")]
+        class AbyssAddHullBreach
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Increases the water damage range
+            {
+                List<CodeInstruction> instructionsList = Instructions.ToList();
+                instructionsList[16].opcode = OpCodes.Ldc_I4_S;
+                instructionsList[16].operand = 11;
+                return instructionsList.AsEnumerable();
+            }
+        }
         [HarmonyPatch(typeof(PLAbyssFighterInfo), "SetupShipStats")]
         class AbyssFighter
         {

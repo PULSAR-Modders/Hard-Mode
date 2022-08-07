@@ -82,11 +82,7 @@ namespace Hard_Mode
                     }
                     Warpdisableinspection.inInspection = false;
                 }
-                if (timer > 0)
-                {
-                    timer -= Time.deltaTime;
-                }
-                else if(PLServer.GetCurrentSector().VisualIndication != ESectorVisualIndication.ABYSS)
+                if(PLServer.GetCurrentSector().VisualIndication != ESectorVisualIndication.ABYSS)
                 {
                     foreach (PLShipInfoBase ship in FindObjectsOfType(typeof(PLShipInfoBase)))
                     {
@@ -94,28 +90,24 @@ namespace Hard_Mode
                         {
                             if (!ship.IsDrone && !ship.IsInfected && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL && !__instance.InWarp) //This makes all boardable ships with the shields offline lose 10% of integrity per second
                             {
-                                PLShipInfo realship = ship as PLShipInfo;
-                                PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
-                                if (ship != null && !realship.StartupSwitchBoard.GetStatus(2) && shield != null)
+                                if (timer > 0)
                                 {
-                                    if (shield.Current > 0)
+                                    timer -= Time.deltaTime;
+                                }
+                                else
+                                {
+                                    PLShipInfo realship = ship as PLShipInfo;
+                                    PLShieldGenerator shield = ship.MyStats.GetShipComponent<PLShieldGenerator>(ESlotType.E_COMP_SHLD, false);
+                                    if (ship != null && !realship.StartupSwitchBoard.GetStatus(2) && shield != null)
                                     {
-                                        shield.Current -= shield.CurrentMax / 10;
+                                        if (shield.Current > 0)
+                                        {
+                                            shield.Current -= shield.CurrentMax / 10;
+                                            timer = 1;
+                                        }
                                     }
                                 }
                             }
-                            /*
-                            List<PLPoweredShipComponent> allPoweredComponents = PLReactor.GetAllPoweredComponents(ship.MyStats);
-                            if(shield.Current >= shield.CurrentMax * (0.99f - shield.ChargeRateMax/500)) //This is just a place holder, this for now should ensure shield is always using power
-                            {
-                                shield.Current = shield.CurrentMax * (0.99f - shield.ChargeRateMax/500);
-                            }
-                            if(shield.GetPowerPercentInput() < 0.25f && shield.GetPowerPercentInput() > 0) //This makes if shield is not reciving at least 50% it will lose 
-                            {
-                                float chargelost = (shield.CurrentMax * shield.ChargeRateMax) / 500 / (shield.GetPowerPercentInput());
-                                shield.Current -= chargelost > shield.CurrentMax/ 10? 10 : chargelost;
-                            }
-                            */
                             if (!ship.GetIsPlayerShip() && ship.ShipTypeID != EShipType.E_CIVILIAN_FUEL && ship.ShipTypeID != EShipType.E_BEACON && !ship.HasModifier(EShipModifierType.CORRUPTED)) //This should make attacking one ship all it's friends will attack you (execpt beacon)
                             {
                                 foreach (PLShipInfoBase Allied in FindObjectsOfType(typeof(PLShipInfoBase)))
@@ -179,6 +171,7 @@ namespace Hard_Mode
                             }
                         }
                     }
+                    
                 }
 
             }
