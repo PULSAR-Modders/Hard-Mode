@@ -21,7 +21,7 @@ namespace Hard_Mode
         }
         public override string[][] Arguments()
         {
-            return new string[][] { new string[] { "FogofWar", "DangerousReactor", "Weakreactor" } };
+            return new string[][] { new string[] { "FogofWar", "DangerousReactor", "Weakreactor","SpinningCypher" } };
         }
         public override void Execute(string arguments)
         {
@@ -130,12 +130,19 @@ namespace Hard_Mode
                     Logger.Info(result);
                     Messaging.Notification("AI data generator collected");
                     break;
+                case "spinningcypher":
+                case "sc":
+                    Options.SpinningCycpher = !Options.SpinningCycpher;
+                    Messaging.Notification("Spinning Cyphers " + (Options.SpinningCycpher ? "Enabled" : "Disabled"), (PLPlayer)null, 0, 3000);
+
+                    break;
             }
-            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("HardModeOptions", string.Format("{0},{1},{2}", new object[]
+            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("HardModeOptions", string.Format("{0},{1},{2},{3}", new object[]
             {
                 Options.FogOfWar,
                 Options.DangerousReactor,
-                Options.WeakReactor
+                Options.WeakReactor,
+                Options.SpinningCycpher,
             }));
         }
     }

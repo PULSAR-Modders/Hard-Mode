@@ -9,6 +9,7 @@ namespace Hard_Mode
         public static bool DangerousReactor = false;
         public static bool MasterHasMod = false;
         public static bool WeakReactor = false;
+        public static bool SpinningCycpher = false;
     }
 
     class ReciveOptions : ModMessage //Recive the options from the master client
@@ -19,6 +20,7 @@ namespace Hard_Mode
             Options.DangerousReactor = (bool)arguments[1];
             Options.MasterHasMod = (bool)arguments[2];
             Options.WeakReactor = (bool)arguments[3];
+            Options.SpinningCycpher = (bool)arguments[4];
         }
     }
     [HarmonyPatch(typeof(PLServer), "ServerSendClientStarmap")]
@@ -52,6 +54,7 @@ namespace Hard_Mode
                 Options.FogOfWar = false;
                 Options.DangerousReactor = false;
                 Options.WeakReactor = false;
+                Options.SpinningCycpher = false;
             }
             else 
             {
@@ -75,6 +78,9 @@ namespace Hard_Mode
                                 break;
                             case 2:
                                 Options.WeakReactor = bool.Parse(array[2]);
+                                break;
+                            case 3:
+                                Options.SpinningCycpher = bool.Parse(array[3]);
                                 break;
                         }
                     }

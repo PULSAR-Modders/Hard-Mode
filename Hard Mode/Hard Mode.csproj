@@ -94,6 +94,7 @@
     <Compile Include="Commands.cs" />
     <Compile Include="Custom AI.cs" />
     <Compile Include="Custom Bounty Hunters.cs" />
+    <Compile Include="CypherSpinning.cs" />
     <Compile Include="Enemies.cs" />
     <Compile Include="Crimes.cs" />
     <Compile Include="Enemy Warp.cs" />

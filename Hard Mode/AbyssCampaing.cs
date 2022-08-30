@@ -20,7 +20,7 @@ namespace Hard_Mode
             }
             static void Postfix(PLAbyssShipInfo __instance) 
             {
-                __instance.Flood_EndingPos = __instance.Flood_StartingPos + new Vector3(0, 1.06f);
+                if(Options.MasterHasMod)__instance.Flood_EndingPos = __instance.Flood_StartingPos + new Vector3(0, 1.06f);
             }
         }
         [HarmonyPatch(typeof(PLAbyssShipInfo), "AddHullBreach")]
@@ -88,7 +88,7 @@ namespace Hard_Mode
             static float lastHeal = Time.time;
             static void Postfix(PLMatrixDroneCommanderInfo __instance)
             {
-                if (__instance.ShouldShowBossUI())
+                if (__instance.ShouldShowBossUI() && Options.MasterHasMod)
                 {
                     if (PLEncounterManager.Instance.PlayerShip != null && Options.MasterHasMod)
                     {
@@ -103,7 +103,7 @@ namespace Hard_Mode
                         lastHeal = Time.time;
                     }
                 }
-                if (!__instance.ShouldShowBossUI() && __instance.MyHull != null && __instance.MyStats != null)
+                if (!__instance.ShouldShowBossUI() && __instance.MyHull != null && __instance.MyStats != null && Options.MasterHasMod)
                 {
                     if (__instance.MyHull != null && __instance.MyStats != null) __instance.MyHull.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
                     __instance.MyHull.Current = __instance.MyStats.HullMax;
