@@ -17,7 +17,12 @@ namespace Hard_Mode
         {
             static void Postfix(ref List<PLEncounterManager.ShipLayout> ___PossibleHunters_LayoutData)
             {
-                using (StreamReader streamReader = new StreamReader(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "HunterCodes.txt"))) //This reads the file
+                string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "HunterCodes.txt");
+                if (!File.Exists(path))
+                {
+                    return;
+                }
+                using (StreamReader streamReader = new StreamReader(path)) //This reads the file
                 {
                     while (!streamReader.EndOfStream)
                     {
