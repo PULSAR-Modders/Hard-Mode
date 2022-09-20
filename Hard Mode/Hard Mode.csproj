@@ -89,9 +89,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbyssCampaing.cs" />
+    <Compile Include="AOG Campaing.cs" />
     <Compile Include="Better Biscuit Race.cs" />
     <Compile Include="Better Mines.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="CU Campaing.cs" />
     <Compile Include="Custom AI.cs" />
     <Compile Include="Custom Bounty Hunters.cs" />
     <Compile Include="CypherSpinning.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Starting Components.cs" />
     <Compile Include="Update.cs" />
     <Compile Include="Warp Guardian.cs" />
+    <Compile Include="WD Campaing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

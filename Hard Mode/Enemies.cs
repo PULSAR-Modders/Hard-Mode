@@ -410,21 +410,6 @@ namespace Hard_Mode
                 }
             }
         }
-        [HarmonyPatch(typeof(PLInfectedSpider_Medium), "Start")]
-        class MediumInfectedSpider
-        {
-            static void Postfix(PLInfectedSpider_Medium __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
         [HarmonyPatch(typeof(PLInfectedSwarm), "Start")]
         class Impossibility
         {
@@ -440,7 +425,6 @@ namespace Hard_Mode
                 }
             }
         }
-
         [HarmonyPatch(typeof(PLInfectedBoss), "Start")]
         class AlsoDontKnow
         {
@@ -573,248 +557,6 @@ namespace Hard_Mode
                 }
             }
         }
-        [HarmonyPatch(typeof(PLSlimeBoss), "Start")]
-        class WastedWingSlime
-        {
-            static void Postfix(PLSlimeBoss __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLSlimeBoss), "Update")]
-        class WastedWingSlimeUpdate
-        {
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
-            {
-                List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[406].operand = 2f;
-                instructionsList[423].operand = 4f;
-                return instructionsList.AsEnumerable();
-            }
-        }
-        [HarmonyPatch(typeof(PLStalkerPawn), "Start")]
-        class Stalker
-        {
-            static void Postfix(PLStalkerPawn __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLStalkerPawn), "Update")]
-        class StalkerUpdate
-        {
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the stalker attack more fequently
-            {
-                List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[208].operand = 1.5f;
-                return instructionsList.AsEnumerable();
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedScientist), "Start")]
-        class WastedWingScientists
-        {
-            static void Postfix(PLInfectedScientist __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLCrystalBoss), "Start")]
-        class TheSource
-        {
-            static void Postfix(PLCrystalBoss __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.Armor += PLServer.Instance.ChaosLevel * 10;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLCrystalBoss), "UpdateAttacks")]
-        class TheSourceUpdate
-        {
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the boss attack more fequently
-            {
-                List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[332].operand = 3f;
-                instructionsList[340].operand = 2f;
-                instructionsList[346].operand = 1f;
-                return instructionsList.AsEnumerable();
-            }
-        }
-        [HarmonyPatch(typeof(PLWastedWingInfoBox), "Update")]
-        public class TheSourceTimer
-        {
-            public static float timer = 360f;
-            /*
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Wasted Wing final boss starts with 6 minutes
-            {
-                List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[32] = new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(TheSourceTimer), "timer"));
-                return instructionsList.AsEnumerable();
-            }
-            */
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                List<CodeInstruction> targetSequence = new List<CodeInstruction>
-                {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldc_R4),
-                };
-                List<CodeInstruction> patchSequence = new List<CodeInstruction>
-                {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(TheSourceTimer),"timer")),
-                };
-                return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
-        class MindSlaver
-        {
-            static void Postfix(PLInfectedBoss_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Update")]
-        class MindSlaverUpdate //Allows the MindSlaver to heal if it is attacking no one
-        {
-            static void Postfix(PLInfectedBoss_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod &&  __instance.Health < __instance.MaxHealth && !__instance.IsDead && Time.time - __instance.LastDamageTakenTime > 5 && PhotonNetwork.isMasterClient)
-                {
-                    __instance.Health += (__instance.MaxHealth / 30) * Time.deltaTime;
-                    if (__instance.Health > __instance.MaxHealth) __instance.Health = __instance.MaxHealth;
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "Start")]
-        class ForsakenFlagshipHeart
-        {
-            static void Postfix(PLInfectedHeart_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "Update")]
-        class ForsakenFlagshipHeartUpdate
-        {
-            static void Postfix(PLInfectedHeart_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    if (__instance.FightActivated && !__instance.IsDead)
-                    {
-                        __instance.Health += 150 * Time.deltaTime;
-                        __instance.Health = Mathf.Clamp(__instance.Health, 0f, __instance.MaxHealth);
-                    }
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "TakeDamage")]
-        class ForsakenFlagshipHeartDamage
-        {
-            static float lastSpawn = Time.time;
-            static void Postfix(PLInfectedHeart_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod && Time.time - lastSpawn > 2f && PhotonNetwork.isMasterClient)
-                {
-                    lastSpawn = Time.time;
-                    PLSpawner.DoSpawnStatic(PLEncounterManager.Instance.GetCPEI(), "InfectedLargeCrawlerSpawnElite", __instance.transform, null, __instance.MyCurrentTLI, __instance.MyInterior, __instance);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedCrewmember), "Start")]
-        class InfectedScientits
-        {
-            static void Postfix(PLInfectedCrewmember __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLForsakenFlagshipCountdown), "StartCountdown")]
-        class FlagshipCountdown //This is so player have 45 seconds to warp away
-        {
-            static void Postfix(ref float ___SelfDestructTimeLeft)
-            {
-                if (Options.MasterHasMod)
-                {
-                    if (___SelfDestructTimeLeft > 60) ___SelfDestructTimeLeft = 60;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLAssassinBot), "Start")]
-        class AssassinBot
-        {
-            static void Postfix(PLAssassinBot __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    Vector3 spawnpoint = __instance.transform.position;
-                    foreach (PLTeleportationTargetInstance teleporter in UnityEngine.Object.FindObjectsOfType<PLTeleportationTargetInstance>())
-                    {
-                        if (teleporter.TeleporterTargetName == "Master Suite" && teleporter.Unlocked)
-                        {
-                            spawnpoint = new Vector3(269.0862f, -58.01f, -113.205f);
-                            break;
-                        }
-                        if (teleporter.TeleporterTargetName == "Museum Entrance" && teleporter.Unlocked)
-                        {
-                            spawnpoint = new Vector3(239.5412f, -41.6382f, -211.9386f);
-                        }
-                    }
-                    __instance.transform.position = spawnpoint;
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLAssassinBot), "Update")]
-        class AssassinBotUpdate
-        {
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //Makes the bot respawn faster
-            {
-                List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[259].operand = 5f;
-                return instructionsList.AsEnumerable();
-            }
-
-        }
-
         [HarmonyPatch(typeof(PLBoardingBot), "Start")]
         class BoardingBot
         {
@@ -829,22 +571,6 @@ namespace Hard_Mode
                 }
             }
         }
-
-        [HarmonyPatch(typeof(PLGiantRobotHead), "Start")]
-        class DownedProtector
-        {
-            static void Postfix(PLGiantRobotHead __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-
         [HarmonyPatch(typeof(PLGroundTurret), "Start")]
         class GroundTurret
         {
@@ -859,22 +585,6 @@ namespace Hard_Mode
                 }
             }
         }
-
-        [HarmonyPatch(typeof(PLRoamingSecurityGuardRobot), "Start")]
-        class MadmansMansionDrone
-        {
-            static void Postfix(PLRoamingSecurityGuardRobot __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-
         [HarmonyPatch(typeof(PLSmokeCreature), "Start")]
         class CyphersSmoke
         {
@@ -886,7 +596,6 @@ namespace Hard_Mode
                 }
             }
         }
-
         [HarmonyPatch(typeof(PLPlayer), "Start")]
         class BanditsECrew
         {
@@ -929,9 +638,8 @@ namespace Hard_Mode
             }
             */
         }
-
         [HarmonyPatch(typeof(PLUnseenEye), "ClientPerformBeamAttackOne")]
-        class Replace 
+        class ReplaceUnseenEyeProjectile 
         {
             static bool Prefix(PLUnseenEye __instance) 
             {
@@ -1032,38 +740,6 @@ namespace Hard_Mode
                     __instance.BeamFireLoc.position = (a - __instance.BeamFireLoc.position).normalized;
                     */
                 }
-            }
-        }
-        [HarmonyPatch(typeof(PLVaultDoorMadmansMansion), "Update")]
-        class MadmansMansionFinalTimer //At the last minute from the laser the enemies spawn 2x faster
-        {
-            static public float SpawnTimer = 4f;
-            static void Postfix(ref float ___SecondsLeft_Countdown)
-            {
-                if (___SecondsLeft_Countdown < 60f)
-                {
-                    SpawnTimer = 2f;
-                }
-                
-                SpawnerModder.Health = 3 + (int)(PLServer.Instance.ChaosLevel * 1.5);
-                SpawnerModder.Pistoleer = 2 + (int)(PLServer.Instance.ChaosLevel * 1.2);
-                SpawnerModder.Armor = 5 + (int)(PLServer.Instance.ChaosLevel * 1.5);
-            }
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                List<CodeInstruction> targetSequence = new List<CodeInstruction>
-            {
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLVaultDoorMadmansMansion),"LastGuardSpawnedTime")),
-                new CodeInstruction(OpCodes.Sub),
-                new CodeInstruction(OpCodes.Ldc_R4, 5f)
-            };
-                List<CodeInstruction> patchSequence = new List<CodeInstruction>
-            {
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLVaultDoorMadmansMansion),"LastGuardSpawnedTime")),
-                new CodeInstruction(OpCodes.Sub),
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MadmansMansionFinalTimer), "SpawnTimer"))
-            };
-                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
             }
         }
         [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")]
@@ -1347,36 +1023,6 @@ namespace Hard_Mode
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
             }
 
-        }
-        [HarmonyPatch(typeof(PLStopAsteroidEncounter), "Update")] //Decreases timer to 5 minutes
-        public class MeteorMission
-        {
-            public static float timer = 300f;
-            /*
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
-            {
-                List<CodeInstruction> instructionsList = Instructions.ToList();
-                instructionsList[282] = new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(MeteorMission), "timer"));
-                instructionsList[576].opcode = OpCodes.Ldc_I4_S;
-                instructionsList[576].operand = 0;
-                return instructionsList.AsEnumerable();
-            }
-            */
-            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                List<CodeInstruction> instructionsList = instructions.ToList();
-                instructionsList[576].opcode = OpCodes.Ldc_I4_S;
-                instructionsList[576].operand = 0;
-                List<CodeInstruction> targetSequence = new List<CodeInstruction>
-                {
-                new CodeInstruction(OpCodes.Ldc_R4, 600f),
-                };
-                List<CodeInstruction> patchSequence = new List<CodeInstruction>
-                {
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MeteorMission),"timer")),
-                };
-                return PatchBySequence(instructionsList.AsEnumerable(), targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
-            }
         }
         [HarmonyPatch(typeof(PLPersistantEncounterInstance), "PlayerEnter")]
         class InfectedCarriersOnWars //Enables Infected Carriers to spawn in combat zones with the infected team

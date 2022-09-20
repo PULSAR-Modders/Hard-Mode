@@ -16,15 +16,15 @@ namespace Hard_Mode
         {
             if (Options.MasterHasMod) //This is to help with desyncs due to client having the mod, but the host doesn't have it
             {
-                Enemies.TheSourceTimer.timer = 360f;
-                Enemies.MeteorMission.timer = 300f;
+                CU_Campaing.TheSourceTimer.timer = 360f;
+                CU_Campaing.MeteorMission.timer = 300f;
                 Sector_Commanders.Keeper.KeeperUpdate.speed = 2.5f;
                 //Enemies.UnseenEyePhysicalAttack.damage = 400f * PLWarpGuardian.GetPlayerBasedDifficultyMultiplier();
             }
             else
             {
-                Enemies.TheSourceTimer.timer = 600f;
-                Enemies.MeteorMission.timer = 600f;
+                CU_Campaing.TheSourceTimer.timer = 600f;
+                CU_Campaing.MeteorMission.timer = 600f;
                 Sector_Commanders.Keeper.KeeperUpdate.speed = 0.5f;
                 //Enemies.UnseenEyePhysicalAttack.damage = 400f;
             }
