@@ -137,13 +137,6 @@ namespace Hard_Mode
 
                     break;
             }
-            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("HardModeOptions", string.Format("{0},{1},{2},{3}", new object[]
-            {
-                Options.FogOfWar,
-                Options.DangerousReactor,
-                Options.WeakReactor,
-                Options.SpinningCycpher,
-            }));
         }
     }
 }

@@ -106,6 +106,7 @@
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reactor.cs" />
+    <Compile Include="DataSaver.cs" />
     <Compile Include="Sector Commanders.cs" />
     <Compile Include="Shields.cs" />
     <Compile Include="Starting Components.cs" />

@@ -59,32 +59,6 @@ namespace Hard_Mode
             else 
             {
                 Options.MasterHasMod = true;
-                string savedoptions = PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("HardModeOptions");
-                if (savedoptions != string.Empty)
-                {
-                    string[] array = savedoptions.Split(new char[]
-                    {
-                    ','
-                    });
-                    for(int i = 0; i < array.Length; i++) 
-                    {
-                        switch (i) 
-                        {
-                            case 0:
-                                Options.FogOfWar = bool.Parse(array[0]);
-                                break;
-                            case 1:
-                                Options.DangerousReactor = bool.Parse(array[1]);
-                                break;
-                            case 2:
-                                Options.WeakReactor = bool.Parse(array[2]);
-                                break;
-                            case 3:
-                                Options.SpinningCycpher = bool.Parse(array[3]);
-                                break;
-                        }
-                    }
-                }
             }
         }
     }

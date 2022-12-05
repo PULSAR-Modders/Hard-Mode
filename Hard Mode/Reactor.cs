@@ -10,43 +10,49 @@ namespace Hard_Mode
         static void Postfix(PLRadiationPoint ___RadPoint, PLReactorInstance __instance) //Increases radiation from reactor deppending on max temp and current stability
         {
             PLTempRadius tempRadius = null;
-            if (__instance.MyShipInfo.MyReactor != null && !PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000) && Options.DangerousReactor) // Check to not cause a lot of exceptions with the reactor ejecting
+            if (__instance.MyShipInfo != null && __instance.MyShipInfo.MyReactor != null && __instance.MyShipInfo.MyStats != null && ___RadPoint != null)//Ensure no Null values will be used
             {
-                PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
-                ___RadPoint.RaditationRange = reactor.TempMax / 500f * (1f + (__instance.MyShipInfo.CoreInstability * 4f));
-                ___RadPoint.RadScale = __instance.MyShipInfo.CoreInstability / 3f;
-                if (___RadPoint.RaditationRange < 25f) ___RadPoint.RaditationRange = 25; // This is so sylvassi reactor doesn't become radiation proof
-
-                if (__instance.gameObject.GetComponent<PLTempRadius>() != null) //This part adds temperature range to reactor, so it changes the ship interior temperature
+                if (!PLGlobal.WithinTimeLimit(__instance.MyShipInfo.ReactorLastCoreEjectServerTime, PLServer.Instance.GetEstimatedServerMs(), 5000) && Options.DangerousReactor) // Check to not cause a lot of exceptions with the reactor ejecting
                 {
-                    tempRadius = __instance.gameObject.GetComponent<PLTempRadius>();
-                }
-                else
-                {
-                    tempRadius = __instance.gameObject.AddComponent<PLTempRadius>();
-                    tempRadius.IsOnShip = true;
-                }
-                tempRadius.MinRange = 10f + __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.5f);
-                tempRadius.MaxRange = 20f + __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.25f);
-                tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.3f);
-                if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
-                else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp
-                if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && UnityEngine.Random.Range(0, 200) == 10) //this spawns fire when too hot
-                {
-                    PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 3));
-                    int looplimit = 0;
-                    while ((system == null || system.IsOnFire()) && looplimit < 20)
+                    PLReactor reactor = __instance.MyShipInfo.MyStats.GetShipComponent<PLReactor>(ESlotType.E_COMP_REACTOR, false);
+                    if (reactor != null)
                     {
-                        system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 3));
-                        looplimit++;
+                        ___RadPoint.RaditationRange = reactor.TempMax / 500f * (1f + (__instance.MyShipInfo.CoreInstability * 4f));
+                        ___RadPoint.RadScale = __instance.MyShipInfo.CoreInstability / 3f;
+                        if (___RadPoint.RaditationRange < 25f) ___RadPoint.RaditationRange = 25; // This is so sylvassi reactor doesn't become radiation proof
+
+                        if (__instance.gameObject.GetComponent<PLTempRadius>() != null) //This part adds temperature range to reactor, so it changes the ship interior temperature
+                        {
+                            tempRadius = __instance.gameObject.GetComponent<PLTempRadius>();
+                        }
+                        else
+                        {
+                            tempRadius = __instance.gameObject.AddComponent<PLTempRadius>();
+                            tempRadius.IsOnShip = true;
+                        }
+                        tempRadius.MinRange = 10f + __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.5f);
+                        tempRadius.MaxRange = 20f + __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.25f);
+                        tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.3f);
+                        if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
+                        else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp
+                        if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && UnityEngine.Random.Range(0, 600) == 14) //this spawns fire when too hot
+                        {
+                            PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 4));
+                            int looplimit = 0;
+                            while ((system == null || system.IsOnFire()) && looplimit < 20)
+                            {
+                                system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 4));
+                                looplimit++;
+                            }
+                            if (system != null) PLServer.Instance.CreateFireAtSystem(system, false);
+                        }
                     }
-                    PLServer.Instance.CreateFireAtSystem(system, false);
                 }
-            }
-            else if (!Options.DangerousReactor && __instance.gameObject.GetComponent<PLTempRadius>() != null) //This will bring things to normal when dangerous reactor is disabled
-            {
-                UnityEngine.Object.Destroy(__instance.gameObject.GetComponent<PLTempRadius>());
-                ___RadPoint.RaditationRange = 1f;
+                else if (!Options.DangerousReactor && __instance.gameObject.GetComponent<PLTempRadius>() != null) //This will bring things to normal when dangerous reactor is disabled
+                {
+                    UnityEngine.Object.Destroy(__instance.gameObject.GetComponent<PLTempRadius>());
+                    ___RadPoint.RaditationRange = 1f;
+                }
             }
         }
     }
