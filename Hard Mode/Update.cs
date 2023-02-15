@@ -180,8 +180,8 @@ namespace Hard_Mode
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //This should make the enemy warp faster, not just waiting the basically dead to jump
         {
             List<CodeInstruction> instructionsList = Instructions.ToList();
-            instructionsList[583].operand = 0.2f;
-            instructionsList[592].operand = 3f;
+            instructionsList[476].operand = 0.2f;
+            instructionsList[492].operand = 3f;
             return instructionsList.AsEnumerable();
         }
     }

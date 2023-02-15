@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HarmonyLib;
+using System.Reflection.Emit;
+using UnityEngine;
+using PulsarModLoader.Patches;
 
 namespace Hard_Mode
 {
@@ -36,6 +40,7 @@ namespace Hard_Mode
                 new CodeInstruction(OpCodes.Sub),
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MadmansMansionFinalTimer), "SpawnTimer"))
             };
+                
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
             }
         }

@@ -743,7 +743,7 @@ namespace Hard_Mode
             }
         }
         [HarmonyPatch(typeof(PLSpawner), "DoSpawnStatic")]
-        class SpawnerModder // Could be used to directly change values in the spawner
+        public class SpawnerModder // Could be used to directly change values in the spawner
         {
             public static int Health = 0;
             public static int Pistoleer = 0;
