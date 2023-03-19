@@ -219,7 +219,7 @@ namespace Hard_Mode
                             ship.ShipNameValue = biscuitnames[Random.Range(0, biscuitnames.Length - 1)];
                             break;
                     }
-                    if(ship.GetCombatLevel() > 75 && Random.value < 0.1) 
+                    if(ship.GetCombatLevel() > 135 && Random.value < 0.1 && ship.PersistantShipInfo.ShipName != "") 
                     {
                         ship.ShipNameValue = "The Glass Revenant Mk " + Random.Range(1, 999);
                     }
