@@ -110,6 +110,46 @@ namespace Hard_Mode
                 }
             }
         }
+        [HarmonyPatch(typeof(PLAbyssArmoredWarden), "TakeDamage")]
+        class BulwarkDamage 
+        {
+            static void Postfix(PLAbyssArmoredWarden __instance, float dmg, EDamageType dmgType) 
+            {
+                if (__instance.MyActivatorVolume != null && __instance.MyActivatorVolume.GetHasBeenTriggered())
+                {
+                    __instance.WeakPoint.Health += dmg * 0.015f;
+                    float num = dmg;
+                    float num3 = __instance.MyHull.Current;
+                    float num4 = __instance.MyStats.HullArmor;
+                    if (dmgType == EDamageType.E_BEAM || dmgType == EDamageType.E_ARMOR_PIERCE_PHYS)
+                    {
+                        if (__instance.MyHull.SubType == 14)
+                        {
+                            num4 *= 0.8f;
+                        }
+                        else
+                        {
+                            num4 *= 0.5f;
+                            num4 -= 0.05f;
+                        }
+                        num4 = Mathf.Clamp(num4, 0f, float.MaxValue);
+                    }
+                    else if (dmgType == EDamageType.E_INFECTED)
+                    {
+                        num4 *= 0.3f;
+                        num4 -= 0.2f;
+                        num4 = Mathf.Clamp(num4, 0f, float.MaxValue);
+                    }
+                    if (__instance.MyStats.Ship.GetIsPlayerShip() && __instance.MyStats.HullMax != 0f)
+                    {
+                        float num5 = 1f - Mathf.Clamp01(__instance.MyStats.HullCurrent / __instance.MyStats.HullMax);
+                        num4 += 0.35f + num5 * 0.2f;
+                    }
+                    float num6 = Mathf.Clamp(num - num4 * 350f, num * (0.7f - Mathf.Clamp(num4 * 0.5f, 0f, 0.6f)), float.MaxValue);
+                    __instance.WeakPoint.Health -= num6;
+                }
+            }
+        }
         [HarmonyPatch(typeof(PLAbyssArmoredWarden), "Update")]
         class BulwarkUpdate
         {
@@ -118,14 +158,16 @@ namespace Hard_Mode
             {
                 if (PLEncounterManager.Instance.PlayerShip != null && Options.MasterHasMod)
                 {
-                    bool isup = false;
-                    foreach (PLAbyssWardenTurret turret in __instance.MyStats.GetComponentsOfType(ESlotType.E_COMP_TURRET))
+                    
+                    foreach (PLAbyssWardenTurret turret in __instance.MyStats.GetComponentsOfType(ESlotType.E_COMP_TURRET).Cast<PLAbyssWardenTurret>())
                     {
                         turret.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
                     }
                     __instance.EngineeringSystem.Health = __instance.EngineeringSystem.MaxHealth;
                     __instance.WeaponsSystem.Health = __instance.WeaponsSystem.MaxHealth;
                     __instance.ComputerSystem.Health = __instance.ComputerSystem.MaxHealth;
+                    /*
+                    bool isup = false;
                     Vector3 normalized = (PLEncounterManager.Instance.PlayerShip.GetSpaceLoc() - __instance.Exterior.transform.position).normalized;
                     Vector3 up = __instance.Exterior.transform.up;
                     isup = Vector3.Dot(normalized, up) > 0;
@@ -137,6 +179,7 @@ namespace Hard_Mode
                     {
                         cachedWeakHealth = __instance.WeakPoint.Health;
                     }
+                    */
                     if (!__instance.ShouldShowBossUI())
                     {
                         if (__instance.MyHull != null && __instance.MyStats != null) __instance.MyHull.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
