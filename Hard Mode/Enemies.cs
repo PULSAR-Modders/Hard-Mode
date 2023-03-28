@@ -7,6 +7,8 @@ using System.Reflection.Emit;
 using PulsarModLoader.Patches;
 using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
+using System.Reflection;
+
 namespace Hard_Mode
 {
     [HarmonyPatch(typeof(PLShipInfoBase), "GetChaosBoost", new Type[] { typeof(PLPersistantShipInfo), typeof(int) })]
@@ -242,10 +244,27 @@ namespace Hard_Mode
             }
         }
     }
-
     [HarmonyPatch(typeof(PLShipInfoBase), "GetCombatLevel")]
     class CombatLevel //Modify the combat level calculation
     {
+        private static MethodInfo GetDPS = AccessTools.Method(typeof(PLTurret), "GetDPS");
+        private static FieldInfo HeatGeneratedOnFire = AccessTools.Field(typeof(PLTurret), "HeatGeneratedOnFire");
+        private static FieldInfo FireDelay = AccessTools.Field(typeof(PLTurret), "FireDelay");
+        private static FieldInfo TurretRange = AccessTools.Field(typeof(PLTurret), "TurretRange");
+        private static FieldInfo damage_Normal = AccessTools.Field(typeof(PLAbyssTurret), "damage_Normal");
+        public static float GetTurretCombatLevel(PLTurret turret, ref float CombatLevel)
+        {
+            if (turret is PLAbyssTurret)
+            {
+                PLAbyssTurret abyssturret = turret as PLAbyssTurret;
+                CombatLevel += (float)damage_Normal.GetValue(abyssturret) * abyssturret.LevelMultiplier(0.15f, 1f) * (abyssturret.ShipStats != null ? abyssturret.ShipStats.TurretDamageFactor : 1) / ((float)FireDelay.GetValue(abyssturret) / ((abyssturret.ShipStats != null) ? abyssturret.ShipStats.TurretChargeFactor : 1f)) * 0.1f * (1f - Mathf.Clamp01((float)HeatGeneratedOnFire.GetValue(abyssturret) * 2.2f / (float)FireDelay.GetValue(abyssturret)));
+                CombatLevel += (float)TurretRange.GetValue(turret) * 0.0005f;
+                return CombatLevel;
+            }
+            CombatLevel += (float)GetDPS.Invoke(turret, null) * 0.1f * (1f - Mathf.Clamp01((float)HeatGeneratedOnFire.GetValue(turret) * 2.2f / (float)FireDelay.GetValue(turret)));
+            CombatLevel += (float)TurretRange.GetValue(turret) * 0.0005f;
+            return CombatLevel;
+        }
         static float Postfix(float __result, PLShipInfoBase __instance)
         {
             if (!Options.MasterHasMod)
@@ -260,16 +279,8 @@ namespace Hard_Mode
                     __result += Mathf.Pow((float)plshipComponent.GetScaledMarketPrice(true), 0.8f) * 0.001f;
                     if (plshipComponent.ActualSlotType == ESlotType.E_COMP_MAINTURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_TURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_AUTO_TURRET)
                     {
-                        if (plshipComponent is PLAbyssTurret)
-                        {
-                            PLAbyssTurret abyssturret = plshipComponent as PLAbyssTurret;
-                            __result += (abyssturret.damage_Normal * abyssturret.LevelMultiplier(0.15f,1f) * (abyssturret.ShipStats != null ? abyssturret.ShipStats.TurretDamageFactor : 1))/(abyssturret.FireDelay/ ((abyssturret.ShipStats != null) ? abyssturret.ShipStats.TurretChargeFactor : 1f)) * 0.1f * (1f - Mathf.Clamp01(abyssturret.HeatGeneratedOnFire * 2.2f / abyssturret.FireDelay));
-                            __result += abyssturret.TurretRange * 0.0005f;
-                            continue;
-                        }
                         PLTurret turret = plshipComponent as PLTurret;
-                        __result += turret.GetDPS() * 0.1f * (1f - Mathf.Clamp01(turret.HeatGeneratedOnFire * 2.2f / turret.FireDelay));
-                        __result += turret.TurretRange * 0.0005f;
+                        GetTurretCombatLevel(turret, ref __result);
                     }
                 }
             }
@@ -291,320 +302,46 @@ namespace Hard_Mode
     }
     class Enemies //All creatures will be here to help with ballancing and changing stats
     {
-        [HarmonyPatch(typeof(PLAirElemental), "Start")]
-        class Tornados
+        private static FieldInfo m_RangedDamage = AccessTools.Field(typeof(PLAntRavager), "m_RangedDamage");
+        private static FieldInfo moveSpeed = AccessTools.Field(typeof(PLSlime), "moveSpeed");
+        [HarmonyPatch(typeof(PLCombatTarget), "Start")]
+        class CombatTarget
         {
-            static void Postfix()
+            static void Postfix(PLCombatTarget __instance)
             {
-                if (Options.MasterHasMod)
-                {
+                // PLCreature       // PLAirElemental (Tornado), PLAnt, PLAntArmored, PLAntHeavy, PLAntRavager, PLInfectedSpider (Crawler), PLInfectedSpider_Medium, PLLCLabEnemy (Lost colony ghosts), PLRaptor
+                // PLCreature       // PLRat, PLSlime, PLSlimeBoss, PLSpider
+                // PLPawnBase       // PLCrystalBoss (Source), PLInfectedBoss_WDFlagship (MindSlaver), PLInfectedCrewmember (Infected), PLInfectedHeart_WDFlagship, PLInfectedScientist (Source), PLBoardingBot, PLStalkerPawn (Teleporting figure)
+                // PLCombatTarget   // PLBoardingBot, PLGroundTurret
 
+                if (Options.MasterHasMod)
+                {
+                    if (__instance is PLBoardingBot || __instance is PLGroundTurret)
+                    {
+                        __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                        __instance.Health = __instance.MaxHealth;
+                        if (__instance.Armor == 0) __instance.Armor = 5f;
+                        __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                    }
+                    else if (__instance is PLCreature) // Must be checked before PLPawnBase as PLCreature derives from it
+                    {
+                        PLCreature instance = __instance as PLCreature;
+                        instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                        instance.Health = instance.MaxHealth;
+                        if (instance.Armor == 0) instance.Armor = 5f;
+                        instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                        instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
+                        if (instance is PLAntRavager) m_RangedDamage.SetValue(instance as PLAntRavager, (float)m_RangedDamage.GetValue(instance as PLAntRavager) + PLServer.Instance.ChaosLevel * 5);
+                        if (instance is PLSlime) moveSpeed.SetValue(instance as PLSlime, (2 * (float)moveSpeed.GetValue(instance as PLSlime)) * PLServer.Instance.ChaosLevel / 2);
+                    }
+                    else if (__instance is PLPawnBase)
+                    {
+                        PLPawnBase instance = __instance as PLPawnBase;
+                    }
                 }
             }
         }
-        [HarmonyPatch(typeof(PLAnt), "Start")]
-        class Ant
-        {
-            static void Postfix(PLAnt __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel/6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLAntArmored), "Start")]
-        class ArmoredAnt
-        {
-            static void Postfix(PLAntArmored __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLAntHeavy), "Start")]
-        class HeavyAnt
-        {
-            static void Postfix(PLAntHeavy __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLAntRavager), "Start")]
-        class RavangerAnt
-        {
-            static void Postfix(PLAntRavager __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                    __instance.m_RangedDamage += PLServer.Instance.ChaosLevel * 5;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLBanditLandDrone), "Start")]
-        class BanditLandDrone
-        {
-            static void Postfix(PLBanditLandDrone __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLBrainCreature), "Start")]
-        class Brain
-        {
-            static void Postfix(PLBrainCreature __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedSpider), "Start")]
-        class InfectedCrawlers
-        {
-            static void Postfix(PLInfectedSpider __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
 
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedSwarm), "Start")]
-        class Impossibility
-        {
-            static void Postfix(PLInfectedSwarm __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLInfectedBoss), "Start")]
-        class AlsoDontKnow
-        {
-            static void Postfix()
-            {
-                if (Options.MasterHasMod)
-                {
-
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLLCLabEnemy), "Start")]
-        class ColonyGhost
-        {
-            static void Postfix(PLLCLabEnemy __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLRaptor), "Start")]
-        class Raptor
-        {
-            static void Postfix(PLRaptor __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLRobotWalker), "Start")]
-        class Paladin
-        {
-            static void Postfix(PLRobotWalker __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLRobotWalkerLarge), "Start")]
-        class ElitPaladin
-        {
-            static void Postfix(PLRobotWalkerLarge __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLSpider), "Start")]
-        class Spider
-        {
-            static void Postfix(PLSpider __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLRat), "Start")]
-        class Rat
-        {
-            static void Postfix(PLRat __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLSlime), "Start")]
-        class Slime
-        {
-            static void Postfix(PLSlime __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.moveSpeed += __instance.moveSpeed * PLServer.Instance.ChaosLevel / 2;
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLWasteWasp), "Start")]
-        class Wasp
-        {
-            static void Postfix(PLWasteWasp __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLBoardingBot), "Start")]
-        class BoardingBot
-        {
-            static void Postfix(PLBoardingBot __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLGroundTurret), "Start")]
-        class GroundTurret
-        {
-            static void Postfix(PLGroundTurret __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLSmokeCreature), "Start")]
-        class CyphersSmoke
-        {
-            static void Postfix()
-            {
-                if (Options.MasterHasMod)
-                {
-
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLPlayer), "Start")]
-        class BanditsECrew
-        {
-            static void Postfix(PLPlayer __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                }
-            }
-        }
         [HarmonyPatch(typeof(PLNullpoint),"Start")] //This are the green things that spread green fire on the unseen mothership 
         class NullPoint 
         {
@@ -655,6 +392,8 @@ namespace Hard_Mode
         }
         public class UnseenEyeAttack 
         {
+            private static MethodInfo PlayerShip_IsPilotedByAI = AccessTools.Method(typeof(PLUnseenEye), "PlayerShip_IsPilotedByAI");
+            private static FieldInfo energyProjCounter = AccessTools.Field(typeof(PLUnseenEye), "energyProjCounter");
             public static IEnumerator PerformPhysicalAttack(PLUnseenEye __instance) 
             {
                 if (__instance.Animator.GetBool("IsDead"))
@@ -677,13 +416,14 @@ namespace Hard_Mode
                 {
                     if (__instance.TargetShip != null && __instance.TargetShip.Exterior != null)
                     {
+                        bool _PlayerShip_IsPilotedByAI = (bool)PlayerShip_IsPilotedByAI.Invoke(__instance, null);
                         GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(__instance.EnergyProjPrefab, __instance.BeamFireLoc.position, __instance.BeamFireLoc.rotation);
                         gameObject.SetActive(true);
                         PLCurvedProjectile component = gameObject.GetComponent<PLCurvedProjectile>();
                         float d = 520f;
-                        Vector3 b = UnityEngine.Random.insideUnitSphere * (__instance.PlayerShip_IsPilotedByAI() ? 20f : 10f) * 7f;
+                        Vector3 b = UnityEngine.Random.insideUnitSphere * (_PlayerShip_IsPilotedByAI ? 20f : 10f) * 7f;
                         PLDriftTowardPlayerShip component2 = gameObject.GetComponent<PLDriftTowardPlayerShip>();
-                        if (__instance.PlayerShip_IsPilotedByAI())
+                        if (_PlayerShip_IsPilotedByAI)
                         {
                             if (component2 != null)
                             {
@@ -698,8 +438,10 @@ namespace Hard_Mode
                         {
                             component.GetComponent<Rigidbody>().velocity = a * d + b;
                         }
-                        component.ProjID = -40000 - __instance.energyProjCounter;
-                        __instance.energyProjCounter++;
+                        int _energyProjCounter = (int)energyProjCounter.GetValue(__instance);
+                        component.ProjID = -40000 - _energyProjCounter;
+                        _energyProjCounter++;
+                        energyProjCounter.SetValue(__instance, _energyProjCounter);
                         component.Damage = 400f * PLWarpGuardian.GetPlayerBasedDifficultyMultiplier();
                         component.MaxLifetime = 11f;
                         component.OwnerShipID = __instance.ShipID;

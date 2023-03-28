@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Reflection;
 using UnityEngine;
 
 namespace Hard_Mode
@@ -132,6 +133,7 @@ namespace Hard_Mode
     [HarmonyPatch(typeof(PLReactor), "Tick")]
     class ReactorsNerf
     {
+        private static FieldInfo OriginalEnergyOutputMax = AccessTools.Field(typeof(PLReactor), "OriginalEnergyOutputMax");
         static void Postfix(PLReactor __instance)
         {
             if (Options.MasterHasMod)
@@ -139,19 +141,20 @@ namespace Hard_Mode
                 if (__instance.SubType >= PulsarModLoader.Content.Components.Reactor.ReactorModManager.Instance.VanillaReactorMaxType) return;
                 float multiplier = 0.5f;
                 EReactorType type = (EReactorType)__instance.SubType;
-                if(type != EReactorType.E_REAC_STRONGPOINT && type != EReactorType.THERMOCORE_REACTOR)__instance.EnergyOutputMax = Options.WeakReactor ? __instance.OriginalEnergyOutputMax * multiplier : __instance.OriginalEnergyOutputMax;
+                float _OriginalEnergyOutputMax = (float)OriginalEnergyOutputMax.GetValue(__instance);
+                if (type != EReactorType.E_REAC_STRONGPOINT && type != EReactorType.THERMOCORE_REACTOR)__instance.EnergyOutputMax = Options.WeakReactor ? _OriginalEnergyOutputMax * multiplier : _OriginalEnergyOutputMax;
                 if(type == EReactorType.ANCIENT_REACTOR) 
                 {
                     __instance.EnergyOutputMax = 150000f;
-                    __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                    OriginalEnergyOutputMax.SetValue(__instance, new object[] { __instance.EnergyOutputMax });
                 }
                 if (type == EReactorType.THERMOCORE_REACTOR)
                 {
-                    __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 38000f * multiplier : 38000f;
+                    OriginalEnergyOutputMax.SetValue(__instance, new object[] { Options.WeakReactor ? 38000f * multiplier : 38000f });
                 }
                 if (type == EReactorType.E_REAC_STRONGPOINT)
                 {
-                    __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 24000f * multiplier : 24000f;
+                    OriginalEnergyOutputMax.SetValue(__instance, new object[] { Options.WeakReactor ? 24000f * multiplier : 24000f });
                 }
                 /*switch (type) 
                 {

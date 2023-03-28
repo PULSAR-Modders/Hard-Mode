@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 namespace Hard_Mode
 {
@@ -158,6 +159,8 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLGalaxy), "GetPathToSector_CustomRangeAndLimits")]
         class BountyHunterPath 
         {
+            private static MethodInfo Heuristic = AccessTools.Method(typeof(PLGalaxy), "Heuristic");
+            private static FieldInfo HWeight = AccessTools.Field(typeof(PLGalaxy), "HWeight");
             static void Postfix(PLSectorInfo inStartSector, PLSectorInfo inEndSector, float customWarpRange, bool onlyUseEmptySectors, ref List<PLSectorInfo> __result, PLGalaxy __instance)
             {
                 if (PLServer.Instance.ActiveBountyHunter_TypeID != -1 && inStartSector.ID == PLServer.Instance.ActiveBountyHunter_SectorID && inEndSector == PLServer.GetCurrentSector())
@@ -232,7 +235,8 @@ namespace Hard_Mode
                         {
                             if ((!onlyUseEmptySectors || plsectorInfo4.VisualIndication == ESectorVisualIndication.NONE) && plsectorInfo4.Category != NodeCategory.NODE_CLOSED && (new Vector2(plsectorInfo3.Position.x, plsectorInfo3.Position.y) - new Vector2(plsectorInfo4.Position.x, plsectorInfo4.Position.y)).sqrMagnitude <= customWarpRange * customWarpRange)
                             {
-                                float num5 = __instance.Heuristic(plsectorInfo4, plsectorInfo3);
+                                float num5 = (float)Heuristic.Invoke(__instance, new object[] { plsectorInfo4, plsectorInfo3 });
+                                float _HWeight = (float)HWeight.GetValue(__instance);
                                 if (plsectorInfo4.Category == NodeCategory.NODE_DEF)
                                 {
                                     if (!list.Contains(plsectorInfo4))
@@ -241,29 +245,60 @@ namespace Hard_Mode
                                     }
                                     plsectorInfo4.Category = NodeCategory.NODE_OPEN;
                                     plsectorInfo4.SearchParentNode = plsectorInfo3;
-                                    float num6 = __instance.Heuristic(plsectorInfo4, inEndSector);
-                                    plsectorInfo4.GCost = plsectorInfo3.GCost + num6 * __instance.HWeight;
-                                    plsectorInfo4.HCost = num6 * __instance.HWeight;
-                                    plsectorInfo4.FCost = plsectorInfo4.GCost + plsectorInfo4.HCost * __instance.HWeight;
-                                    __instance.SortOpenList(ref list);
+                                    float num6 = (float)Heuristic.Invoke(__instance, new object[] { plsectorInfo4, inEndSector });
+                                    plsectorInfo4.GCost = plsectorInfo3.GCost + num6 * _HWeight;
+                                    plsectorInfo4.HCost = num6 * _HWeight;
+                                    plsectorInfo4.FCost = plsectorInfo4.GCost + plsectorInfo4.HCost * _HWeight;
+                                    SortOpenList(ref list);
                                 }
                                 else if (plsectorInfo4.GCost > plsectorInfo3.GCost + num5)
                                 {
-                                    plsectorInfo4.GCost = plsectorInfo3.GCost + num5 * __instance.HWeight;
-                                    plsectorInfo4.FCost = plsectorInfo4.GCost + plsectorInfo4.HCost * __instance.HWeight;
+                                    plsectorInfo4.GCost = plsectorInfo3.GCost + num5 * _HWeight;
+                                    plsectorInfo4.FCost = plsectorInfo4.GCost + plsectorInfo4.HCost * _HWeight;
                                     plsectorInfo4.SearchParentNode = plsectorInfo3;
-                                    __instance.SortOpenList(ref list);
+                                    SortOpenList(ref list);
                                 }
                             }
                         }
                     }
                     if (flag)
                     {
-                        __instance.PrepareSolution(ref list2, plsectorInfo3);
+                        PrepareSolution(ref list2, plsectorInfo3);
                         list2.Reverse();
                     }
                     __result = list2;
                 }
+            }
+            // The following two methods were done as I dont know how to Invoke methods with 'ref'
+            private static void SortOpenList(ref List<PLSectorInfo> OpenList)
+            {
+                int num2;
+                for (int num = OpenList.Count - 1; num != 1; num = num2)
+                {
+                    num2 = num / 2;
+                    if (OpenList[num].FCost > OpenList[num2].FCost)
+                    {
+                        break;
+                    }
+                    PLSectorInfo value = OpenList[num];
+                    OpenList[num] = OpenList[num2];
+                    OpenList[num2] = value;
+                }
+            }
+            private static void PrepareSolution(ref List<PLSectorInfo> ReturnSolution, PLSectorInfo FromNode)
+            {
+                PLSectorInfo plsectorInfo = FromNode;
+                ReturnSolution.Clear();
+                if (plsectorInfo == null)
+                {
+                    return;
+                }
+                while (plsectorInfo.SearchParentNode != null)
+                {
+                    ReturnSolution.Add(plsectorInfo);
+                    plsectorInfo = plsectorInfo.SearchParentNode;
+                }
+                ReturnSolution.Add(plsectorInfo);
             }
         }
     }

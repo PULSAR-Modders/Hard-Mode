@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Reflection;
 using UnityEngine;
 
 namespace Hard_Mode
@@ -45,11 +46,12 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "Update")]
         class ForsakenFlagshipHeartUpdate
         {
+            private static FieldInfo FightActivated = AccessTools.Field(typeof(PLInfectedHeart_WDFlagship), "FightActivated");
             static void Postfix(PLInfectedHeart_WDFlagship __instance)
             {
                 if (Options.MasterHasMod)
                 {
-                    if (__instance.FightActivated && !__instance.IsDead)
+                    if ((bool)FightActivated.GetValue(__instance) && !__instance.IsDead)
                     {
                         __instance.Health += 150 * Time.deltaTime;
                         __instance.Health = Mathf.Clamp(__instance.Health, 0f, __instance.MaxHealth);

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection.Emit;
 using System;
 using System.Collections;
+using System.Reflection;
+
 namespace Hard_Mode
 {
     internal class AbyssCampaing
@@ -18,9 +20,11 @@ namespace Hard_Mode
                 instructionsList[437].operand = 0.7f;
                 return instructionsList.AsEnumerable();
             }
+            private static FieldInfo Flood_EndingPos = AccessTools.Field(typeof(PLAbyssShipInfo), "Flood_EndingPos");
+            private static FieldInfo Flood_StartingPos = AccessTools.Field(typeof(PLAbyssShipInfo), "Flood_StartingPos");
             static void Postfix(PLAbyssShipInfo __instance) 
             {
-                if(Options.MasterHasMod)__instance.Flood_EndingPos = __instance.Flood_StartingPos + new Vector3(0, 1.06f);
+                if (Options.MasterHasMod) Flood_EndingPos.SetValue(__instance, (Vector3)Flood_StartingPos.GetValue(__instance) + new Vector3(0, 1.06f));
             }
         }
         [HarmonyPatch(typeof(PLAbyssShipInfo), "AddHullBreach")]
@@ -37,12 +41,13 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAbyssFighterInfo), "SetupShipStats")]
         class AbyssFighter
         {
+            private static FieldInfo FirePower = AccessTools.Field(typeof(PLAbyssFighterInfo), "FirePower");
             static void Postfix(PLAbyssFighterInfo __instance)
             {
                 if (PLEncounterManager.Instance.PlayerShip != null)
                 {
                     if (__instance.MyHull != null) __instance.MyHull.Level += Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15);
-                    __instance.FirePower += PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50;
+                    FirePower.SetValue(__instance, (float)FirePower.GetValue(__instance) + (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50));
                 }
             }
         }
@@ -50,24 +55,26 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAbyssHeavyFighterInfo), "SetupShipStats")]
         class HeavyAbyssFighter
         {
+            private static FieldInfo FirePower = AccessTools.Field(typeof(PLAbyssHeavyFighterInfo), "FirePower");
             static void Postfix(PLAbyssHeavyFighterInfo __instance)
             {
                 if (PLEncounterManager.Instance.PlayerShip != null)
                 {
                     if (__instance.MyHull != null) __instance.MyHull.Level += Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15);
-                    __instance.FirePower += PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50;
+                    FirePower.SetValue(__instance, (float)FirePower.GetValue(__instance) + (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50));
                 }
             }
         }
         [HarmonyPatch(typeof(PLMatrixDroneInfo), "SetupShipStats")]
         class Cultivator
         {
+            private static FieldInfo FireRateScalar = AccessTools.Field(typeof(PLMatrixDroneInfo), "FireRateScalar");
             static void Postfix(PLMatrixDroneInfo __instance)
             {
                 if (PLEncounterManager.Instance.PlayerShip != null)
                 {
                     if(__instance.MyHull != null)__instance.MyHull.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
-                    __instance.FireRateScalar += PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50;
+                    FireRateScalar.SetValue(__instance, (float)FireRateScalar.GetValue(__instance) + (PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50));
                 }
             }
         }
@@ -86,13 +93,15 @@ namespace Hard_Mode
         class HarvesterHeal
         {
             static float lastHeal = Time.time;
+            private static MethodInfo ShouldShowBossUI = AccessTools.Method(typeof(PLMatrixDroneCommanderInfo), "ShouldShowBossUI");
+            private static FieldInfo FireRateScalar = AccessTools.Field(typeof(PLMatrixDroneCommanderInfo), "FireRateScalar");
             static void Postfix(PLMatrixDroneCommanderInfo __instance)
             {
-                if (__instance.ShouldShowBossUI() && Options.MasterHasMod)
+                if ((bool)ShouldShowBossUI.Invoke(__instance, null) && Options.MasterHasMod)
                 {
                     if (PLEncounterManager.Instance.PlayerShip != null && Options.MasterHasMod)
                     {
-                        __instance.FireRateScalar = 2 + PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50;
+                        FireRateScalar.SetValue(__instance, 2 + PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 50);
                         __instance.EngineeringSystem.Health = __instance.EngineeringSystem.MaxHealth;
                         __instance.WeaponsSystem.Health = __instance.WeaponsSystem.MaxHealth;
                         __instance.ComputerSystem.Health = __instance.ComputerSystem.MaxHealth;
@@ -103,7 +112,7 @@ namespace Hard_Mode
                         lastHeal = Time.time;
                     }
                 }
-                if (!__instance.ShouldShowBossUI() && __instance.MyHull != null && __instance.MyStats != null && Options.MasterHasMod)
+                if (!(bool)ShouldShowBossUI.Invoke(__instance, null) && __instance.MyHull != null && __instance.MyStats != null && Options.MasterHasMod)
                 {
                     if (__instance.MyHull != null && __instance.MyStats != null) __instance.MyHull.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
                     __instance.MyHull.Current = __instance.MyStats.HullMax;
@@ -153,7 +162,7 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAbyssArmoredWarden), "Update")]
         class BulwarkUpdate
         {
-            static float cachedWeakHealth = 5000;
+            private static MethodInfo ShouldShowBossUI = AccessTools.Method(typeof(PLAbyssArmoredWarden), "ShouldShowBossUI");
             static void Postfix(PLAbyssArmoredWarden __instance)
             {
                 if (PLEncounterManager.Instance.PlayerShip != null && Options.MasterHasMod)
@@ -180,7 +189,7 @@ namespace Hard_Mode
                         cachedWeakHealth = __instance.WeakPoint.Health;
                     }
                     */
-                    if (!__instance.ShouldShowBossUI())
+                    if (!(bool)ShouldShowBossUI.Invoke(__instance, null))
                     {
                         if (__instance.MyHull != null && __instance.MyStats != null) __instance.MyHull.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
                         __instance.MyHull.Current = __instance.MyStats.HullMax;
@@ -208,6 +217,8 @@ namespace Hard_Mode
                 __instance.StopAllCoroutines();
                 __instance.StartCoroutine(TimedRoutine(__instance));
             }
+            private static MethodInfo ExecuteBeamAttack = AccessTools.Method(typeof(PLAbyssBoss), "ExecuteBeamAttack");
+            private static MethodInfo ProjAttackTimed = AccessTools.Method(typeof(PLAbyssBoss), "ProjAttackTimed");
             static IEnumerator TimedRoutine(PLAbyssBoss __instance)
             {
                 WaitForSeconds normalWait = new WaitForSeconds(1f);
@@ -244,7 +255,7 @@ namespace Hard_Mode
                         {
                             __instance.FlagFlightAIToFaceTarget = true;
                             __instance.photonView.RPC("ClientExecuteBeamAttack", PhotonTargets.Others, Array.Empty<object>());
-                            yield return __instance.ExecuteBeamAttack();
+                            yield return ExecuteBeamAttack.Invoke(__instance, null);
                         }
                         else
                         {
@@ -255,7 +266,7 @@ namespace Hard_Mode
                             {
                             PLServer.Instance.ServerProjIDCounter
                             });
-                            yield return __instance.StartCoroutine(__instance.ProjAttackTimed(PLServer.Instance.ServerProjIDCounter));
+                            yield return __instance.StartCoroutine((IEnumerator)ProjAttackTimed.Invoke(__instance, new object[] { PLServer.Instance.ServerProjIDCounter }));
                             PLServer.Instance.ServerProjIDCounter += 12;
                             yield return normalWait;
                         }
@@ -274,12 +285,13 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAbyssBoss), "Update")]
         class WardenUpdate
         {
+            private static MethodInfo ShouldShowBossUI = AccessTools.Method(typeof(PLAbyssBoss), "ShouldShowBossUI");
             static void Postfix(PLAbyssBoss __instance)
             {
                 if (PLEncounterManager.Instance.PlayerShip != null && Options.MasterHasMod)
                 {
                     __instance.EngineeringSystem.Health = __instance.EngineeringSystem.MaxHealth;
-                    if (!__instance.ShouldShowBossUI()) 
+                    if (!(bool)ShouldShowBossUI.Invoke(__instance, null)) 
                     {
                         if (__instance.MyHull != null && __instance.MyStats != null) __instance.MyHull.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
                         __instance.MyHull.Current = __instance.MyStats.HullMax;
@@ -298,13 +310,14 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLAbyssLavaBoss), "Update")]
         class Excavator
         {
+            private static MethodInfo ShouldShowBossUI = AccessTools.Method(typeof(PLAbyssLavaBoss), "ShouldShowBossUI");
             static void Postfix(PLAbyssLavaBoss __instance)
             {
                 if (PLEncounterManager.Instance.PlayerShip != null && Options.MasterHasMod)
                 {
                     __instance.EngineeringSystem.Health = __instance.EngineeringSystem.MaxHealth;
                     __instance.ComputerSystem.Health = __instance.ComputerSystem.MaxHealth;
-                    if (!__instance.ShouldShowBossUI())
+                    if (!(bool)ShouldShowBossUI.Invoke(__instance, null))
                     {
                         if (__instance.MyHull != null && __instance.MyStats != null) __instance.MyHull.Level = Mathf.CeilToInt(PLEncounterManager.Instance.PlayerShip.GetCombatLevel() / 15) + 1;
                         __instance.MyHull.Current = __instance.MyStats.HullMax;
@@ -320,6 +333,9 @@ namespace Hard_Mode
                 __instance.StopAllCoroutines();
                 __instance.StartCoroutine(TimedRoutine(__instance));
             }
+            private static FieldInfo SourceRingSpeedX = AccessTools.Field(typeof(PLAbyssLavaBoss), "SourceRingSpeedX");
+            private static FieldInfo SourceRingSpeedY = AccessTools.Field(typeof(PLAbyssLavaBoss), "SourceRingSpeedY");
+            private static FieldInfo SourceRingSpeedZ = AccessTools.Field(typeof(PLAbyssLavaBoss), "SourceRingSpeedZ");
             static IEnumerator TimedRoutine(PLAbyssLavaBoss __instance)
             {
                 WaitForSeconds VerySmallTiming = new WaitForSeconds(0.6f);
@@ -349,8 +365,8 @@ namespace Hard_Mode
                             float value = UnityEngine.Random.value;
                             if (value < 0.33f)
                             {
-                                __instance.SourceRingSpeedX = 10f;
-                                __instance.SourceRingSpeedZ = 10f;
+                                SourceRingSpeedX.SetValue(__instance, 10f);
+                                SourceRingSpeedZ.SetValue(__instance, 10f);
                                 yield return SmallTiming;
                                 __instance.photonView.RPC("TriggerShockwave", PhotonTargets.All, new object[]
                                 {
@@ -369,9 +385,9 @@ namespace Hard_Mode
                             }
                             else if (value < 0.45f && enhancedAttacks)
                             {
-                                __instance.SourceRingSpeedX = 50f;
-                                __instance.SourceRingSpeedY = 50f;
-                                __instance.SourceRingSpeedZ = 50f;
+                                SourceRingSpeedX.SetValue(__instance, 50f);
+                                SourceRingSpeedY.SetValue(__instance, 50f);
+                                SourceRingSpeedZ.SetValue(__instance, 50f);
                                 yield return VerySmallTiming;
                                 __instance.photonView.RPC("TriggerShockwave", PhotonTargets.All, new object[]
                                 {
@@ -410,7 +426,7 @@ namespace Hard_Mode
                             }
                             else if (value < 0.6f)
                             {
-                                __instance.SourceRingSpeedX = 50f;
+                                SourceRingSpeedX.SetValue(__instance, 50f);
                                 yield return SmallTiming;
                                 __instance.photonView.RPC("TriggerShockwave", PhotonTargets.All, new object[]
                                 {
@@ -424,7 +440,7 @@ namespace Hard_Mode
                             }
                             else if (value < 0.75f)
                             {
-                                __instance.SourceRingSpeedY = 50f;
+                                SourceRingSpeedY.SetValue(__instance, 50f);
                                 yield return SmallTiming;
                                 __instance.photonView.RPC("TriggerShockwave", PhotonTargets.All, new object[]
                                 {
@@ -438,8 +454,8 @@ namespace Hard_Mode
                             }
                             else if (value < 0.9f)
                             {
-                                __instance.SourceRingSpeedX = 20f;
-                                __instance.SourceRingSpeedZ = 30f;
+                                SourceRingSpeedX.SetValue(__instance, 20f);
+                                SourceRingSpeedZ.SetValue(__instance, 30f);
                                 yield return SmallTiming;
                                 __instance.photonView.RPC("TriggerShockwave", PhotonTargets.All, new object[]
                                 {
@@ -469,9 +485,9 @@ namespace Hard_Mode
                                 });
                             }
                         }
-                        __instance.SourceRingSpeedX = 0f;
-                        __instance.SourceRingSpeedY = 0f;
-                        __instance.SourceRingSpeedZ = 1f;
+                        SourceRingSpeedX.SetValue(__instance, 0f);
+                        SourceRingSpeedY.SetValue(__instance, 0f);
+                        SourceRingSpeedZ.SetValue(__instance, 1f);
                         yield return (UnityEngine.Random.value < 0.5f) ? SmallTiming : VerySmallTiming;
                     }
                 }

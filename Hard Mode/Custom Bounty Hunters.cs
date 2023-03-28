@@ -43,7 +43,8 @@ namespace Hard_Mode
         {
             if (PLServer.GetCurrentSector() != null)
             {
-                foreach (PLEncounterManager.ShipLayout ship in PLEncounterManager.Instance.PossibleHunters_LayoutData)
+                List<PLEncounterManager.ShipLayout> _PossibleHunters_LayoutData = PLEncounterManager.Instance.GetAllLayouts();
+                foreach (PLEncounterManager.ShipLayout ship in _PossibleHunters_LayoutData)
                 {
                     /*
                     List<PLShipComponent> allComponents = new List<PLShipComponent>();
@@ -62,8 +63,7 @@ namespace Hard_Mode
                         if (plshipComponent != null && (plshipComponent.ActualSlotType == ESlotType.E_COMP_AUTO_TURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_MAINTURRET || plshipComponent.ActualSlotType == ESlotType.E_COMP_TURRET))
                         {
                             PLTurret turret = plshipComponent as PLTurret;
-                            ship.CL += turret.GetDPS() * 0.1f * (1f - Mathf.Clamp01(turret.HeatGeneratedOnFire * 2.2f / turret.FireDelay));
-                            ship.CL += turret.TurretRange * 0.0005f;
+                            CombatLevel.GetTurretCombatLevel(turret, ref ship.CL);
                             /*
                             allComponents.Add(plshipComponent);
                             switch (plshipComponent.ActualSlotType)
