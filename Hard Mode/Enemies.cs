@@ -326,7 +326,7 @@ namespace Hard_Mode
                     else if (__instance is PLCreature) // Must be checked before PLPawnBase as PLCreature derives from it
                     {
                         PLCreature instance = __instance as PLCreature;
-                        if (instance is PLSlimeBoss) return;
+                        if (instance is PLSlimeBoss || instance as PLInfectedSpider_WG) return;
                         instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                         instance.Health = instance.MaxHealth;
                         if (instance.Armor == 0) instance.Armor = 5f;
