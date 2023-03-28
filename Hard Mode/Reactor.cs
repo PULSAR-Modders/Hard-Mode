@@ -35,13 +35,13 @@ namespace Hard_Mode
                         tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.3f);
                         if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
                         else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp
-                        if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && UnityEngine.Random.Range(0, 600) == 14) //this spawns fire when too hot
+                        if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && Random.Range(0, 600) == 14) //this spawns fire when too hot
                         {
-                            PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 4));
+                            PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 4));
                             int looplimit = 0;
                             while ((system == null || system.IsOnFire()) && looplimit < 20)
                             {
-                                system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 4));
+                                system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 4));
                                 looplimit++;
                             }
                             if (system != null) PLServer.Instance.CreateFireAtSystem(system, false);
@@ -50,7 +50,7 @@ namespace Hard_Mode
                 }
                 else if (!Options.DangerousReactor && __instance.gameObject.GetComponent<PLTempRadius>() != null) //This will bring things to normal when dangerous reactor is disabled
                 {
-                    UnityEngine.Object.Destroy(__instance.gameObject.GetComponent<PLTempRadius>());
+                    Object.Destroy(__instance.gameObject.GetComponent<PLTempRadius>());
                     ___RadPoint.RaditationRange = 1f;
                 }
             }

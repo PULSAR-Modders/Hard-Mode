@@ -7,7 +7,6 @@ using System.Reflection.Emit;
 using PulsarModLoader.Patches;
 using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
-using static PulsarModLoader.Patches.HarmonyHelpers;
 namespace Hard_Mode
 {
     [HarmonyPatch(typeof(PLShipInfoBase), "GetChaosBoost", new Type[] { typeof(PLPersistantShipInfo), typeof(int) })]
