@@ -6,16 +6,6 @@ namespace Hard_Mode
 {
     class WD_Campaing
     {
-        [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
-        class MindSlaver
-        {
-            static void Postfix(PLInfectedBoss_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                }
-            }
-        }
         [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Update")]
         class MindSlaverUpdate //Allows the MindSlaver to heal if it is attacking no one
         {
@@ -79,10 +69,6 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
@@ -105,10 +91,6 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }

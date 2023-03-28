@@ -311,12 +311,12 @@ namespace Hard_Mode
             {
                 // PLCreature       // PLAirElemental (Tornado), PLAnt, PLAntArmored, PLAntHeavy, PLAntRavager, PLInfectedSpider (Crawler), PLInfectedSpider_Medium, PLLCLabEnemy (Lost colony ghosts), PLRaptor
                 // PLCreature       // PLRat, PLSlime, PLSlimeBoss, PLSpider
-                // PLPawnBase       // PLCrystalBoss (Source), PLInfectedBoss_WDFlagship (MindSlaver), PLInfectedCrewmember (Infected), PLInfectedHeart_WDFlagship, PLInfectedScientist (Source), PLBoardingBot, PLStalkerPawn (Teleporting figure)
-                // PLCombatTarget   // PLBoardingBot, PLGroundTurret
+                // PLPawnBase       // PLAssassinBot, PLCrystalBoss (Source), PLInfectedBoss_WDFlagship (MindSlaver), PLInfectedCrewmember (Infected), PLInfectedHeart_WDFlagship, PLInfectedScientist (Source), PLStalkerPawn (Teleporting figure)
+                // PLCombatTarget   // PLBoardingBot, PLGroundTurret, PLGiantRobotHead, PLRoamingSecurityGuardBot
 
                 if (Options.MasterHasMod)
                 {
-                    if (__instance is PLBoardingBot || __instance is PLGroundTurret)
+                    if (__instance is PLBoardingBot || __instance is PLGroundTurret || __instance is PLGiantRobotHead || __instance is PLRoamingSecurityGuardRobot)
                     {
                         __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                         __instance.Health = __instance.MaxHealth;
@@ -326,6 +326,7 @@ namespace Hard_Mode
                     else if (__instance is PLCreature) // Must be checked before PLPawnBase as PLCreature derives from it
                     {
                         PLCreature instance = __instance as PLCreature;
+                        if (instance is PLSlimeBoss) return;
                         instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
                         instance.Health = instance.MaxHealth;
                         if (instance.Armor == 0) instance.Armor = 5f;
@@ -337,6 +338,11 @@ namespace Hard_Mode
                     else if (__instance is PLPawnBase)
                     {
                         PLPawnBase instance = __instance as PLPawnBase;
+                        if (instance is PLCrystalBoss || instance is PLInfectedBoss_WDFlagship) return;
+                        __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
+                        __instance.Health = __instance.MaxHealth;
+                        if (__instance.Armor == 0) __instance.Armor = 5f;
+                        __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     }
                 }
             }
