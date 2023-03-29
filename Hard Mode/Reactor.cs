@@ -146,15 +146,15 @@ namespace Hard_Mode
                 if(type == EReactorType.ANCIENT_REACTOR) 
                 {
                     __instance.EnergyOutputMax = 150000f;
-                    OriginalEnergyOutputMax.SetValue(__instance, new object[] { __instance.EnergyOutputMax });
+                    OriginalEnergyOutputMax.SetValue(__instance, __instance.EnergyOutputMax );
                 }
                 if (type == EReactorType.THERMOCORE_REACTOR)
                 {
-                    OriginalEnergyOutputMax.SetValue(__instance, new object[] { Options.WeakReactor ? 38000f * multiplier : 38000f });
+                    OriginalEnergyOutputMax.SetValue(__instance, Options.WeakReactor ? 38000f * multiplier : 38000f );
                 }
                 if (type == EReactorType.E_REAC_STRONGPOINT)
                 {
-                    OriginalEnergyOutputMax.SetValue(__instance, new object[] { Options.WeakReactor ? 24000f * multiplier : 24000f });
+                    OriginalEnergyOutputMax.SetValue(__instance, Options.WeakReactor ? 24000f * multiplier : 24000f );
                 }
                 /*switch (type) 
                 {
