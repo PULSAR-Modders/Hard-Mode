@@ -81,33 +81,5 @@ namespace Hard_Mode
             }
 
         }
-        [HarmonyPatch(typeof(PLGiantRobotHead), "Start")]
-        class DownedProtector
-        {
-            static void Postfix(PLGiantRobotHead __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLRoamingSecurityGuardRobot), "Start")]
-        class MadmansMansionDrone
-        {
-            static void Postfix(PLRoamingSecurityGuardRobot __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
     }
 }

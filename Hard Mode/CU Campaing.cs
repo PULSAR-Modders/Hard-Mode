@@ -38,16 +38,6 @@ namespace Hard_Mode
                 return PatchBySequence(instructionsList.AsEnumerable(), targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
             }
         }
-        [HarmonyPatch(typeof(PLSlimeBoss), "Start")]
-        class WastedWingSlime
-        {
-            static void Postfix(PLSlimeBoss __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                }
-            }
-        }
         [HarmonyPatch(typeof(PLSlimeBoss), "Update")]
         class WastedWingSlimeUpdate
         {
@@ -57,20 +47,6 @@ namespace Hard_Mode
                 instructionsList[406].operand = 2f;
                 instructionsList[423].operand = 4f;
                 return instructionsList.AsEnumerable();
-            }
-        }
-        [HarmonyPatch(typeof(PLStalkerPawn), "Start")]
-        class Stalker
-        {
-            static void Postfix(PLStalkerPawn __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
             }
         }
         [HarmonyPatch(typeof(PLStalkerPawn), "Update")]
@@ -90,10 +66,6 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
