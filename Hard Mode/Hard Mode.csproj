@@ -65,39 +65,51 @@
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>lib\0Harmony.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ACTk.Runtime">
       <HintPath>lib\ACTk.Runtime.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>lib\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="AstarPathfindingProject">
       <HintPath>lib\AstarPathfindingProject.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="CrewAILibraryBuild">
       <HintPath>lib\CrewAILibraryBuild.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>lib\Photon3Unity3D.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PulsarModLoader">
       <HintPath>lib\PulsarModLoader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>lib\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>lib\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>lib\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
       <HintPath>lib\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>lib\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
