@@ -1,6 +1,8 @@
-﻿using PulsarModLoader.Chat.Commands.CommandRouter;
+﻿using HarmonyLib;
+using PulsarModLoader.Chat.Commands.CommandRouter;
 using PulsarModLoader.Utilities;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Hard_Mode
 {
@@ -23,6 +25,7 @@ namespace Hard_Mode
         {
             return new string[][] { new string[] { "FogofWar", "DangerousReactor", "Weakreactor","SpinningCypher" } };
         }
+        private static FieldInfo cachedAIData = AccessTools.Field(typeof(PLPlayer), "cachedAIData");
         public override void Execute(string arguments)
         {
             if (!PhotonNetwork.isMasterClient) 
@@ -67,7 +70,7 @@ namespace Hard_Mode
                     {
                         Dictionary<AIPriority, string> storedPriorites = new Dictionary<AIPriority, string>();
                         result += "case " + (i + 1) + ":\n";
-                        foreach(AIPriority aIPriority in bots[i].cachedAIData.Priorities) 
+                        foreach(AIPriority aIPriority in ((AIDataIndividual)cachedAIData.GetValue(bots[i])).Priorities) 
                         {
                             result += $"AIPriority aipriority{i}{j} = new AIPriority(AIPriorityType.{aIPriority.Type}, {aIPriority.TypeData}, {aIPriority.BasePriority});\n";
                             result += $"dataInv.Priorities.Add(aipriority{i}{j});\n";

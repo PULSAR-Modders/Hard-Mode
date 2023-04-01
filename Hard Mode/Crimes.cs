@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using static PulsarModLoader.Patches.HarmonyHelpers;
 using CodeStage.AntiCheat.ObscuredTypes;
 using System.Linq;
+using System.Reflection;
 
 namespace Hard_Mode
 {
@@ -105,6 +106,7 @@ namespace Hard_Mode
     [HarmonyPatch(typeof(PLCUInvestigatorDrone), "Start")]
     class InvestigationDroneStart //This can add more things for the drone to check
     {
+        private static FieldInfo ComponentsToCasuallyInvestigate = AccessTools.Field(typeof(PLCUInvestigatorDrone), "ComponentsToCasuallyInvestigate");
         static void Postfix(PLCUInvestigatorDrone __instance)
         {
             if (Options.MasterHasMod)
@@ -121,7 +123,9 @@ namespace Hard_Mode
                     __instance.ComponentsToCasuallyInvestigate.AddRange(__instance.CurrentShip.InteriorStatic.GetComponentsInChildren<PLSystemInstance>());
                 }
                 */
-                __instance.ComponentsToCasuallyInvestigate.Add(__instance.CurrentShip.ResearchLockerCollider.transform);
+                List<Component> components = (List<Component>)ComponentsToCasuallyInvestigate.GetValue(__instance);
+                components.Add(__instance.CurrentShip.ResearchLockerCollider.transform);
+                ComponentsToCasuallyInvestigate.SetValue(__instance, components);
             }
         }
     }
@@ -131,11 +135,17 @@ namespace Hard_Mode
         public static bool foundSecret = false;
 
         public static List<CargoObjectDisplay> secretCargo = new List<CargoObjectDisplay>();
+        private static FieldInfo ContrabandFound = AccessTools.Field(typeof(PLCUInvestigatorDrone), "ContrabandFound");
+        private static MethodInfo GetVisualForDroppedItem = AccessTools.Method(typeof(PLGameStatic), "GetVisualForDroppedItem");
+        private static FieldInfo currentInvestigationTarget = AccessTools.Field(typeof(PLCUInvestigatorDrone), "currentInvestigationTarget");
+        private static FieldInfo lastInvestigateActionCompletedTime = AccessTools.Field(typeof(PLCUInvestigatorDrone), "lastInvestigateActionCompletedTime");
+        private static FieldInfo ComponentsToCasuallyInvestigate = AccessTools.Field(typeof(PLCUInvestigatorDrone), "ComponentsToCasuallyInvestigate");
         static void Postfix(PLCUInvestigatorDrone __instance)
         {
             if (Options.MasterHasMod)
             {
-                if (!__instance.ContrabandFound)
+                Transform _currentInvestigationTarget = (Transform)currentInvestigationTarget.GetValue(__instance);
+                if (!(bool)ContrabandFound.GetValue(__instance))
                 {
                     foreach (PLPlayerDroppedItem itemDrop in __instance.CurrentShip.AllPlayerDroppedItems)
                     {
@@ -144,30 +154,31 @@ namespace Hard_Mode
                         float num = 7f;
                         RaycastHit hit;
                         bool hitSomething = Physics.Linecast(__instance.transform.position, itemDrop.Position, out hit);
-                        if (item != null && !hitSomething && PLGameStatic.Instance.GetVisualForDroppedItem(itemDrop) != null)
+                        DroppedItemVisual droppedItemVisual = (DroppedItemVisual)GetVisualForDroppedItem.Invoke(PLGameStatic.Instance, new object[] { itemDrop });
+                        if (item != null && !hitSomething && droppedItemVisual != null)
                         {
                             float distance = Vector3.SqrMagnitude(__instance.transform.position - itemDrop.Position);
                             if (distance < num)
                             {
                                 num = distance;
-                                __instance.currentInvestigationTarget = PLGameStatic.Instance.GetVisualForDroppedItem(itemDrop).Visual.transform;
+                                currentInvestigationTarget.SetValue(__instance, droppedItemVisual.Visual.transform);
                             }
                         }
-                        else if (item != null && PLGameStatic.Instance.GetVisualForDroppedItem(itemDrop) != null && hit.collider.GetComponentsInParent<GameObject>() == null)
+                        else if (item != null && droppedItemVisual != null && hit.collider.GetComponentsInParent<GameObject>() == null)
                         {
                             float distance = Vector3.SqrMagnitude(__instance.transform.position - itemDrop.Position);
                             if (distance < num)
                             {
                                 num = distance;
-                                __instance.currentInvestigationTarget = PLGameStatic.Instance.GetVisualForDroppedItem(itemDrop).Visual.transform;
+                                currentInvestigationTarget.SetValue(__instance, droppedItemVisual.Visual.transform);
                             }
 
                         }
-                        if (__instance.currentInvestigationTarget != null)
+                        if (_currentInvestigationTarget != null)
                         {
-                            __instance.Scan.startLifetime = Vector3.Distance(__instance.currentInvestigationTarget.position, __instance.transform.position) * 0.2f;
+                            __instance.Scan.startLifetime = Vector3.Distance(_currentInvestigationTarget.position, __instance.transform.position) * 0.2f;
                             __instance.ScanOutline.startLifetime = __instance.Scan.startLifetime;
-                            Renderer componentInChildren = __instance.currentInvestigationTarget.GetComponentInChildren<Renderer>();
+                            Renderer componentInChildren = _currentInvestigationTarget.GetComponentInChildren<Renderer>();
                             if (componentInChildren != null)
                             {
                                 __instance.ScanGridRoot.transform.position = componentInChildren.bounds.center;
@@ -178,7 +189,7 @@ namespace Hard_Mode
                             }
                             else
                             {
-                                __instance.ScanGridRoot.transform.position = __instance.currentInvestigationTarget.position;
+                                __instance.ScanGridRoot.transform.position = _currentInvestigationTarget.position;
                                 __instance.ScanGridRoot.transform.rotation = Quaternion.identity;
                                 __instance.GridScanX.startLifetime = 1f;
                                 __instance.GridScanY.startLifetime = 1f;
@@ -190,22 +201,23 @@ namespace Hard_Mode
                         }
                     }
                 }
-                if (__instance.currentInvestigationTarget != null && !__instance.ContrabandFound)
+                if (_currentInvestigationTarget != null && !(bool)ContrabandFound.GetValue(__instance))
                 {
-                    PLSystemInstance targetSystem = __instance.currentInvestigationTarget.gameObject.GetComponent<PLSystemInstance>();
-                    PLPawn player = __instance.currentInvestigationTarget.gameObject.GetComponent<PLPawn>();
+                    PLSystemInstance targetSystem = _currentInvestigationTarget.gameObject.GetComponent<PLSystemInstance>();
+                    PLPawn player = _currentInvestigationTarget.gameObject.GetComponent<PLPawn>();
                     DroppedItemVisual itemVisual = null;
-                    PLReactorInstance reactor = __instance.currentInvestigationTarget.gameObject.GetComponent<PLReactorInstance>();
+                    PLReactorInstance reactor = _currentInvestigationTarget.gameObject.GetComponent<PLReactorInstance>();
                     foreach(DroppedItemVisual items in PLGameStatic.Instance.Displayed_DroppedItemVisuals) 
                     {
-                        if(items.Visual == __instance.currentInvestigationTarget.gameObject) 
+                        if(items.Visual == _currentInvestigationTarget.gameObject) 
                         {
                             itemVisual = items;
                             break;
                         }
                     }
                     List<PLShipComponent> possibleContraband = new List<PLShipComponent>();
-                    if (targetSystem != null && Time.time - __instance.lastInvestigateActionCompletedTime > 0.33f)
+                    float _lastInvestigateActionCompletedTime = (float)lastInvestigateActionCompletedTime.GetValue(__instance);
+                    if (targetSystem != null && Time.time - _lastInvestigateActionCompletedTime > 0.33f)
                     {
                         if (targetSystem.MySystem is PLEngineeringSystem)
                         {
@@ -240,13 +252,14 @@ namespace Hard_Mode
                                 }
                             }
                         }
-                        __instance.lastInvestigateActionCompletedTime = Time.time;
+                        _lastInvestigateActionCompletedTime = Time.time;
+                        lastInvestigateActionCompletedTime.SetValue(__instance, _lastInvestigateActionCompletedTime);
                     }
-                    else if (reactor != null && Time.time - __instance.lastInvestigateActionCompletedTime > 0.33f && __instance.CurrentShip.MyReactor != null && __instance.CurrentShip.MyReactor.Contraband)
+                    else if (reactor != null && Time.time - _lastInvestigateActionCompletedTime > 0.33f && __instance.CurrentShip.MyReactor != null && __instance.CurrentShip.MyReactor.Contraband)
                     {
                         __instance.photonView.RPC("InvestigationFailed", PhotonTargets.All, new object[0]);
                     }
-                    else if (player != null && Time.time - __instance.lastInvestigateActionCompletedTime > 0.33f && !player.IsDead && player.GetPlayer() != null && player.GetPlayer().MyInventory != null)
+                    else if (player != null && Time.time - _lastInvestigateActionCompletedTime > 0.33f && !player.IsDead && player.GetPlayer() != null && player.GetPlayer().MyInventory != null)
                     {
                         using (List<List<PLPawnItem>>.Enumerator enumerator5 = player.GetPlayer().MyInventory.GetAllItems(true).GetEnumerator())
                         {
@@ -263,9 +276,10 @@ namespace Hard_Mode
                                 }
                             }
                         }
-                        __instance.lastInvestigateActionCompletedTime = Time.time;
+                        _lastInvestigateActionCompletedTime = Time.time;
+                        lastInvestigateActionCompletedTime.SetValue(__instance, _lastInvestigateActionCompletedTime);
                     }
-                    else if (__instance.currentInvestigationTarget == __instance.CurrentShip.ResearchLockerCollider.transform && Time.time - __instance.lastInvestigateActionCompletedTime > 0.33f)
+                    else if (_currentInvestigationTarget == __instance.CurrentShip.ResearchLockerCollider.transform && Time.time - _lastInvestigateActionCompletedTime > 0.33f)
                     {
                         using (List<List<PLPawnItem>>.Enumerator enumerator5 = PLServer.Instance.ResearchLockerInventory.GetAllItems(true).GetEnumerator())
                         {
@@ -282,9 +296,10 @@ namespace Hard_Mode
                                 }
                             }
                         }
-                        __instance.lastInvestigateActionCompletedTime = Time.time;
+                        _lastInvestigateActionCompletedTime = Time.time;
+                        lastInvestigateActionCompletedTime.SetValue(__instance, _lastInvestigateActionCompletedTime);
                     }
-                    else if ((__instance.CurrentShip.GetSecretPoster() != null && __instance.currentInvestigationTarget == __instance.CurrentShip.GetSecretPoster().transform) || (__instance.CurrentShip.GetFakeWalls() != null && __instance.CurrentShip.GetFakeWalls().Count > 0 && __instance.currentInvestigationTarget == __instance.CurrentShip.GetFakeWalls()[0].transform))
+                    else if ((__instance.CurrentShip.GetSecretPoster() != null && _currentInvestigationTarget == __instance.CurrentShip.GetSecretPoster().transform) || (__instance.CurrentShip.GetFakeWalls() != null && __instance.CurrentShip.GetFakeWalls().Count > 0 && _currentInvestigationTarget == __instance.CurrentShip.GetFakeWalls()[0].transform))
                     {
                         foundSecret = true;
                     }
@@ -298,22 +313,24 @@ namespace Hard_Mode
                     }
                     if (foundSecret)
                     {
+                        List<Component> _ComponentsToCasuallyInvestigate = (List<Component>)ComponentsToCasuallyInvestigate.GetValue(__instance);
                         foreach (CargoObjectDisplay cargoObjectDisplay2 in __instance.CurrentShip.GetHiddenCODs())
                         {
-                            if (cargoObjectDisplay2 != null && cargoObjectDisplay2.DisplayedItem != null && cargoObjectDisplay2.DisplayObj != null && !__instance.ComponentsToCasuallyInvestigate.Contains(cargoObjectDisplay2.DisplayObj.transform))
+                            if (cargoObjectDisplay2 != null && cargoObjectDisplay2.DisplayedItem != null && cargoObjectDisplay2.DisplayObj != null && !_ComponentsToCasuallyInvestigate.Contains(cargoObjectDisplay2.DisplayObj.transform))
                             {
-                                __instance.ComponentsToCasuallyInvestigate.Add(cargoObjectDisplay2.DisplayObj.transform);
+                                _ComponentsToCasuallyInvestigate.Add(cargoObjectDisplay2.DisplayObj.transform);
                             }
                             if (!secretCargo.Contains(cargoObjectDisplay2))
                             {
                                 secretCargo.Add(cargoObjectDisplay2);
                             }
                         }
+                        ComponentsToCasuallyInvestigate.SetValue(__instance, _ComponentsToCasuallyInvestigate);
                         if (secretCargo.Count > 0)
                         {
                             foreach (CargoObjectDisplay cargoObjectDisplay2 in secretCargo)
                             {
-                                if (cargoObjectDisplay2 != null && cargoObjectDisplay2.DisplayedItem != null && cargoObjectDisplay2.DisplayObj != null && cargoObjectDisplay2.DisplayedItem.Contraband && __instance.currentInvestigationTarget.gameObject == cargoObjectDisplay2.DisplayObj.gameObject)
+                                if (cargoObjectDisplay2 != null && cargoObjectDisplay2.DisplayedItem != null && cargoObjectDisplay2.DisplayObj != null && cargoObjectDisplay2.DisplayedItem.Contraband && _currentInvestigationTarget.gameObject == cargoObjectDisplay2.DisplayObj.gameObject)
                                 {
                                     __instance.photonView.RPC("InvestigationFailed", PhotonTargets.All, new object[0]);
                                     break;
