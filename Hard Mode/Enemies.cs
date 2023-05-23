@@ -35,7 +35,7 @@ namespace Hard_Mode
                 if (component != null && component.gameObject.name == "Simple Combat Bot Player" && component.StartingShip != null)
                 {
                     if (component.StartingShip.IsRelicHunter || component.StartingShip.IsBountyHunter) continue;
-                    int chaos = (int)PLServer.Instance.ChaosLevel + UnityEngine.Random.Range(0, 4);
+                    int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(component.StartingShip.GetCombatLevel()/20);
                     if (component.StartingShip.ShipTypeID == EShipType.E_INTREPID_SC)
                     {
                         component.Talents[56] = 5 + chaos;
@@ -128,50 +128,50 @@ namespace Hard_Mode
                     }
                     else
                     {
-                        component.Talents[56] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                        component.Talents[58] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                        component.Talents[0] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                        component.Talents[57] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                        component.Talents[48] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                        component.Talents[3] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                        component.Talents[56] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                        component.Talents[58] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                        component.Talents[0] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                        component.Talents[57] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                        component.Talents[48] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                        component.Talents[3] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
                         switch (component.GetClassID())
                         {
                             case 0:
-                                component.Talents[47] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[27] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[5] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[50] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[47] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[27] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[5] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[50] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
                                 break;
                             case 1:
-                                component.Talents[36] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[35] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[8] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[9] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[36] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[35] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[8] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[9] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
                                 break;
                             case 2:
-                                component.Talents[13] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[11] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[12] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[13] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[11] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[12] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
                                 break;
                             case 3:
-                                component.Talents[38] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[39] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[23] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[17] = Mathf.RoundToInt(chaos * 0.5f * UnityEngine.Random.value);
-                                component.Talents[25] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[62] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[38] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[39] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[23] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[17] = Mathf.RoundToInt(chaos * 0.5f * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[25] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[62] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
                                 break;
                             case 4:
-                                component.Talents[20] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[19] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[21] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[45] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
-                                component.Talents[61] = Mathf.RoundToInt(chaos * UnityEngine.Random.value);
+                                component.Talents[20] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[19] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[21] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[45] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                                component.Talents[61] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
                                 break;
                         }
                     }
                     component.MyInventory.Clear();
-                    int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.value));
+                    int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.Range(0.70f, 1f)));
                     if (random < 10)
                     {
                         int ItemID = PLServer.Instance.PawnInvItemIDCounter;
