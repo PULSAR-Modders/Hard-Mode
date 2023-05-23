@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Reflection;
 using UnityEngine;
 
 namespace Hard_Mode
@@ -35,13 +36,13 @@ namespace Hard_Mode
                         tempRadius.Temperature = __instance.MyShipInfo.MyStats.ReactorTempCurrent / (__instance.MyShipInfo.MyStats.ReactorTempMax * 0.3f);
                         if (tempRadius.Temperature < 1) tempRadius.Temperature = 1; //This is so reactor doesn't decide to make the nearby area colder
                         else if (tempRadius.Temperature > 20) tempRadius.Temperature = 10; //This is more for the OP hunters that have reactor that would just kill them with the temp
-                        if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && UnityEngine.Random.Range(0, 600) == 14) //this spawns fire when too hot
+                        if (__instance.MyShipInfo.MyStats.ReactorTempCurrent >= __instance.MyShipInfo.MyStats.ReactorTempMax * 0.90 && Random.Range(0, 600) == 14) //this spawns fire when too hot
                         {
-                            PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 4));
+                            PLMainSystem system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 4));
                             int looplimit = 0;
                             while ((system == null || system.IsOnFire()) && looplimit < 20)
                             {
-                                system = __instance.MyShipInfo.GetSystemFromID(UnityEngine.Random.Range(0, 4));
+                                system = __instance.MyShipInfo.GetSystemFromID(Random.Range(0, 4));
                                 looplimit++;
                             }
                             if (system != null) PLServer.Instance.CreateFireAtSystem(system, false);
@@ -50,7 +51,7 @@ namespace Hard_Mode
                 }
                 else if (!Options.DangerousReactor && __instance.gameObject.GetComponent<PLTempRadius>() != null) //This will bring things to normal when dangerous reactor is disabled
                 {
-                    UnityEngine.Object.Destroy(__instance.gameObject.GetComponent<PLTempRadius>());
+                    Object.Destroy(__instance.gameObject.GetComponent<PLTempRadius>());
                     ___RadPoint.RaditationRange = 1f;
                 }
             }
@@ -132,6 +133,7 @@ namespace Hard_Mode
     [HarmonyPatch(typeof(PLReactor), "Tick")]
     class ReactorsNerf
     {
+        private static FieldInfo OriginalEnergyOutputMax = AccessTools.Field(typeof(PLReactor), "OriginalEnergyOutputMax");
         static void Postfix(PLReactor __instance)
         {
             if (Options.MasterHasMod)
@@ -139,19 +141,20 @@ namespace Hard_Mode
                 if (__instance.SubType >= PulsarModLoader.Content.Components.Reactor.ReactorModManager.Instance.VanillaReactorMaxType) return;
                 float multiplier = 0.5f;
                 EReactorType type = (EReactorType)__instance.SubType;
-                if(type != EReactorType.E_REAC_STRONGPOINT && type != EReactorType.THERMOCORE_REACTOR)__instance.EnergyOutputMax = Options.WeakReactor ? __instance.OriginalEnergyOutputMax * multiplier : __instance.OriginalEnergyOutputMax;
+                float _OriginalEnergyOutputMax = (float)OriginalEnergyOutputMax.GetValue(__instance);
+                if (type != EReactorType.E_REAC_STRONGPOINT && type != EReactorType.THERMOCORE_REACTOR)__instance.EnergyOutputMax = Options.WeakReactor ? _OriginalEnergyOutputMax * multiplier : _OriginalEnergyOutputMax;
                 if(type == EReactorType.ANCIENT_REACTOR) 
                 {
                     __instance.EnergyOutputMax = 150000f;
-                    __instance.OriginalEnergyOutputMax = __instance.EnergyOutputMax;
+                    OriginalEnergyOutputMax.SetValue(__instance, __instance.EnergyOutputMax );
                 }
                 if (type == EReactorType.THERMOCORE_REACTOR)
                 {
-                    __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 38000f * multiplier : 38000f;
+                    OriginalEnergyOutputMax.SetValue(__instance, Options.WeakReactor ? 38000f * multiplier : 38000f );
                 }
                 if (type == EReactorType.E_REAC_STRONGPOINT)
                 {
-                    __instance.OriginalEnergyOutputMax = Options.WeakReactor ? 24000f * multiplier : 24000f;
+                    OriginalEnergyOutputMax.SetValue(__instance, Options.WeakReactor ? 24000f * multiplier : 24000f );
                 }
                 /*switch (type) 
                 {

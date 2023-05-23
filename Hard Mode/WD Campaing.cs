@@ -1,28 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
-using HarmonyLib;
-using System.Reflection.Emit;
-using PulsarModLoader.Patches;
-using CodeStage.AntiCheat.ObscuredTypes;
+﻿using HarmonyLib;
+using System.Reflection;
 using UnityEngine;
-using static PulsarModLoader.Patches.HarmonyHelpers;
 
 namespace Hard_Mode
 {
     class WD_Campaing
     {
-        [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Start")]
-        class MindSlaver
-        {
-            static void Postfix(PLInfectedBoss_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                }
-            }
-        }
         [HarmonyPatch(typeof(PLInfectedBoss_WDFlagship), "Update")]
         class MindSlaverUpdate //Allows the MindSlaver to heal if it is attacking no one
         {
@@ -36,28 +19,15 @@ namespace Hard_Mode
             }
         }
 
-        [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "Start")]
-        class ForsakenFlagshipHeart
-        {
-            static void Postfix(PLInfectedHeart_WDFlagship __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
         [HarmonyPatch(typeof(PLInfectedHeart_WDFlagship), "Update")]
         class ForsakenFlagshipHeartUpdate
         {
+            private static FieldInfo FightActivated = AccessTools.Field(typeof(PLInfectedHeart_WDFlagship), "FightActivated");
             static void Postfix(PLInfectedHeart_WDFlagship __instance)
             {
                 if (Options.MasterHasMod)
                 {
-                    if (__instance.FightActivated && !__instance.IsDead)
+                    if ((bool)FightActivated.GetValue(__instance) && !__instance.IsDead)
                     {
                         __instance.Health += 150 * Time.deltaTime;
                         __instance.Health = Mathf.Clamp(__instance.Health, 0f, __instance.MaxHealth);
@@ -85,10 +55,6 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }
@@ -111,10 +77,6 @@ namespace Hard_Mode
             {
                 if (Options.MasterHasMod)
                 {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
                     __instance.MeleeDamage += PLServer.Instance.ChaosLevel * 4;
                 }
             }

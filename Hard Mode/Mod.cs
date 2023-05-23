@@ -1,5 +1,4 @@
 ﻿using PulsarModLoader;
-[assembly: System.Runtime.CompilerServices.IgnoresAccessChecksTo("Assembly-CSharp")]
 namespace Hard_Mode
 {
     public class Mod : PulsarMod

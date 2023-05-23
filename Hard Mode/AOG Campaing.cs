@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HarmonyLib;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -83,34 +80,6 @@ namespace Hard_Mode
                 return instructionsList.AsEnumerable();
             }
 
-        }
-        [HarmonyPatch(typeof(PLGiantRobotHead), "Start")]
-        class DownedProtector
-        {
-            static void Postfix(PLGiantRobotHead __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(PLRoamingSecurityGuardRobot), "Start")]
-        class MadmansMansionDrone
-        {
-            static void Postfix(PLRoamingSecurityGuardRobot __instance)
-            {
-                if (Options.MasterHasMod)
-                {
-                    __instance.MaxHealth *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                    __instance.Health = __instance.MaxHealth;
-                    if (__instance.Armor == 0) __instance.Armor = 5f;
-                    __instance.Armor *= 1f + (PLServer.Instance.ChaosLevel / 6);
-                }
-            }
         }
     }
 }

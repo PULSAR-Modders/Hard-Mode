@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using PulsarModLoader;
+using PulsarModLoader.CustomGUI;
+using UnityEngine;
 
 namespace Hard_Mode
 {
@@ -10,6 +12,32 @@ namespace Hard_Mode
         public static bool MasterHasMod = false;
         public static bool WeakReactor = false;
         public static bool SpinningCycpher = false;
+    }
+    internal class Config : ModSettingsMenu
+    {
+        public override string Name() => "Hardmode Config";
+        public override void Draw()
+        {
+            if (PLServer.Instance == null || PLNetworkManager.Instance == null || PLNetworkManager.Instance.LocalPlayer == null || !PLNetworkManager.Instance.LocalPlayer.GetHasStarted() || !Options.MasterHasMod)
+            {
+                GUILayout.Label("Hardmode Configuration requires you to be in a Hardmode game.");
+                return;
+            }
+            if (!PhotonNetwork.isMasterClient)
+            {
+                GUILayout.Label("Must be HOST to change Hardmode Configuration!");
+                return;
+            }
+            Options.FogOfWar = GUILayout.Toggle(Options.FogOfWar, "Fog Of War");
+            GUILayout.Label("Hides undiscovered sectors from the map");
+            Options.DangerousReactor = GUILayout.Toggle(Options.DangerousReactor, "Dangerous Reactors");
+            GUILayout.Label("Increases the radiation range of the Reactors");
+            Options.WeakReactor = GUILayout.Toggle(Options.WeakReactor, "Weak Reactors");
+            GUILayout.Label("Reduces Reactor power output");
+            Options.SpinningCycpher = GUILayout.Toggle(Options.SpinningCycpher, "Spinning Cyphers");
+            GUILayout.Label("Makes Cyphers slowly spin");
+
+        }
     }
 
     class ReciveOptions : ModMessage //Recive the options from the master client
