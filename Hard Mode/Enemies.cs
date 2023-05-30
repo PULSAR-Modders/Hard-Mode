@@ -8,6 +8,8 @@ using PulsarModLoader.Patches;
 using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
 using System.Reflection;
+using static Hard_Mode.Custom_Bounty_Hunters;
+using static PulsarModLoader.Patches.HarmonyHelpers;
 
 namespace Hard_Mode
 {
@@ -245,6 +247,52 @@ namespace Hard_Mode
         }
     }
     [HarmonyPatch(typeof(PLShipInfoBase), "GetCombatLevel")]
+    [HarmonyPatch(typeof(PLTurret),"Tick")]
+    class AITurretTarget //Removes AI calculation error on targeting turret
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> listedCode = instructions.ToList();
+            listedCode[3535].operand = 1000f;
+            listedCode[3541].operand = 0f;
+            instructions = listedCode.AsEnumerable();
+            List<CodeInstruction> targetSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldc_R4, 20f),
+                };
+            List<CodeInstruction> patchSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldc_R4, 99999f),
+                };
+            IEnumerable<CodeInstruction> NewCode = PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
+            targetSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(UnityEngine.Random),"get_onUnitSphere")),
+                new CodeInstruction(OpCodes.Ldc_R4),
+                new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(Vector3),"op_Multiply", new Type[]{typeof(Vector3),typeof(float)})),
+                new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(Vector3),"op_Addition", new Type[]{typeof(Vector3),typeof(Vector3)})),
+                };
+            patchSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(UnityEngine.Random),"get_onUnitSphere")),
+                new CodeInstruction(OpCodes.Ldc_R4, 0f),
+                new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(Vector3),"op_Multiply", new Type[]{typeof(Vector3),typeof(float)})),
+                new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(Vector3),"op_Addition", new Type[]{typeof(Vector3),typeof(Vector3)})),
+                };
+            patchSequence[0].labels = NewCode.ToList()[FindSequence(NewCode, targetSequence, CheckMode.NONNULL) - 4].labels;
+            return PatchBySequence(NewCode, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
+        }
+    }
+    [HarmonyPatch(typeof(PLTurret), "ShouldAIFire")]
+    class AIFireAtHeat //Makes so AI and auto turrets can shot until turret is overheated
+    {
+        static bool Prefix(PLTurret __instance, ref bool __result, bool operatedByBot, float heatOffset, float heatGeneratedOnFire) 
+        {
+            float num = __instance.Heat + heatOffset;
+            __result = num < 1.1f - heatGeneratedOnFire;
+            return false;
+        }
+    }
     class CombatLevel //Modify the combat level calculation
     {
         private static MethodInfo GetDPS = AccessTools.Method(typeof(PLTurret), "GetDPS");
