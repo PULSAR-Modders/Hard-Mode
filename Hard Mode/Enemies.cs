@@ -456,6 +456,14 @@ namespace Hard_Mode
             }
             */
         }
+        [HarmonyPatch(typeof(PLSlime),"Start")]
+        class SlimeMultiply 
+        {
+            static void Postfix(PLSlime __instance) 
+            {
+                __instance.ShouldSpawnOnDamage = true;
+            }
+        }
         [HarmonyPatch(typeof(PLUnseenEye), "ClientPerformBeamAttackOne")]
         class ReplaceUnseenEyeProjectile 
         {
