@@ -283,6 +283,34 @@ namespace Hard_Mode
             return PatchBySequence(NewCode, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
         }
     }
+    [HarmonyPatch(typeof(PLMegaTurret), "ChargeComplete")]
+    class MegaTurret
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> listedCode = instructions.ToList();
+            listedCode[125].operand = 6f;
+            instructions = listedCode.AsEnumerable();
+            /*
+            List<CodeInstruction> targetSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldfld,AccessTools.Field(typeof(PLTurret),"TurretInstance")),
+                new CodeInstruction(OpCodes.Ldfld,AccessTools.Field(typeof(PLTurretInstance),"FiringLoc")),
+                new CodeInstruction(OpCodes.Callvirt,AccessTools.Method(typeof(Transform),"get_position")),
+                };
+            List<CodeInstruction> patchSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldfld,AccessTools.Field(typeof(PLTurret),"TurretInstance")),
+                new CodeInstruction(OpCodes.Ldfld,AccessTools.Field(typeof(PLTurretInstance),"BeamObjectRenderer")),
+                new CodeInstruction(OpCodes.Callvirt,AccessTools.Method(typeof(Renderer),"get_transform")),
+                new CodeInstruction(OpCodes.Callvirt,AccessTools.Method(typeof(Transform),"get_position")),
+                };
+            patchSequence[0].labels = instructions.ToList()[FindSequence(instructions, targetSequence, CheckMode.NONNULL) - 3].labels;
+            instructions = PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
+            */
+            return instructions;
+        }
+    }
     [HarmonyPatch(typeof(PLTurret), "ShouldAIFire")]
     class AIFireAtHeat //Makes so AI and auto turrets can shot until turret is overheated
     {
