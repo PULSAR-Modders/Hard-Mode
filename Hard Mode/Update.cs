@@ -4,6 +4,8 @@ using static UnityEngine.Object;
 using System.Collections.Generic;
 using System.Linq;
 using PulsarModLoader;
+using PulsarModLoader.Patches;
+using System.Reflection.Emit;
 
 namespace Hard_Mode
 {
@@ -177,12 +179,41 @@ namespace Hard_Mode
 
             }
         }
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions) //This should make the enemy warp faster, not just waiting the basically dead to jump
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) //This should make the enemy warp faster, not just waiting the basically dead to jump
         {
-            List<CodeInstruction> instructionsList = Instructions.ToList();
-            instructionsList[476].operand = 0.2f;
-            instructionsList[492].operand = 3f;
-            return instructionsList.AsEnumerable();
+            List<CodeInstruction> targetSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLShipInfoBase),"MyStats")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLShipStats),"get_HullMax")),
+                new CodeInstruction(OpCodes.Ldc_R4, 0.1f)
+            };
+            List<CodeInstruction> patchSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLShipInfoBase),"MyStats")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLShipStats),"get_HullMax")),
+                new CodeInstruction(OpCodes.Ldc_R4, 0.2f)
+            };
+
+            instructions = HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
+
+            targetSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLShipInfoBase),"LastHullDamageRecievedTime")),
+                new CodeInstruction(OpCodes.Sub),
+                new CodeInstruction(OpCodes.Ldc_R4,5f)
+            };
+            patchSequence = new List<CodeInstruction>
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLShipInfoBase),"LastHullDamageRecievedTime")),
+                new CodeInstruction(OpCodes.Sub),
+                new CodeInstruction(OpCodes.Ldc_R4,3f)
+            };
+
+
+            return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL, false);
+
         }
     }
 }

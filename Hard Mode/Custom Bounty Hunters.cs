@@ -7,17 +7,19 @@ using PulsarModLoader.Patches;
 using UnityEngine;
 using static PulsarModLoader.Patches.HarmonyHelpers;
 using System.Linq;
+using PulsarModLoader.Utilities;
+using System;
 
 namespace Hard_Mode
 {
     class Custom_Bounty_Hunters
     {
         [HarmonyPatch(typeof(PLEncounterManager), "Start")]
-        class HunterAdder //Adds the extra hunters from the HunterCodes.txt for the random list when the game starts 
+        class HunterAdder //Adds the extra hunters from the HunterCodes.txt for the UnityEngine.Random list when the game starts 
         {
             static void Postfix(ref List<PLEncounterManager.ShipLayout> ___PossibleHunters_LayoutData)
             {
-                string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "HunterCodes.txt");
+                string path = Path.Combine(AppContext.BaseDirectory, "Mods\\HunterCodes.txt");
                 if (!File.Exists(path))
                 {
                     return;
@@ -162,14 +164,14 @@ namespace Hard_Mode
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PLEncounterManager),"Instance")),
                 new CodeInstruction(OpCodes.Ldloc_3),
                 new CodeInstruction(OpCodes.Ldloc_S),
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetRandomPossibleHunterLayout")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetUnityEngine.RandomPossibleHunterLayout")),
                 };
                 List<CodeInstruction> patchSequence = new List<CodeInstruction>
                 {
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(PLEncounterManager),"Instance")),
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(BountyHunterBalance), "MinCombatLevel")),
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(BountyHunterBalance), "MaxCombatLevel")),
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetRandomPossibleHunterLayout")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLEncounterManager),"GetUnityEngine.RandomPossibleHunterLayout")),
                 };
                 patchSequence[0].labels = instructions.ToList()[FindSequence(instructions, targetSequence, CheckMode.NONNULL) - 4].labels;
                 return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
@@ -216,12 +218,12 @@ namespace Hard_Mode
                             "Flavor’s Fury",
                             "Tea Timers",
                             };
-                            ship.ShipNameValue = biscuitnames[Random.Range(0, biscuitnames.Length - 1)];
+                            ship.ShipNameValue = biscuitnames[UnityEngine.Random.Range(0, biscuitnames.Length - 1)];
                             break;
                     }
-                    if(ship.GetCombatLevel() > 135 && Random.value < 0.1 && ship.PersistantShipInfo.ShipName != "") 
+                    if(ship.GetCombatLevel() > 135 && UnityEngine.Random.value < 0.1 && ship.PersistantShipInfo.ShipName != "") 
                     {
-                        ship.ShipNameValue = "The Glass Revenant Mk " + Random.Range(1, 999);
+                        ship.ShipNameValue = "The Glass Revenant Mk " + UnityEngine.Random.Range(1, 999);
                     }
                 }
             }

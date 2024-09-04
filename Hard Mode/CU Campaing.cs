@@ -24,18 +24,28 @@ namespace Hard_Mode
             */
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                List<CodeInstruction> instructionsList = instructions.ToList();
-                instructionsList[576].opcode = OpCodes.Ldc_I4_S;
-                instructionsList[576].operand = 0;
                 List<CodeInstruction> targetSequence = new List<CodeInstruction>
                 {
-                new CodeInstruction(OpCodes.Ldc_R4, 600f),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Random),"get_value")),
+                new CodeInstruction(OpCodes.Ldc_I4_M1),
                 };
                 List<CodeInstruction> patchSequence = new List<CodeInstruction>
                 {
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UnityEngine.Random),"get_value")),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                };
+
+                instructions = PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
+
+                targetSequence = new List<CodeInstruction>
+                {
+                new CodeInstruction(OpCodes.Ldc_R4, 600f),
+                };
+                patchSequence = new List<CodeInstruction>
+                {
                 new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(MeteorMission),"timer")),
                 };
-                return PatchBySequence(instructionsList.AsEnumerable(), targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
+                return PatchBySequence(instructions, targetSequence, patchSequence, PatchMode.REPLACE, CheckMode.NONNULL, false);
             }
         }
         [HarmonyPatch(typeof(PLSlimeBoss), "Update")]
