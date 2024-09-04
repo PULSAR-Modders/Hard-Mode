@@ -8,6 +8,7 @@ using PulsarModLoader.Patches;
 using CodeStage.AntiCheat.ObscuredTypes;
 using UnityEngine;
 using System.Reflection;
+using PulsarModLoader.Utilities;
 
 namespace Hard_Mode
 {
@@ -26,224 +27,380 @@ namespace Hard_Mode
             return __result;
         }
     }
-    [HarmonyPatch(typeof(PLServer), "ServerAddEnemyCrewBotPlayer")]
+    [HarmonyPatch(typeof(PLShipInfo), "CreateDefaultItemsForEnemyBotPlayer")]
     class EnemyCrewSpawn //This will make all ship crew stronger
     {
-        static void Postfix()
+        static void Postfix(PLPlayer inPlayer)
         {
-            foreach (PLPlayer component in PLServer.Instance.AllPlayers)
+            if (inPlayer != null && inPlayer.StartingShip != null)
             {
-                if (component != null && component.gameObject.name == "Simple Combat Bot Player" && component.StartingShip != null)
+                if (inPlayer.StartingShip.IsRelicHunter || inPlayer.StartingShip.IsBountyHunter) return;
+                int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(inPlayer.StartingShip.GetCombatLevel() / 20);
+                if (inPlayer.StartingShip.ShipTypeID == EShipType.E_INTREPID_SC)
                 {
-                    if (component.StartingShip.IsRelicHunter || component.StartingShip.IsBountyHunter) continue;
-                    int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(component.StartingShip.GetCombatLevel()/20);
-                    if (component.StartingShip.ShipTypeID == EShipType.E_INTREPID_SC)
+                    
+                }
+                else if (inPlayer.StartingShip.ShipTypeID == EShipType.E_ALCHEMIST)
+                {
+                    
+                }
+                else
+                {
+                    inPlayer.Talents[56] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                    inPlayer.Talents[58] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                    inPlayer.Talents[0] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                    inPlayer.Talents[57] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                    inPlayer.Talents[48] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                    inPlayer.Talents[3] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                    switch (inPlayer.GetClassID())
                     {
-                        component.Talents[56] = 5 + chaos;
-                        component.Talents[58] = 5 + chaos;
-                        component.Talents[0] = 5 + chaos;
-                        component.Talents[57] = 5 + chaos;
-                        component.Talents[2] = 5 + chaos;
-                        component.Talents[3] = 8;
-                        switch (component.GetClassID())
-                        {
-                            case 0:
-                                component.Talents[27] = 8 + chaos;
-                                component.Talents[5] = 5 + chaos;
-                                component.Talents[47] = 8 + chaos;
-                                component.Talents[50] = 8 + chaos;
-                                break;
-                            case 1:
-                                component.Talents[36] = 12 + chaos;
-                                component.Talents[35] = 12 + chaos;
-                                component.Talents[8] = 5 + chaos;
-                                component.Talents[9] = 8 + chaos;
-                                break;
-                            case 2:
-                                component.Talents[13] = 5 + chaos;
-                                component.Talents[11] = 5 + chaos;
-                                component.Talents[12] = 5 + chaos;
-                                break;
-                            case 3:
-                                component.Talents[38] = 8 + chaos;
-                                component.Talents[39] = 8 + chaos;
-                                component.Talents[23] = 5 + chaos;
-                                component.Talents[17] = 5 + chaos;
-                                component.Talents[25] = 5 + chaos;
-                                component.Talents[62] = 5 + chaos;
-                                break;
-                            case 4:
-                                component.Talents[20] = 5 + chaos;
-                                component.Talents[19] = 25 + chaos;
-                                component.Talents[21] = 25 + chaos;
-                                component.Talents[45] = 8 + chaos;
-                                component.Talents[61] = 5 + chaos;
-                                break;
-                        }
-                        chaos += 2;
+                        case 0:
+                            inPlayer.Talents[47] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[27] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[5] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[50] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            break;
+                        case 1:
+                            inPlayer.Talents[36] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[35] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[8] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[9] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            break;
+                        case 2:
+                            inPlayer.Talents[13] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[11] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[12] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            break;
+                        case 3:
+                            inPlayer.Talents[38] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[39] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[23] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[17] = Mathf.RoundToInt(chaos * 0.5f * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[25] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[62] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            break;
+                        case 4:
+                            inPlayer.Talents[20] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[19] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[21] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[45] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            inPlayer.Talents[61] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
+                            break;
                     }
-                    else if (component.StartingShip.ShipTypeID == EShipType.E_ALCHEMIST)
-                    {
-                        component.Talents[56] = 5 + chaos;
-                        component.Talents[58] = 5 + chaos;
-                        component.Talents[0] = 5 + chaos;
-                        component.Talents[57] = 5 + chaos;
-                        component.Talents[2] = 5 + chaos;
-                        component.Talents[3] = 8;
-                        switch (component.GetClassID())
-                        {
-                            case 0:
-                                component.Talents[27] = 8 + chaos;
-                                component.Talents[5] = 5 + chaos;
-                                component.Talents[47] = 8 + chaos;
-                                component.Talents[50] = 8 + chaos;
-                                break;
-                            case 1:
-                                component.Talents[36] = 12 + chaos;
-                                component.Talents[35] = 12 + chaos;
-                                component.Talents[8] = 5 + chaos;
-                                component.Talents[9] = 8 + chaos;
-                                break;
-                            case 2:
-                                component.Talents[13] = 5 + chaos;
-                                component.Talents[11] = 5 + chaos;
-                                component.Talents[12] = 5 + chaos;
-                                break;
-                            case 3:
-                                component.Talents[38] = 8 + chaos;
-                                component.Talents[39] = 8 + chaos;
-                                component.Talents[23] = 5 + chaos;
-                                component.Talents[17] = 5 + chaos;
-                                component.Talents[25] = 5 + chaos;
-                                component.Talents[62] = 5 + chaos;
-                                break;
-                            case 4:
-                                component.Talents[20] = 5 + chaos;
-                                component.Talents[19] = 25 + chaos;
-                                component.Talents[21] = 25 + chaos;
-                                component.Talents[45] = 8 + chaos;
-                                component.Talents[61] = 5 + chaos;
-                                break;
-                        }
-                        chaos += 2;
-                    }
-                    else
-                    {
-                        component.Talents[56] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                        component.Talents[58] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                        component.Talents[0] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                        component.Talents[57] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                        component.Talents[48] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                        component.Talents[3] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                        switch (component.GetClassID())
-                        {
-                            case 0:
-                                component.Talents[47] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[27] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[5] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[50] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                break;
-                            case 1:
-                                component.Talents[36] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[35] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[8] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[9] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                break;
-                            case 2:
-                                component.Talents[13] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[11] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[12] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                break;
-                            case 3:
-                                component.Talents[38] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[39] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[23] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[17] = Mathf.RoundToInt(chaos * 0.5f * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[25] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[62] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                break;
-                            case 4:
-                                component.Talents[20] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[19] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[21] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[45] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                component.Talents[61] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                                break;
-                        }
-                    }
-                    component.MyInventory.Clear();
-                    int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.Range(0.70f, 1f)));
-                    if (random < 10)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 26, 0, chaos, 1);
-                    }
-                    else if (random < 20)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 9, 0, chaos, 1);
-                    }
-                    else if (random < 30)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 25, 0, chaos, 1);
-                    }
-                    else if (random < 40)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 12, 0, chaos, 1);
-                    }
-                    else if (random < 50)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 8, 0, chaos, 1);
-                    }
-                    else if (random < 100)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 7, 0, chaos, 1);
-                    }
-                    else if (random < 150)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 10, 0, chaos, 1);
-                    }
-                    else if (random < 200)
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 11, 0, chaos, 1);
-                    }
-                    else
-                    {
-                        int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                        component.MyInventory.UpdateItem(ItemID, 2, 0, chaos + 1, 1);
-                    }
-                    int ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
-                    PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
-                    component.MyInventory.UpdateItem(ItemID2, 3, 0, chaos, 2);
+                }
+                inPlayer.MyInventory.Clear();
+                int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.Range(0.70f, 1f)));
+                if (random < 10)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 26, 0, chaos, 1);
+                }
+                else if (random < 20)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 9, 0, chaos, 1);
+                }
+                else if (random < 30)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 25, 0, chaos, 1);
+                }
+                else if (random < 40)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 12, 0, chaos, 1);
+                }
+                else if (random < 50)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 8, 0, chaos, 1);
+                }
+                else if (random < 100)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 7, 0, chaos, 1);
+                }
+                else if (random < 150)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 10, 0, chaos, 1);
+                }
+                else if (random < 200)
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 11, 0, chaos, 1);
+                }
+                else
+                {
+                    int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                    PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                    inPlayer.MyInventory.UpdateItem(ItemID, 2, 0, chaos + 1, 1);
+                }
+                int ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID2, 3, 0, chaos, 2);
+                ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID2, 4, 0, chaos, 3);
+                if (inPlayer.GetClassID() == 2)
+                {
                     ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
                     PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
-                    component.MyInventory.UpdateItem(ItemID2, 4, 0, chaos, 3);
-                    if (component.GetClassID() == 2)
-                    {
-                        ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
-                        PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
-                        component.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
-                    }
-                    component.gameObject.name = "Simple Combat Bot Player Modded";
+                    inPlayer.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
                 }
+                inPlayer.gameObject.name = "Simple Combat Bot Player Modded";
             }
         }
     }
+
+    [HarmonyPatch(typeof(PLIntrepidCommanderInfo), "CreateDefaultItemsForEnemyBotPlayer")]
+    class CutlassCrewSpawn
+    {
+        static void Postfix(PLPlayer inPlayer)
+        {
+            int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(inPlayer.StartingShip.GetCombatLevel() / 20);
+            inPlayer.Talents[56] = 5 + chaos;
+            inPlayer.Talents[58] = 5 + chaos;
+            inPlayer.Talents[0] = 5 + chaos;
+            inPlayer.Talents[57] = 5 + chaos;
+            inPlayer.Talents[2] = 5 + chaos;
+            inPlayer.Talents[3] = 8;
+            switch (inPlayer.GetClassID())
+            {
+                case 0:
+                    inPlayer.Talents[27] = 8 + chaos;
+                    inPlayer.Talents[5] = 5 + chaos;
+                    inPlayer.Talents[47] = 8 + chaos;
+                    inPlayer.Talents[50] = 8 + chaos;
+                    break;
+                case 1:
+                    inPlayer.Talents[36] = 12 + chaos;
+                    inPlayer.Talents[35] = 12 + chaos;
+                    inPlayer.Talents[8] = 5 + chaos;
+                    inPlayer.Talents[9] = 8 + chaos;
+                    break;
+                case 2:
+                    inPlayer.Talents[13] = 5 + chaos;
+                    inPlayer.Talents[11] = 5 + chaos;
+                    inPlayer.Talents[12] = 5 + chaos;
+                    break;
+                case 3:
+                    inPlayer.Talents[38] = 8 + chaos;
+                    inPlayer.Talents[39] = 8 + chaos;
+                    inPlayer.Talents[23] = 5 + chaos;
+                    inPlayer.Talents[17] = 5 + chaos;
+                    inPlayer.Talents[25] = 5 + chaos;
+                    inPlayer.Talents[62] = 5 + chaos;
+                    break;
+                case 4:
+                    inPlayer.Talents[20] = 5 + chaos;
+                    inPlayer.Talents[19] = 25 + chaos;
+                    inPlayer.Talents[21] = 25 + chaos;
+                    inPlayer.Talents[45] = 8 + chaos;
+                    inPlayer.Talents[61] = 5 + chaos;
+                    break;
+            }
+            chaos += 2;
+            inPlayer.MyInventory.Clear();
+            int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.Range(0.70f, 1f)));
+            if (random < 10)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 26, 0, chaos, 1);
+            }
+            else if (random < 20)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 9, 0, chaos, 1);
+            }
+            else if (random < 30)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 25, 0, chaos, 1);
+            }
+            else if (random < 40)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 12, 0, chaos, 1);
+            }
+            else if (random < 50)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 8, 0, chaos, 1);
+            }
+            else if (random < 100)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 7, 0, chaos, 1);
+            }
+            else if (random < 150)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 10, 0, chaos, 1);
+            }
+            else if (random < 200)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 11, 0, chaos, 1);
+            }
+            else
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 2, 0, chaos + 1, 1);
+            }
+            int ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+            PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+            inPlayer.MyInventory.UpdateItem(ItemID2, 3, 0, chaos, 2);
+            ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+            PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+            inPlayer.MyInventory.UpdateItem(ItemID2, 4, 0, chaos, 3);
+            if (inPlayer.GetClassID() == 2)
+            {
+                ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
+            }
+            inPlayer.gameObject.name = "Simple Combat Bot Player Modded";
+        }
+    } //This will make the grim cutlass crew stronger
+
+    [HarmonyPatch(typeof(PLAlchemistShipInfo), "CreateDefaultItemsForEnemyBotPlayer")]
+    class AlchemistCrewSpawn 
+    {
+        static void Postfix(PLPlayer inPlayer) 
+        {
+            int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(inPlayer.StartingShip.GetCombatLevel() / 20);
+            inPlayer.Talents[56] = 5 + chaos;
+            inPlayer.Talents[58] = 5 + chaos;
+            inPlayer.Talents[0] = 5 + chaos;
+            inPlayer.Talents[57] = 5 + chaos;
+            inPlayer.Talents[2] = 5 + chaos;
+            inPlayer.Talents[3] = 8;
+            switch (inPlayer.GetClassID())
+            {
+                case 0:
+                    inPlayer.Talents[27] = 8 + chaos;
+                    inPlayer.Talents[5] = 5 + chaos;
+                    inPlayer.Talents[47] = 8 + chaos;
+                    inPlayer.Talents[50] = 8 + chaos;
+                    break;
+                case 1:
+                    inPlayer.Talents[36] = 12 + chaos;
+                    inPlayer.Talents[35] = 12 + chaos;
+                    inPlayer.Talents[8] = 5 + chaos;
+                    inPlayer.Talents[9] = 8 + chaos;
+                    break;
+                case 2:
+                    inPlayer.Talents[13] = 5 + chaos;
+                    inPlayer.Talents[11] = 5 + chaos;
+                    inPlayer.Talents[12] = 5 + chaos;
+                    break;
+                case 3:
+                    inPlayer.Talents[38] = 8 + chaos;
+                    inPlayer.Talents[39] = 8 + chaos;
+                    inPlayer.Talents[23] = 5 + chaos;
+                    inPlayer.Talents[17] = 5 + chaos;
+                    inPlayer.Talents[25] = 5 + chaos;
+                    inPlayer.Talents[62] = 5 + chaos;
+                    break;
+                case 4:
+                    inPlayer.Talents[20] = 5 + chaos;
+                    inPlayer.Talents[19] = 25 + chaos;
+                    inPlayer.Talents[21] = 25 + chaos;
+                    inPlayer.Talents[45] = 8 + chaos;
+                    inPlayer.Talents[61] = 5 + chaos;
+                    break;
+            }
+            chaos += 2;
+            inPlayer.MyInventory.Clear();
+            int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.Range(0.70f, 1f)));
+            if (random < 10)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 26, 0, chaos, 1);
+            }
+            else if (random < 20)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 9, 0, chaos, 1);
+            }
+            else if (random < 30)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 25, 0, chaos, 1);
+            }
+            else if (random < 40)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 12, 0, chaos, 1);
+            }
+            else if (random < 50)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 8, 0, chaos, 1);
+            }
+            else if (random < 100)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 7, 0, chaos, 1);
+            }
+            else if (random < 150)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 10, 0, chaos, 1);
+            }
+            else if (random < 200)
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 11, 0, chaos, 1);
+            }
+            else
+            {
+                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID, 2, 0, chaos + 1, 1);
+            }
+            int ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+            PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+            inPlayer.MyInventory.UpdateItem(ItemID2, 3, 0, chaos, 2);
+            ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+            PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+            inPlayer.MyInventory.UpdateItem(ItemID2, 4, 0, chaos, 3);
+            if (inPlayer.GetClassID() == 2)
+            {
+                ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
+                PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
+                inPlayer.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
+            }
+            inPlayer.gameObject.name = "Simple Combat Bot Player Modded";
+        }
+    } //This will make the caustic corsair crew stronger
+
     [HarmonyPatch(typeof(PLShipInfoBase), "GetCombatLevel")]
     class CombatLevel //Modify the combat level calculation
     {
@@ -348,19 +505,19 @@ namespace Hard_Mode
             }
         }
 
-        [HarmonyPatch(typeof(PLNullpoint),"Start")] //This are the green things that spread green fire on the unseen mothership 
-        class NullPoint 
+        [HarmonyPatch(typeof(PLNullpoint), "Start")] //This are the green things that spread green fire on the unseen mothership 
+        class NullPoint
         {
-            static void Postfix(PLNullpoint __instance) 
+            static void Postfix(PLNullpoint __instance)
             {
-                if (Options.MasterHasMod) 
+                if (Options.MasterHasMod)
                 {
                     __instance.SpeedMultiplier = 125f;
                 }
             }
         }
         [HarmonyPatch(typeof(PLUnseenEye), "FireEnergyProj")]
-        public class UnseenEyePhysicalAttack 
+        public class UnseenEyePhysicalAttack
         {
             /*
             public static float damage = 400f;
@@ -381,26 +538,26 @@ namespace Hard_Mode
             */
         }
         [HarmonyPatch(typeof(PLUnseenEye), "ClientPerformBeamAttackOne")]
-        class ReplaceUnseenEyeProjectile 
+        class ReplaceUnseenEyeProjectile
         {
-            static bool Prefix(PLUnseenEye __instance) 
+            static bool Prefix(PLUnseenEye __instance)
             {
                 if (Options.MasterHasMod)
                 {
                     __instance.StartCoroutine(UnseenEyeAttack.PerformPhysicalAttack(__instance));
                     return false;
                 }
-                else 
+                else
                 {
                     return true;
                 }
             }
         }
-        public class UnseenEyeAttack 
+        public class UnseenEyeAttack
         {
             private static MethodInfo PlayerShip_IsPilotedByAI = AccessTools.Method(typeof(PLUnseenEye), "PlayerShip_IsPilotedByAI");
             private static FieldInfo energyProjCounter = AccessTools.Field(typeof(PLUnseenEye), "energyProjCounter");
-            public static IEnumerator PerformPhysicalAttack(PLUnseenEye __instance) 
+            public static IEnumerator PerformPhysicalAttack(PLUnseenEye __instance)
             {
                 if (__instance.Animator.GetBool("IsDead"))
                 {
@@ -415,7 +572,7 @@ namespace Hard_Mode
                 __instance.BeamOne_MainPhase.Play(true);
                 PLMusic.PostEvent("play_sx_ship_enemy_unseeneye_attackone_beam", __instance.gameObject);
 
-                
+
                 Vector3 angVel = UnityEngine.Random.insideUnitSphere * 110f;
                 int num;
                 for (int i = 0; i < 500; i = num + 1)
@@ -469,12 +626,12 @@ namespace Hard_Mode
                 yield break;
             }
         }
-        [HarmonyPatch(typeof(PLUnseenEye),"Update")]
-        class EyePhysicalAim 
+        [HarmonyPatch(typeof(PLUnseenEye), "Update")]
+        class EyePhysicalAim
         {
-            static void Postfix(PLUnseenEye __instance) 
+            static void Postfix(PLUnseenEye __instance)
             {
-                if (__instance.BeamOne_MainPhase.isPlaying) 
+                if (__instance.BeamOne_MainPhase.isPlaying)
                 {
                     /*
                     PLShipInfoBase target = PLEncounterManager.Instance.PlayerShip;
@@ -509,49 +666,49 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         else if (random < 20)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 25, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 25, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         else if (random < 30)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 12, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 12, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         else if (random < 40)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 8, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 8, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         else if (random < 50)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         else if (random < 60)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         else if (random < 70)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
@@ -566,25 +723,25 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 9, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
@@ -599,31 +756,31 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else if (random < 60)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else if (random < 100)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Elite Metal Bandit")
                     {
-                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel +2);
+                        player.Talents[0] += (int)(PLServer.Instance.ChaosLevel + 2);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel);
                         player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 0.9);
                         player.MyInventory.Clear();
@@ -632,25 +789,25 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
@@ -665,32 +822,32 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2 + 1, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2 + 2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
                     else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && (player.GetPlayerName() == "Bandit" || player.GetPlayerName() == "Guard"))
                     {
                         player.Talents[0] += (int)(PLServer.Instance.ChaosLevel + 1);
-                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel*0.5);
+                        player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 0.5);
                         player.Talents[56] += (int)(PLServer.Instance.ChaosLevel * 0.5);
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 140);
@@ -698,25 +855,25 @@ namespace Hard_Mode
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 7, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else if (random < 120)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 10, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else if (random < 140)
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 11, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         else
                         {
                             int ItemID = PLServer.Instance.PawnInvItemIDCounter;
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel/2, 1);
+                            player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
                         player.gameObject.name = "Simple Combat Bot Player Modded";
                     }
@@ -852,8 +1009,8 @@ namespace Hard_Mode
                 return HarmonyHelpers.PatchBySequence(instructions, targetSequence, patchSequence, HarmonyHelpers.PatchMode.AFTER, HarmonyHelpers.CheckMode.NONNULL, false);
             }
         }
-        [HarmonyPatch(typeof(PLAlienTentacleCreatureInfo),"FireBeam")]
-        class VuroogAttack 
+        [HarmonyPatch(typeof(PLAlienTentacleCreatureInfo), "FireBeam")]
+        class VuroogAttack
         {
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> Instructions)
             {
@@ -865,19 +1022,19 @@ namespace Hard_Mode
         [HarmonyPatch(typeof(PLBurrowArena), "Update")]
         class ArenaAntiJetPack //This is so you can't use jetpack on the burrow arena
         {
-            static void Postfix(PLBurrowArena __instance) 
+            static void Postfix(PLBurrowArena __instance)
             {
-                if (Options.MasterHasMod && PLServer.GetCurrentSector() != null && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.DESERT_HUB) 
+                if (Options.MasterHasMod && PLServer.GetCurrentSector() != null && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.DESERT_HUB)
                 {
                     if (__instance.gameObject.GetComponent<PLKillJetpackVolume>() == null)
                     {
                         __instance.gameObject.AddComponent<PLKillJetpackVolume>();
                     }
                     PLKillJetpackVolume jetpackVolume = __instance.gameObject.GetComponent<PLKillJetpackVolume>();
-                    if (__instance.PlayerSpawnLoc != null && jetpackVolume != null) 
+                    if (__instance.PlayerSpawnLoc != null && jetpackVolume != null)
                     {
                         jetpackVolume.transform.position = __instance.PlayerSpawnLoc.position;
-                        jetpackVolume.transform.position = jetpackVolume.transform.position + new Vector3(5,0,15);
+                        jetpackVolume.transform.position = jetpackVolume.transform.position + new Vector3(5, 0, 15);
                         jetpackVolume.Dimensions = new Vector3(126, 60, 74);
                         jetpackVolume.enabled = __instance.ArenaIsActive && __instance.WaveID != 5 && __instance.WaveID != 6;
                     }
