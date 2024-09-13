@@ -35,58 +35,48 @@ namespace Hard_Mode
             if (inPlayer != null && inPlayer.StartingShip != null)
             {
                 if (inPlayer.StartingShip.IsRelicHunter || inPlayer.StartingShip.IsBountyHunter) return;
-                int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(inPlayer.StartingShip.GetCombatLevel() / 20);
-                if (inPlayer.StartingShip.ShipTypeID == EShipType.E_INTREPID_SC)
+                int chaos = Mathf.RoundToInt(Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(inPlayer.StartingShip.GetCombatLevel() / 20) * UnityEngine.Random.Range(0.70f, 1f));
+                inPlayer.Talents[56] = chaos;//Armor
+                inPlayer.Talents[58] = chaos;//Armor2
+                inPlayer.Talents[0] = chaos;//Health
+                inPlayer.Talents[57] = chaos;//Heatlh2
+                inPlayer.Talents[3] = Mathf.Clamp(chaos, 0, 5);//Respawn timer
+                inPlayer.Talents[2] = 3; //Pistol damage
+                switch (inPlayer.GetClassID())
                 {
-                    
-                }
-                else if (inPlayer.StartingShip.ShipTypeID == EShipType.E_ALCHEMIST)
-                {
-                    
-                }
-                else
-                {
-                    inPlayer.Talents[56] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                    inPlayer.Talents[58] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                    inPlayer.Talents[0] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                    inPlayer.Talents[57] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                    inPlayer.Talents[48] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                    inPlayer.Talents[3] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                    switch (inPlayer.GetClassID())
-                    {
-                        case 0:
-                            inPlayer.Talents[47] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[27] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[5] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[50] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            break;
-                        case 1:
-                            inPlayer.Talents[36] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[35] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[8] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[9] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            break;
-                        case 2:
-                            inPlayer.Talents[13] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[11] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[12] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            break;
-                        case 3:
-                            inPlayer.Talents[38] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[39] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[23] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[17] = Mathf.RoundToInt(chaos * 0.5f * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[25] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[62] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            break;
-                        case 4:
-                            inPlayer.Talents[20] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[19] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[21] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[45] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            inPlayer.Talents[61] = Mathf.RoundToInt(chaos * UnityEngine.Random.Range(0.70f, 1f));
-                            break;
-                    }
+                    case 0:
+                        inPlayer.Talents[47] = Mathf.Clamp(chaos,0,8); //Friendly screen capture
+                        inPlayer.Talents[27] = chaos; //Captain Armor
+                        inPlayer.Talents[5] = chaos; //Captain speed boost
+                        inPlayer.Talents[50] = chaos; //Screen safety
+                        break;
+                    case 1:
+                        inPlayer.Talents[36] = Mathf.Clamp(chaos,0,5); //Reduce hull damage
+                        inPlayer.Talents[35] = Mathf.Clamp(chaos,0,7); //Reduce system damage
+                        inPlayer.Talents[8] = Mathf.Clamp(chaos, 0, 5); //Ship speed
+                        inPlayer.Talents[9] = Mathf.Clamp(chaos, 0, 5); //Ship maneuver
+                        break;
+                    case 2:
+                        inPlayer.Talents[13] = chaos; //Bridge medic
+                        inPlayer.Talents[11] = chaos; //Sensor boost
+                        inPlayer.Talents[12] = Mathf.Clamp(chaos/2, 0, 5); //Sensor Hide
+                        break;
+                    case 3:
+                        inPlayer.Talents[38] = chaos; //Turret charge boost crew
+                        inPlayer.Talents[39] = chaos; //Turret damage boost crew
+                        inPlayer.Talents[23] = chaos; //Weapon cooling
+                        inPlayer.Talents[17] = chaos; //Missile expert
+                        inPlayer.Talents[25] = Mathf.Clamp(chaos/2,0,5); //Reduce pawn damage
+                        inPlayer.Talents[62] = chaos; //Turret cooling boost crew
+                        inPlayer.Talents[48] = Mathf.Clamp(chaos,0,5); //Enemy screen capture
+                        break;
+                    case 4:
+                        inPlayer.Talents[20] = chaos; //Coolant
+                        inPlayer.Talents[19] = chaos; //Fire reduction
+                        inPlayer.Talents[21] = chaos; //auto-repair
+                        inPlayer.Talents[45] = chaos/2; //Reactor power boost
+                        inPlayer.Talents[61] = chaos; //Turret cooling boost crew
+                        break;
                 }
                 inPlayer.MyInventory.Clear();
                 int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.Range(0.70f, 1f)));
@@ -162,50 +152,51 @@ namespace Hard_Mode
     }
 
     [HarmonyPatch(typeof(PLIntrepidCommanderInfo), "CreateDefaultItemsForEnemyBotPlayer")]
-    class CutlassCrewSpawn
+    internal class BossCrewSpawn
     {
-        static void Postfix(PLPlayer inPlayer)
+        internal static void Postfix(PLPlayer inPlayer)
         {
             int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(inPlayer.StartingShip.GetCombatLevel() / 20);
-            inPlayer.Talents[56] = 5 + chaos;
-            inPlayer.Talents[58] = 5 + chaos;
-            inPlayer.Talents[0] = 5 + chaos;
-            inPlayer.Talents[57] = 5 + chaos;
-            inPlayer.Talents[2] = 5 + chaos;
-            inPlayer.Talents[3] = 8;
+            inPlayer.Talents[56] = 5 + chaos; //Armor
+            inPlayer.Talents[58] = 5 + chaos; //Armor2
+            inPlayer.Talents[0] = 5 + chaos; //Health
+            inPlayer.Talents[57] = 5 + chaos; //Heatlh2
+            inPlayer.Talents[2] = 5; //Pistol damage
+            inPlayer.Talents[3] = 5; //Respawn timer
             switch (inPlayer.GetClassID())
             {
                 case 0:
-                    inPlayer.Talents[27] = 8 + chaos;
-                    inPlayer.Talents[5] = 5 + chaos;
-                    inPlayer.Talents[47] = 8 + chaos;
-                    inPlayer.Talents[50] = 8 + chaos;
+                    inPlayer.Talents[27] = 8 + chaos; //Captain Armor
+                    inPlayer.Talents[5] = 5 + chaos; //Captain speed boost
+                    inPlayer.Talents[47] = 8; //Friendly screen capture
+                    inPlayer.Talents[50] = 8 + chaos; //Screen safety
                     break;
                 case 1:
-                    inPlayer.Talents[36] = 12 + chaos;
-                    inPlayer.Talents[35] = 12 + chaos;
-                    inPlayer.Talents[8] = 5 + chaos;
-                    inPlayer.Talents[9] = 8 + chaos;
+                    inPlayer.Talents[36] = Mathf.Clamp(5 + chaos, 0, 10);//Reduce hull damage
+                    inPlayer.Talents[35] = Mathf.Clamp(7 + chaos, 0, 15);//Reduce system damage
+                    inPlayer.Talents[8] = 5; //Ship speed
+                    inPlayer.Talents[9] = 5; //Ship maneuver
                     break;
                 case 2:
-                    inPlayer.Talents[13] = 5 + chaos;
-                    inPlayer.Talents[11] = 5 + chaos;
-                    inPlayer.Talents[12] = 5 + chaos;
+                    inPlayer.Talents[13] = 5 + chaos; //Bridge medic
+                    inPlayer.Talents[11] = 5 + chaos; //Sensor boost
+                    inPlayer.Talents[12] = 5; //Sensor Hide
                     break;
                 case 3:
-                    inPlayer.Talents[38] = 8 + chaos;
-                    inPlayer.Talents[39] = 8 + chaos;
-                    inPlayer.Talents[23] = 5 + chaos;
-                    inPlayer.Talents[17] = 5 + chaos;
-                    inPlayer.Talents[25] = 5 + chaos;
-                    inPlayer.Talents[62] = 5 + chaos;
+                    inPlayer.Talents[38] = 6 + chaos; //Turret charge boost crew
+                    inPlayer.Talents[39] = 6 + chaos; //Turret damage boost crew
+                    inPlayer.Talents[23] = 5 + chaos; //Weapon cooling
+                    inPlayer.Talents[17] = 5 + chaos; //Missile expert
+                    inPlayer.Talents[25] = 5; //Reduce pawn damage
+                    inPlayer.Talents[62] = 5 + chaos; //Turret cooling boost crew
+                    inPlayer.Talents[48] = 5; //Enemy screen capture
                     break;
                 case 4:
-                    inPlayer.Talents[20] = 5 + chaos;
-                    inPlayer.Talents[19] = 25 + chaos;
-                    inPlayer.Talents[21] = 25 + chaos;
-                    inPlayer.Talents[45] = 8 + chaos;
-                    inPlayer.Talents[61] = 5 + chaos;
+                    inPlayer.Talents[20] = 5 + chaos; //Coolant
+                    inPlayer.Talents[19] = 25 + chaos; //Fire reduction
+                    inPlayer.Talents[21] = 25 + chaos; //auto-repair
+                    inPlayer.Talents[45] = 8 + chaos/2; //Reactor power boost
+                    inPlayer.Talents[61] = 5 + chaos; //Turret cooling boost crew
                     break;
             }
             chaos += 2;
@@ -279,125 +270,14 @@ namespace Hard_Mode
             }
             inPlayer.gameObject.name = "Simple Combat Bot Player Modded";
         }
-    } //This will make the grim cutlass crew stronger
+    } //This will make the boss ship crew stronger
 
     [HarmonyPatch(typeof(PLAlchemistShipInfo), "CreateDefaultItemsForEnemyBotPlayer")]
-    class AlchemistCrewSpawn 
+    class AlchemistCrewSpawn
     {
-        static void Postfix(PLPlayer inPlayer) 
+        static void Postfix(PLPlayer inPlayer)
         {
-            int chaos = Mathf.FloorToInt(PLServer.Instance.ChaosLevel) + UnityEngine.Random.Range(0, 2) + Mathf.CeilToInt(inPlayer.StartingShip.GetCombatLevel() / 20);
-            inPlayer.Talents[56] = 5 + chaos;
-            inPlayer.Talents[58] = 5 + chaos;
-            inPlayer.Talents[0] = 5 + chaos;
-            inPlayer.Talents[57] = 5 + chaos;
-            inPlayer.Talents[2] = 5 + chaos;
-            inPlayer.Talents[3] = 8;
-            switch (inPlayer.GetClassID())
-            {
-                case 0:
-                    inPlayer.Talents[27] = 8 + chaos;
-                    inPlayer.Talents[5] = 5 + chaos;
-                    inPlayer.Talents[47] = 8 + chaos;
-                    inPlayer.Talents[50] = 8 + chaos;
-                    break;
-                case 1:
-                    inPlayer.Talents[36] = 12 + chaos;
-                    inPlayer.Talents[35] = 12 + chaos;
-                    inPlayer.Talents[8] = 5 + chaos;
-                    inPlayer.Talents[9] = 8 + chaos;
-                    break;
-                case 2:
-                    inPlayer.Talents[13] = 5 + chaos;
-                    inPlayer.Talents[11] = 5 + chaos;
-                    inPlayer.Talents[12] = 5 + chaos;
-                    break;
-                case 3:
-                    inPlayer.Talents[38] = 8 + chaos;
-                    inPlayer.Talents[39] = 8 + chaos;
-                    inPlayer.Talents[23] = 5 + chaos;
-                    inPlayer.Talents[17] = 5 + chaos;
-                    inPlayer.Talents[25] = 5 + chaos;
-                    inPlayer.Talents[62] = 5 + chaos;
-                    break;
-                case 4:
-                    inPlayer.Talents[20] = 5 + chaos;
-                    inPlayer.Talents[19] = 25 + chaos;
-                    inPlayer.Talents[21] = 25 + chaos;
-                    inPlayer.Talents[45] = 8 + chaos;
-                    inPlayer.Talents[61] = 5 + chaos;
-                    break;
-            }
-            chaos += 2;
-            inPlayer.MyInventory.Clear();
-            int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.Range(0.70f, 1f)));
-            if (random < 10)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 26, 0, chaos, 1);
-            }
-            else if (random < 20)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 9, 0, chaos, 1);
-            }
-            else if (random < 30)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 25, 0, chaos, 1);
-            }
-            else if (random < 40)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 12, 0, chaos, 1);
-            }
-            else if (random < 50)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 8, 0, chaos, 1);
-            }
-            else if (random < 100)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 7, 0, chaos, 1);
-            }
-            else if (random < 150)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 10, 0, chaos, 1);
-            }
-            else if (random < 200)
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 11, 0, chaos, 1);
-            }
-            else
-            {
-                int ItemID = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID, 2, 0, chaos + 1, 1);
-            }
-            int ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
-            PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
-            inPlayer.MyInventory.UpdateItem(ItemID2, 3, 0, chaos, 2);
-            ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
-            PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
-            inPlayer.MyInventory.UpdateItem(ItemID2, 4, 0, chaos, 3);
-            if (inPlayer.GetClassID() == 2)
-            {
-                ItemID2 = PLServer.Instance.PawnInvItemIDCounter;
-                PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
-                inPlayer.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
-            }
-            inPlayer.gameObject.name = "Simple Combat Bot Player Modded";
+            BossCrewSpawn.Postfix(inPlayer);
         }
     } //This will make the caustic corsair crew stronger
 
