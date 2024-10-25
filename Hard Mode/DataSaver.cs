@@ -5,7 +5,7 @@ namespace Hard_Mode
 {
     internal class DataSaver : PMLSaveData
     {
-        public override uint VersionID => 140;
+        public override uint VersionID => 160;
 
         public override string Identifier()
         {
@@ -18,10 +18,17 @@ namespace Hard_Mode
             {
                 using (BinaryReader binaryReader = new BinaryReader(dataStream))
                 {
-                    Options.FogOfWar = binaryReader.ReadBoolean();
-                    Options.DangerousReactor = binaryReader.ReadBoolean();
-                    Options.WeakReactor = binaryReader.ReadBoolean();
-                    Options.SpinningCycpher = binaryReader.ReadBoolean();
+                    if (VersionID <= 140)
+                    {
+                        Options.FogOfWar = binaryReader.ReadBoolean();
+                        Options.DangerousReactor = binaryReader.ReadBoolean();
+                        Options.WeakReactor = binaryReader.ReadBoolean();
+                        Options.SpinningCycpher = binaryReader.ReadBoolean();
+                    }
+                    if (VersionID >= 160)
+                    {
+                        Options.AdvancedCloak = binaryReader.ReadBoolean();
+                    }
                 }
             }
         }
@@ -36,6 +43,7 @@ namespace Hard_Mode
                     binaryWriter.Write(Options.DangerousReactor);
                     binaryWriter.Write(Options.WeakReactor);
                     binaryWriter.Write(Options.SpinningCycpher);
+                    binaryWriter.Write(Options.AdvancedCloak);
                 }
                 return stream.ToArray();
             }

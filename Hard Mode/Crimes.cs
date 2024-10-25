@@ -15,9 +15,12 @@ namespace Hard_Mode
         static public bool inInspection = false;
         static void Postfix(UISprite ___WarpDrivePanel, PLWarpDriveScreen __instance, UISprite ___JumpComputerPanel, UISprite ___m_BlockingTargetOnboardPanel) // this is what disables the warp during inspection
         {
-            PLGlobal.SafeGameObjectSetActive(___WarpDrivePanel.gameObject, !inInspection && !__instance.MyScreenHubBase.OptionalShipInfo.BlockingCombatTargetOnboard && __instance.MyScreenHubBase.OptionalShipInfo.WarpChargeStage != EWarpChargeStage.E_WCS_ACTIVE && __instance.MyScreenHubBase.OptionalShipInfo.NumberOfFuelCapsules > 0 && !__instance.MyScreenHubBase.OptionalShipInfo.InWarp && !__instance.MyScreenHubBase.OptionalShipInfo.Abandoned);
-            PLGlobal.SafeGameObjectSetActive(___JumpComputerPanel.gameObject, !inInspection && !__instance.MyScreenHubBase.OptionalShipInfo.BlockingCombatTargetOnboard);
-            PLGlobal.SafeGameObjectSetActive(___m_BlockingTargetOnboardPanel.gameObject, inInspection || __instance.MyScreenHubBase.OptionalShipInfo.BlockingCombatTargetOnboard);
+            if (Options.MasterHasMod && inInspection)
+            {
+                PLGlobal.SafeGameObjectSetActive(___WarpDrivePanel.gameObject, false);
+                PLGlobal.SafeGameObjectSetActive(___JumpComputerPanel.gameObject, false);
+                PLGlobal.SafeGameObjectSetActive(___m_BlockingTargetOnboardPanel.gameObject, true);
+            }
         }
     }
     [HarmonyPatch(typeof(PLWarpStation), "SetTargetedSectorID")]

@@ -4,7 +4,7 @@ namespace Hard_Mode
     public class Mod : PulsarMod
     {
 
-        public override string Version => "1.5.2";
+        public override string Version => "1.6";
 
         public override string Author => "EngBot, Pokegustavo, Mest, Craziness924, 18107";
 

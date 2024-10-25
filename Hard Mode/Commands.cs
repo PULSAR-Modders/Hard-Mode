@@ -23,7 +23,7 @@ namespace Hard_Mode
         }
         public override string[][] Arguments()
         {
-            return new string[][] { new string[] { "FogofWar", "DangerousReactor", "Weakreactor","SpinningCypher" } };
+            return new string[][] { new string[] { "FogofWar", "DangerousReactor", "Weakreactor","SpinningCypher" , "AdvancedCloak" } };
         }
         private static FieldInfo cachedAIData = AccessTools.Field(typeof(PLPlayer), "cachedAIData");
         public override void Execute(string arguments)
@@ -138,6 +138,11 @@ namespace Hard_Mode
                     Options.SpinningCycpher = !Options.SpinningCycpher;
                     Messaging.Notification("Spinning Cyphers " + (Options.SpinningCycpher ? "Enabled" : "Disabled"), (PLPlayer)null, 0, 3000);
 
+                    break;
+                case "advancedcloak":
+                case "cloak":
+                    Options.AdvancedCloak = !Options.AdvancedCloak;
+                    Messaging.Notification("Advanced Cloak " + (Options.AdvancedCloak ? "Enabled" : "Disabled"), (PLPlayer)null, 0, 3000);
                     break;
             }
         }

@@ -12,6 +12,7 @@ namespace Hard_Mode
         public static bool MasterHasMod = false;
         public static bool WeakReactor = false;
         public static bool SpinningCycpher = false;
+        public static bool AdvancedCloak = false;
     }
     internal class Config : ModSettingsMenu
     {
@@ -36,7 +37,8 @@ namespace Hard_Mode
             GUILayout.Label("Reduces Reactor power output");
             Options.SpinningCycpher = GUILayout.Toggle(Options.SpinningCycpher, "Spinning Cyphers");
             GUILayout.Label("Makes Cyphers slowly spin");
-
+            Options.AdvancedCloak = GUILayout.Toggle(Options.AdvancedCloak, "Advanced Cloak");
+            GUILayout.Label("Revamps the cloaking system");
         }
     }
 
@@ -49,6 +51,7 @@ namespace Hard_Mode
             Options.MasterHasMod = (bool)arguments[2];
             Options.WeakReactor = (bool)arguments[3];
             Options.SpinningCycpher = (bool)arguments[4];
+            Options.AdvancedCloak = (bool)arguments[5];
         }
     }
     [HarmonyPatch(typeof(PLServer), "ServerSendClientStarmap")]
