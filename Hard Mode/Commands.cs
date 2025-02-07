@@ -1,11 +1,48 @@
-﻿using HarmonyLib;
+﻿using CodeStage.AntiCheat.ObscuredTypes;
+using HarmonyLib;
 using PulsarModLoader.Chat.Commands.CommandRouter;
 using PulsarModLoader.Utilities;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
 namespace Hard_Mode
 {
+#if DEBUG
+    class SpawnHunter : ChatCommand
+    {
+        private static FieldInfo m_ActiveBountyHunter_TypeIDInfo = AccessTools.Field(typeof(PLServer), "m_ActiveBountyHunter_TypeID");
+        private static FieldInfo m_ActiveBountyHunter_SectorIDInfo = AccessTools.Field(typeof(PLServer), "m_ActiveBountyHunter_SectorID");
+        private static FieldInfo m_ActiveBountyHunter_SecondsSinceWarpInfo = AccessTools.Field(typeof(PLServer), "m_ActiveBountyHunter_SecondsSinceWarp");
+        public override string[] CommandAliases() => new string[] { "spawnhunter" };
+        public override string Description() => "Debug";
+        public override void Execute(string arguments)
+        {
+            PLSectorInfo plsectorInfo2 = PLServer.GetCurrentSector();
+            if (plsectorInfo2 != null)
+            {
+                /* Useful for setting a local ship to be a hunter
+                float lowerBound = 0.85f;
+                float higherBound = 1.2f;
+                PLEncounterManager.ShipLayout randomPossibleHunterLayout = PLEncounterManager.Instance.GetRandomPossibleHunterLayout(lowerBound, higherBound);
+                PLServer.Instance.BountyHunterLayout = randomPossibleHunterLayout;
+                PLServer.Instance.BountyHunterInfo = new PLPersistantShipInfo(PLServer.Instance.BountyHunterLayout.ShipType, 6, plsectorInfo2, 0, isDestroyed: false, isFlagged: true);
+                m_ActiveBountyHunter_TypeIDInfo.SetValue(PLServer.Instance, (ObscuredInt)0);
+                m_ActiveBountyHunter_SectorIDInfo.SetValue(PLServer.Instance, (ObscuredInt)plsectorInfo2.ID);
+                m_ActiveBountyHunter_SecondsSinceWarpInfo.SetValue(PLServer.Instance, (ObscuredFloat)0f);*/
+                PLServer.Instance.photonView.RPC("AddCrewWarning", PhotonTargets.All, new object[]
+                {
+                                    "Bounty Hunter Spawned",
+                                    Color.red,
+                                    0,
+                                    "[SHIP]"
+                });
+            }
+            PLServer.Instance.SpawnHunter();
+        }
+    }
+#endif
     class Commands : ChatCommand
     {
         public override string[] CommandAliases()
@@ -130,7 +167,7 @@ namespace Hard_Mode
                         
                     }
                     result += "}";
-                    Logger.Info(result);
+                    PulsarModLoader.Utilities.Logger.Info(result);
                     Messaging.Notification("AI data generator collected");
                     break;
                 case "spinningcypher":
