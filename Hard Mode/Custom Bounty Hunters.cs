@@ -9,11 +9,183 @@ using static PulsarModLoader.Patches.HarmonyHelpers;
 using System.Linq;
 using PulsarModLoader.Utilities;
 using System;
+using CodeStage.AntiCheat.ObscuredTypes;
+using ExitGames.Demos.DemoAnimator;
 
 namespace Hard_Mode
 {
     class Custom_Bounty_Hunters
     {
+        /// <summary>
+        /// Used for custom Pawn Hunters
+        /// </summary>
+        internal class Custom_Pawn
+        {
+            private static FieldInfo m_ActiveBountyHunter_TypeIDInfo = AccessTools.Field(typeof(PLServer), "m_ActiveBountyHunter_TypeID");
+            private static bool __initial;
+            private static string __name;
+            private static int __classid;
+            private static CustomPawnData __appearance;
+            private static PLPlayer __player;
+            private static PLShipInfoBase __hunterShip;
+            [HarmonyPatch(typeof(PLSpawner), "DoSpawn")]
+            public class HunterRespawnPatch
+            { // Do Hunter respawn
+                static bool Prefix(PLSpawner __instance)
+                {
+                    if (__instance.Spawn != "Hunter") return true;
+                    PLServer server = PLServer.Instance;
+                    if (!__initial && (__hunterShip == null || __hunterShip.HasBeenDestroyed))
+                    {
+                        __instance.ShouldRespawnEnemy = false;
+                        __instance.enabled = false;
+                        return false;
+                    }
+                    PLSpawner.DoSpawnStatic(PLEncounterManager.Instance.GetCPEI(), "Bandit", PLEncounterManager.Instance.PlayerShip.MyTLI.AllTTIs[0].transform, __instance, PLEncounterManager.Instance.PlayerShip.MyTLI, null, null);
+                    PLPlayer component = PLEncounterManager.Instance.GetCPEI().MyCreatedPlayers[PLEncounterManager.Instance.GetCPEI().MyCreatedPlayers.Count - 1].GetComponent<PLPlayer>();
+                    __player = component;
+                    component.SetClassID(__classid);
+                    component.GetPawn().BlockWarpWhenOnboard = true;
+                    if (server.MyHunterSpawner_RaceParameter.Value == "0")
+                    {
+                        component.GetPawn().SetExosuitIsActive(true);
+                    }
+                    component.SetPlayerName(__name);
+                    component.Talents[56] = Mathf.RoundToInt(5f + server.ChaosLevel * 2f);
+                    component.Talents[0] = Mathf.RoundToInt(20f + server.ChaosLevel * 4f);
+                    int num;
+                    var m_ActiveBountyHunter_TypeID = (ObscuredInt)m_ActiveBountyHunter_TypeIDInfo.GetValue(server);
+                    if (m_ActiveBountyHunter_TypeID == 0)
+                    {
+                        PLPawnInventoryBase myInventory = component.MyInventory;
+                        PLServer instance = PLServer.Instance;
+                        num = instance.PawnInvItemIDCounter;
+                        instance.PawnInvItemIDCounter = num + 1;
+                        myInventory.UpdateItem(num, 7, 0, 4, 6);
+                    }
+                    else if (m_ActiveBountyHunter_TypeID == 2)
+                    {
+                        PLPawnInventoryBase myInventory2 = component.MyInventory;
+                        PLServer instance2 = PLServer.Instance;
+                        num = instance2.PawnInvItemIDCounter;
+                        instance2.PawnInvItemIDCounter = num + 1;
+                        myInventory2.UpdateItem(num, 30, 0, 0, 6);
+                    }
+                    else
+                    {
+                        PLPawnInventoryBase myInventory3 = component.MyInventory;
+                        PLServer instance3 = PLServer.Instance;
+                        num = instance3.PawnInvItemIDCounter;
+                        instance3.PawnInvItemIDCounter = num + 1;
+                        myInventory3.UpdateItem(num, 8, 0, 4, 6);
+                    }
+                    PLPawnInventoryBase myInventory4 = component.MyInventory;
+                    PLServer instance4 = PLServer.Instance;
+                    num = instance4.PawnInvItemIDCounter;
+                    instance4.PawnInvItemIDCounter = num + 1;
+                    myInventory4.UpdateItem(num, 31, 0, 0, -1);
+                    PLPawnInventoryBase myInventory5 = component.MyInventory;
+                    PLServer instance5 = PLServer.Instance;
+                    num = instance5.PawnInvItemIDCounter;
+                    instance5.PawnInvItemIDCounter = num + 1;
+                    myInventory5.UpdateItem(num, 31, 0, 0, -1);
+                    //base.StartCoroutine(this.ControlledSEND_SetupNewHunter(component.GetPawn()));
+                    return false;
+                }
+            }
+
+            [HarmonyPatch(typeof(PLServer), "SpawnHunterPawn")]
+            public class SpawnPatch
+            { // Initialize respawning
+                static bool Prefix(PLServer __instance)
+                {
+                    if (__instance.MyHunterSpawner == null)
+                    {
+                        __instance.MyHunterSpawner = __instance.gameObject.AddMissingComponent<PLSpawner>();
+                        __instance.MyHunterSpawner.Spawn = "Hunter";
+                        __instance.MyHunterSpawner.ShouldRespawnEnemy = true;
+                        __instance.MyHunterSpawner.SpawnedEnemyRespawn_NoPlayersWithinMeters = 0f;
+                        __instance.MyHunterSpawner.SpawnedEnemyRespawnTime_Seconds = Mathf.RoundToInt(30f - (__instance.ChaosLevel * 15f / 9f));
+                        __instance.MyHunterSpawner_FactionParameter = new SpawnParameter
+                        {
+                            Name = "Faction"
+                        };
+                        __instance.MyHunterSpawner_RaceParameter = new SpawnParameter
+                        {
+                            Name = "Race"
+                        };
+                        __instance.MyHunterSpawner_GenderParameter = new SpawnParameter
+                        {
+                            Name = "Gender"
+                        };
+                        __instance.MyHunterSpawner.Parameters.Add(__instance.MyHunterSpawner_FactionParameter);
+                        __instance.MyHunterSpawner.Parameters.Add(__instance.MyHunterSpawner_RaceParameter);
+                        __instance.MyHunterSpawner.Parameters.Add(__instance.MyHunterSpawner_GenderParameter);
+                        __instance.MyHunterSpawner.enabled = true;
+                    }
+                    var m_ActiveBountyHunter_TypeID = (ObscuredInt)m_ActiveBountyHunter_TypeIDInfo.GetValue(__instance);
+                    if (m_ActiveBountyHunter_TypeID == 0)
+                    {
+                        __instance.MyHunterSpawner_FactionParameter.Value = "0";
+                        __instance.MyHunterSpawner_RaceParameter.Value = UnityEngine.Random.Range(0, 3).ToString();
+                    }
+                    else if (m_ActiveBountyHunter_TypeID == 2)
+                    {
+                        __instance.MyHunterSpawner_FactionParameter.Value = "2";
+                        __instance.MyHunterSpawner_RaceParameter.Value = UnityEngine.Random.Range(0, 3).ToString();
+                    }
+                    else
+                    {
+                        __instance.MyHunterSpawner_FactionParameter.Value = "1";
+                        __instance.MyHunterSpawner_RaceParameter.Value = UnityEngine.Random.Range(0, 3).ToString();
+                    }
+                    if (__instance.MyHunterSpawner_RaceParameter.Value != "0")
+                    {
+                        __instance.MyHunterSpawner_GenderParameter.Value = "male";
+                    }
+                    else
+                    {
+                        __instance.MyHunterSpawner_GenderParameter.Value = ((UnityEngine.Random.value < 0.5f) ? "male" : "female");
+                    }
+                    __classid = UnityEngine.Random.Range(0, 5);
+                    string text = PLServer.Instance.NPCNames[UnityEngine.Random.Range(0, PLServer.Instance.NPCNames.Count)];
+                    if (text.Contains(" "))
+                    {
+                        text = text.Split(new char[] { ' ' })[0];
+                    }
+                    __name = text + " The Hunter";
+                    __initial = true;
+                    __instance.MyHunterSpawner.DoSpawn(PLEncounterManager.Instance.GetCPEI());
+                    // Original spawn code moved to respawn method (Above) to reduce repetitions
+                    return false;
+                }
+            }
+            [HarmonyPatch(typeof(PLPlayer), "RandomizeCustomPawnData")]
+            public class AppearancePatch
+            { // Consistent Appearance
+                static void Postfix(PLPlayer __instance, PLCustomPawn inPawn, CustomPawnData inData, bool enforceUnlocks = true)
+                {
+                    if (__player != __instance) return;
+                    if (__initial)
+                    {
+                        __appearance = inData;
+                        __initial = false;
+                    }
+                    else
+                    {
+                        __appearance.CopyTo(__instance.MyCustomPawnData[__instance.GetPawnCosmeticType()]);
+                    }
+                }
+            }
+            [HarmonyPatch(typeof(PLPersistantEncounterInstance), "SpawnEnemyShip")]
+            public class PatchHunterPawnShip
+            { // Used for respawning mechanic, to stop respawning when hunter ship is dead
+                static void Postfix(EShipType inEnemyShipType, ref PLShipInfoBase __result)
+                {
+                    if (inEnemyShipType == EShipType.E_BOUNTY_HUNTER_01) __hunterShip = __result;
+                }
+            }
+        }
         [HarmonyPatch(typeof(PLEncounterManager), "Start")]
         class HunterAdder //Adds the extra hunters from the HunterCodes.txt for the UnityEngine.Random list when the game starts 
         {
