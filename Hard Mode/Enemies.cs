@@ -146,7 +146,7 @@ namespace Hard_Mode
                     PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
                     inPlayer.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
                 }
-                inPlayer.gameObject.name = "Simple Combat Bot Player Modded";
+                inPlayer.gameObject.name += " HardMode";
             }
         }
     }
@@ -268,7 +268,7 @@ namespace Hard_Mode
                 PLServer.Instance.PawnInvItemIDCounter = ItemID2 + 1;
                 inPlayer.MyInventory.UpdateItem(ItemID2, 26, 0, chaos, 4);
             }
-            inPlayer.gameObject.name = "Simple Combat Bot Player Modded";
+            inPlayer.gameObject.name += " HardMode";
         }
     } //This will make the boss ship crew stronger
 
@@ -538,7 +538,7 @@ namespace Hard_Mode
             {
                 foreach (PLPlayer player in PLServer.Instance.AllPlayers)
                 {
-                    if (player != null && player.gameObject.name == "Simple Combat Bot Player" && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.AOG_MISSIONCHAIN_MADMANS_MANSION)
+                    if (player != null && !player.gameObject.name.Contains("HardMode") && PLServer.GetCurrentSector().VisualIndication == ESectorVisualIndication.AOG_MISSIONCHAIN_MADMANS_MANSION)
                     {
                         player.MyInventory.Clear();
                         int random = UnityEngine.Random.Range(0, 500 - Mathf.RoundToInt(PLServer.Instance.ChaosLevel * 60f * UnityEngine.Random.value));
@@ -590,9 +590,9 @@ namespace Hard_Mode
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                             player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
-                        player.gameObject.name = "Simple Combat Bot Player Modded";
+                        player.gameObject.name += " HardMode";
                     }
-                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Heavy Metal Bandit")
+                    else if (player != null && !player.gameObject.name.Contains("HardMode") && player.GetPlayerName() == "Heavy Metal Bandit")
                     {
                         player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 1.2);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 0.8);
@@ -623,9 +623,9 @@ namespace Hard_Mode
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                             player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2 + 1, 1);
                         }
-                        player.gameObject.name = "Simple Combat Bot Player Modded";
+                        player.gameObject.name += " HardMode"; 
                     }
-                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Metal Bandit")
+                    else if (player != null && !player.gameObject.name.Contains("HardMode") && player.GetPlayerName() == "Metal Bandit")
                     {
                         player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 0.8);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 0.9);
@@ -656,9 +656,9 @@ namespace Hard_Mode
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                             player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
-                        player.gameObject.name = "Simple Combat Bot Player Modded";
+                        player.gameObject.name += " HardMode";
                     }
-                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Elite Metal Bandit")
+                    else if (player != null && !player.gameObject.name.Contains("HardMode") && player.GetPlayerName() == "Elite Metal Bandit")
                     {
                         player.Talents[0] += (int)(PLServer.Instance.ChaosLevel + 2);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel);
@@ -689,9 +689,9 @@ namespace Hard_Mode
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                             player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
-                        player.gameObject.name = "Simple Combat Bot Player Modded";
+                        player.gameObject.name += " HardMode";
                     }
-                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && player.GetPlayerName() == "Robot Guard")
+                    else if (player != null && !player.gameObject.name.Contains("HardMode") && player.GetPlayerName() == "Robot Guard")
                     {
                         player.Talents[0] += (int)(PLServer.Instance.ChaosLevel * 1.5);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel);
@@ -722,9 +722,9 @@ namespace Hard_Mode
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                             player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2 + 2, 1);
                         }
-                        player.gameObject.name = "Simple Combat Bot Player Modded";
+                        player.gameObject.name += " HardMode";
                     }
-                    else if (player != null && player.gameObject.name == "Simple Combat Bot Player" && (player.GetPlayerName() == "Bandit" || player.GetPlayerName() == "Guard"))
+                    else if (player != null && !player.gameObject.name.Contains("HardMode") && (player.GetPlayerName() == "Bandit" || player.GetPlayerName() == "Guard"))
                     {
                         player.Talents[0] += (int)(PLServer.Instance.ChaosLevel + 1);
                         player.Talents[2] += (int)(PLServer.Instance.ChaosLevel * 0.5);
@@ -755,7 +755,7 @@ namespace Hard_Mode
                             PLServer.Instance.PawnInvItemIDCounter = ItemID + 1;
                             player.MyInventory.UpdateItem(ItemID, 2, 0, (int)PLServer.Instance.ChaosLevel / 2, 1);
                         }
-                        player.gameObject.name = "Simple Combat Bot Player Modded";
+                        player.gameObject.name += " HardMode";
                     }
                 }
             }
